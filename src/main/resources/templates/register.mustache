@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/register.css">
+    <link rel="stylesheet" href="/js/register.js">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Noto+Sans+KR:wght@500;600;700&family=Single+Day&display=swap" rel="stylesheet">
+</head>
+<body>
+<!--헤더-->
+    <div style="margin: 0 auto; background-color: white; height: 50px; border-bottom: #cccccc 1px solid">
+
+    </div>
+    <!--내용-->
+    <form action="/members/new" method="post">
+    <div class="nameInput" style="margin-top: 60px">
+    <h1 style="margin: 0 auto;text-align: center;margin-top:50px;position: relative;margin-bottom: 55px;right: 124px;">회원가입</h1>
+
+    <div class="rname" style="right: 171px">이름</div>
+    <input placeholder="이름 입력" class="rinput" name="name">
+
+
+
+    <div class="rname" style="right:163px ">이메일</div>
+    <input placeholder="이메일 입력" class="rinput" id="email" name="email">
+
+
+    <div class="rname" style="right:154px;">비밀번호</div>
+        <div>
+            <input placeholder="비밀번호 입력" class="rinput" name="password">
+        </div>
+        <div>
+        <input placeholder="비밀번호 확인" class="rinput">
+        </div>
+
+    <button class="registerButton" type="submit">회원가입</button>
+
+        <div style="margin-top: 15px">
+            이미 가입하셨나요? <a style="cursor: pointer; text-decoration: underline">로그인</a>
+        </div>
+    </div>
+    </form>
+
+</body>
+</html>
