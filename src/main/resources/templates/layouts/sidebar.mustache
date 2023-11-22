@@ -51,8 +51,8 @@
                     </a>
                 </li>
 
-                <li class="nav-link">
-                    <a href="#">
+                <li class="nav-link" style="cursor: pointer">
+                    <a th:href="@{/calendar}" onclick="navigateToCalendar()">
                         <i class='bx bx-calendar icon'></i>
                         <span class="text nav-text">일정</span>
                     </a>
@@ -96,7 +96,7 @@
 
 
 <script>
-    const body = document.querySelector('body'),
+const body = document.querySelector('body'),
             sidebar = body.querySelector('nav'),
             toggle = body.querySelector(".toggle"),
             searchBtn = body.querySelector(".search-box"),
@@ -112,15 +112,21 @@
         sidebar.classList.remove("close");
     })
 
-    modeSwitch.addEventListener("click" , () =>{
+    modeSwitch.addEventListener("click" , () => {
         body.classList.toggle("dark");
+    })
 
-        if(body.classList.contains("dark")){
+        if (body.classList.contains("dark")) {
             modeText.innerText = "Light mode";
-        }else{
+        } else {
             modeText.innerText = "Dark mode";
-
         }
-    });
+
+//캘린더 페이지 이동
+function navigateToCalendar() {
+    window.location.href ='/calendar';
+}
+
+
 </script>
 
