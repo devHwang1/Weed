@@ -3,11 +3,11 @@
 package com.example.weed.domain.dept;
 
 import com.example.weed.domain.members.Member;
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.util.List;
 
 @Entity

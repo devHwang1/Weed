@@ -2,12 +2,14 @@ package com.example.weed.domain.members;
 
 import com.example.weed.domain.dept.Dept;
 import com.example.weed.dto.MemberFormDto;
-import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import javax.persistence.*;
+import java.nio.file.Path;
 
 @Entity
 @NoArgsConstructor

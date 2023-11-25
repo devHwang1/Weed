@@ -22,48 +22,30 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Log4j2
 public class SecurityConfig {
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http.authorizeHttpRequests((request) -> {
-//                    request.requestMatchers("/","/members/new").permitAll()
-//                            .anyRequest().authenticated();
-//                })
-//                .formLogin(Customizer.withDefaults());
-//
-//         return http.build();
-//    }
-//
-//    @Bean
-//    PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-//}
-
-//@EnableWebSecurity
-//@Configuration
-//public class SecurityConfig {
 
 
-
+    @Configuration
+    public class SecurityConfiguration {
         @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+            httpSecurity
+                    .authorizeRequests()
+                    .antMatchers("/members/login", "/members/login-proc").permitAll()
+                    .antMatchers("/").authenticated()
+                    .anyRequest().permitAll();
 
-        return http
-                .csrf((csrf) -> csrf.disable())
-                .authorizeHttpRequests(request -> request.requestMatchers(String.valueOf(PathRequest.toStaticResources().atCommonLocations())).permitAll()
-                        .requestMatchers( "/**").permitAll()
-                        .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults())
-                .build();
-    }
+            httpSecurity
+                    .formLogin() // Form Login 설정
+                    .loginPage("/members/login")
+                    .loginProcessingUrl("/members/login-proc")
+                    .defaultSuccessUrl("/members/main")
+                    .and()
+                    .logout()
+                    .and()
+                    .csrf().disable();
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer(){
-            return (web) -> web.ignoring().requestMatchers(String.valueOf(PathRequest.
-                    toStaticResources().atCommonLocations()));
-    }
-
-
+            return httpSecurity.build();
+        }
 
     /*비밀번호 암호화하기 위해서 쓰는 PassEncoder */
     @Bean
@@ -72,4 +54,4 @@ public class SecurityConfig {
     }
 
 
-}
+}}

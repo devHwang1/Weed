@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -26,22 +25,22 @@
     <div class="rname" style="right: 171px">이름</div>
     <div>
         <div><input placeholder="이름 입력" class="rinput" name="name" id="name"></div>
-        <div>{{#valid_name}} <span id="valid" style="color: #695CFE">{{valid_name}}</span>{{/valid_name}}</div>
+        <div>{{#valid_name}} <span id="valid" style="color: #00c473">{{valid_name}}</span>{{/valid_name}}</div>
     </div>
 
     <div class="rname" style="right:163px " id="en">이메일</div>
         <div><input placeholder="이메일 입력" class="rinput" id="email" name="email"></div>
-        {{#valid_email}} <span id="valid" style="color: #695CFE">{{valid_email}}</span>{{/valid_email}}
+        {{#valid_email}} <span id="valid" style="color: #00c473">{{valid_email}}</span>{{/valid_email}}
 
     <div class="rname" style="right:154px;">비밀번호</div>
         <div>
             <input placeholder="비밀번호 입력" class="rinput" name="password" id="password" type="password"></div>
-            {{#valid_password}} <span id="valid" style="color: #695CFE">{{valid_password}}</span>{{/valid_password}}
+            {{#valid_password}} <span id="valid" style="color: #00c473">{{valid_password}}</span>{{/valid_password}}
 
         <div>
             <input placeholder="비밀번호 확인" class="rinput" id="pc" type="password" onkeyup="validatePassword()">
             <!-- 비밀번호 일치 여부 오류 메시지 -->
-            <div id="password-error" style="color: #695CFE; margin-bottom: 10px;"></div>
+            <div id="password-error" style="color: #00c473; margin-bottom: 10px;"></div>
         </div>
 
     <button class="registerButton" type="submit">회원가입</button>
@@ -57,8 +56,8 @@
         {{#valid_email}}
         if ("{{valid_email}}") {
             // input 태그의 테두리 색을 변경
-            document.getElementById('email').style.borderColor = '#695CFE';
-            document.getElementById('email').style.border = '3px solid #695CFE';
+            document.getElementById('email').style.borderColor = '#00c473';
+            document.getElementById('email').style.border = '3px solid #00c473';
             document.getElementById('en').style.marginTop= '20px';
         }
         {{/valid_email}}
@@ -66,14 +65,14 @@
         {{#valid_name}}
         if ("{{valid_name}}") {
             // input 태그의 테두리 색을 변경
-            document.getElementById('name').style.border = '3px solid #695CFE';
+            document.getElementById('name').style.border = '3px solid #00c473';
         }
         {{/valid_name}}
 
         {{#valid_password}}
         if ("{{valid_password}}") {
             // input 태그의 테두리 색을 변경
-            document.getElementById('password').style.border = '3px solid #695CFE';
+            document.getElementById('password').style.border = '3px solid #00c473';
             document.getElementById('pc').style.marginTop= '20px';
         }
         {{/valid_password}}
@@ -84,7 +83,7 @@
 
         // 비밀번호와 비밀번호 확인이 일치하지 않으면 오류 메시지 표시
         if (password !== confirmPassword) {
-        document.getElementById('password').style.border = '3px solid #695CFE';
+        document.getElementById('password').style.border = '3px solid #00c473';
         // document.getElementById('pc').style.border = '3px solid #695CFE';
         document.getElementById('password-error').innerText = '비밀번호가 일치하지 않습니다.';
     } else {
