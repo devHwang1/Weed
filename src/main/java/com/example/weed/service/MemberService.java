@@ -4,6 +4,7 @@ import com.example.weed.domain.dept.Dept;
 import com.example.weed.domain.dept.DeptRepository;
 import com.example.weed.domain.members.Member;
 import com.example.weed.domain.members.MemberRepository;
+import javassist.bytecode.DuplicateMemberException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -41,9 +42,8 @@ public class MemberService implements UserDetailsService {
 
         Optional<Member> optionalUser = memberRepository.findByEmail(member.getEmail());
 
-        if (optionalUser.isPresent()) {
+        return optionalUser.map(findUser -> {
             log.info("User found in the database");
-            Member findUser = optionalUser.get();
 
             if (findUser.getPassword() == null) {
                 log.info("User password is null");
@@ -57,11 +57,12 @@ public class MemberService implements UserDetailsService {
             log.info("Password matches: {}", passwordMatches);
 
             return passwordMatches;
-        }
-
-        log.info("User not found in the database");
-        return false;
+        }).orElseGet(() -> {
+            log.info("User not found in the database");
+            return false;
+        });
     }
+
 
 
 
@@ -91,10 +92,15 @@ public class MemberService implements UserDetailsService {
     }
 
     private void vaidateDuplicateMember(Member member) {
-        Optional<Member> findMember = memberRepository.findByEmail(member.getEmail());
-        if (findMember != null && !findMember.get().getId().equals(member.getId())) {
-            throw new IllegalStateException("이미 가입된 이메일입니다.");
-        }
+        memberRepository.findByEmail(member.getEmail())
+                .ifPresent(existingMember -> {
+                    log.info("Duplicate member found with email: {}", member.getEmail());
+                    try {
+                        throw new DuplicateMemberException("Duplicate member found with email: " + member.getEmail());
+                    } catch (DuplicateMemberException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
     }
 
     @Transactional
