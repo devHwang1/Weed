@@ -6,7 +6,7 @@
     <div style="padding: 17px">
         <div>
             <span class="orT">조직도</span>
-            <span style="color: #A2A2A2">총 {{totalMembers}}명</span>
+            <span style="color: #A2A2A2">총 명</span>
         </div>
     </div>
     <div style="border-bottom: 1px solid #e5e5e5"></div>
@@ -19,38 +19,18 @@
     <div style="height: 5px"></div>
     <div class="memberList" style="padding-left: 17px; padding-right: 17px">
         <div>
-            {{#deptList}}
                 <div>
-                    <span class="depts">{{deptName}}</span>
+                    <span class="depts"></span>
                     <div style="margin-top: 10px">
-                        {{#members}}
+
                             <div class="member-img">
                                 <i class='bx bxs-user-circle' style="font-size: 30px;color:#b1abab"></i>
-                                <span style="position: relative; bottom: 8px;left: 8px; font-weight: 600">{{name}}</span>
+                                <span style="position: relative; bottom: 8px;left: 8px; font-weight: 600"></span>
                             </div>
                             <div style="border-bottom: 1px solid #e5e5e5; margin-bottom: 17px"></div>
-                        {{/members}}
                     </div>
                 </div>
-            {{/deptList}}
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function () {
-        // 검색어 입력란의 DOM 요소를 가져옵니다.
-        var searchInput = $('.m-search');
-
-        // 검색어가 변경될 때마다 실행되는 이벤트 리스너를 추가합니다.
-        searchInput.on('input', function () {
-            // 입력된 검색어를 가져옵니다.
-            var searchKeyword = searchInput.val().toLowerCase();
-
-            // 모든 멤버를 숨깁니다.
-            $('.member-img').hide();
-
-            // 검색어와 일치하는 멤버만 보여줍니다.
-            $('.member-img:contains("' + searchKeyword + '")').show();
-        });
-    });
 </script>

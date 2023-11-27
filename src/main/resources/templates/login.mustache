@@ -18,7 +18,8 @@
 <div style="margin: 0 auto; background-color: white; height: 50px; border-bottom: #cccccc 1px solid">
 </div>
 <!--내용-->
-<form action="/members/login-proc" method="post">
+<form action="/login" method="POST">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
     <div class="nameInput" style="margin-top: 60px">
         <h1 style="margin: 0 auto;text-align: center;margin-top:50px;position: relative;margin-bottom: 55px;right: 140px;">로그인</h1>
 
