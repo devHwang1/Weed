@@ -1,0 +1,286 @@
+
+
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- CSS only -->
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" rel="stylesheet"/>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script crossorigin="anonymous" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
+          integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" rel="stylesheet"/>
+    <script src="/js/roomList/bootstrap-show-password.min.js"></script>
+    <script src="/js/roomList/roomlist.js"></script>
+    <style>
+        a {
+            text-decoration: none;
+        }
+
+        #table {
+            margin-top: 40px;
+        }
+
+        h2 {
+            margin-top: 40px;
+        }
+
+        input#maxUserCnt {
+            width: 160px;
+        }
+
+        span.input-group-text.input-password-hide {
+            height: 40px;
+        }
+
+        span.input-group-text.input-password-show {
+            height: 40px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="visitorCount" style="position: absolute; top: 10px; right: 10px;"></div>
+<div class="container">
+    <div class="container">
+        <h2>채팅방 리스트</h2>
+        <div class="row" th:if="${user == null}">
+            <div class="col">
+                <a href="/chatlogin">
+                    <button class="btn btn-primary" type="button">로그인하기</button>
+                </a>
+            </div>
+        </div>
+        <h5 th:if="${user != null}">
+            [[${user.nickName}]]
+        </h5>
+        <table class="table table-hover" id="table">
+            <tr>
+                <th scope="col">채팅방명</th>
+                <th scope="col">잠금 여부</th>
+                <th scope="col">참여 인원</th>
+                <th scope="col">채팅 종류</th>
+                <th scope="col">채팅방 설정</th>
+            </tr>
+            <th:block th:fragment="content">
+                <tr th:each="room : ${list}">
+                    <span class="hidden" th:id="${room.roomName}"></span>
+                    <td th:if="${room.secretChk}">
+                        <a data-bs-toggle="modal" data-target="#enterRoomModal" href="#enterRoomModal"
+                           th:data-id="${room.roomId}">[[${room.roomName}]]</a>
+                    </td>
+                    <td th:if="${!room.secretChk}">
+                        <!-- thymeleaf 의 변수를 onclick 에 넣는 방법 -->
+                        <a onclick="return chkRoomUserCnt(this.getAttribute('roomId'));"
+                           th:href="@{/chat/room(roomId=${room.roomId})}" th:roomid="${room.roomId}">[[${room.roomName}]]</a>
+                    </td>
+                    <td>
+<span th:if="${room.secretChk}">
+                            🔒︎
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge bg-primary rounded-pill">[[${room.userCount}]]/[[${room.maxUserCnt}]]</span>
+                    </td>
+                    <td>
+                        <span th:if="${#strings.equals(room.chatType, 'MSG')}">일반 채팅</span>
+                        <span th:unless="${#strings.equals(room.chatType, 'MSG')}">화상 채팅</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" data-bs-target="#confirmPwdModal" data-bs-toggle="modal"
+                                id="configRoom" th:data-id="${room.roomId}">채팅방 설정
+                        </button>
+                    </td>
+                </tr>
+            </th:block>
+        </table>
+        <button class="btn btn-info" data-bs-target="#roomModal" data-bs-toggle="modal" type="submit">방 생성</button>
+    </div>
+</div>
+</body>
+</html>
+<div aria-hidden="true" aria-labelledby="ModalToggleLabel" class="modal fade" id="confirmPwdModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">채팅방 설정을 위한 패스워드 확인</h5>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body">
+                <label class="col-form-label" for="confirmPwd" id="confirmLabel">비밀번호 확인</label>
+                <div class="input-group">
+                    <input class="form-control" data-toggle="password" id="confirmPwd" name="confirmPwd"
+                           type="password"/>
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fa fa-eye"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button aria-disabled="true" class="btn btn-primary disabled" data-bs-target="#configRoomModal"
+                        data-bs-toggle="modal" id="configRoomBtn">채팅방 설정하기
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div aria-hidden="true" aria-labelledby="roomModalLabel" class="modal fade" id="configRoomModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">채팅방 설정</h5>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="col-form-label" for="chPwd">비밀번호 변경</label>
+                    <div class="input-group">
+                        <input class="form-control" data-toggle="password" id="chPwd" name="confirmPwd"
+                               type="password"/>
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-eye"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="col-form-label" for="chRoomName">채팅방 이름 변경</label>
+                    <input class="form-control" id="chRoomName" name="chRoomName" type="text"/>
+                </div>
+                <div class="mb-3">
+                    <label class="col-form-label" for="chRoomUserCnt">채팅방 인원 변경</label>
+                    <input class="form-control" id="chRoomUserCnt" name="chUserCnt" type="text"/>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" id="chSecret" type="checkbox"/>
+                    <input id="chSecretChk" name="secretChk" type="hidden" value=""/>
+                    <label class="form-check-label" for="secret">
+                        채팅방 잠금
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <button class="btn btn-primary" onclick="delRoom()" type="button">방 삭제</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div aria-hidden="true" aria-labelledby="roomModalLabel" class="modal fade" id="roomModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">채팅방 생성</h5>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <form action="/chat/createRoom" method="post" onsubmit="return createRoom()">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="col-form-label" for="roomName">방 이름</label>
+                        <input class="form-control" id="roomName" name="roomName" type="text"/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="col-form-label" for="roomPwd">방 설정 번호(방 삭제시 필요합니다)</label>
+                        <div class="input-group">
+                            <input class="form-control" data-toggle="password" id="roomPwd" name="roomPwd"
+                                   type="password"/>
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-eye"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" id="msgType" name="chatType" type="radio" value="msgChat"/>
+                            <label class="form-check-label" for="msgType">
+                                일반 채팅(최대 100명)
+                            </label>
+                        </div>
+
+                    </div>
+                    <div class="mb-3">
+                        <label class="col-form-label" for="maxUserCnt">채팅방 인원 설정
+                            <!--<input class="form-check-input" type="checkbox" id="maxChk">--></label>
+                        <input class="form-control" id="maxUserCnt" name="maxUserCnt" type="text"/>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" id="secret" type="checkbox"/>
+                        <input id="secretChk" name="secretChk" type="hidden" value=""/>
+                        <label class="form-check-label" for="secret">
+                            채팅방 잠금
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+                    <input class="btn btn-primary" type="submit" value="방 생성하기"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div aria-hidden="true" aria-labelledby="enterRoomModalLabel" class="modal fade" id="enterRoomModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">채팅방 비밀번호를 입력해주세요</h5>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="col-form-label" for="roomName">방 비밀번호</label>
+                    <div class="input-group">
+                        <input class="form-control" data-toggle="password" id="enterPwd" name="roomPwd"
+                               type="password"/>
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-eye"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+                    <button class="btn btn-primary" onclick="enterRoom()" type="button">입장하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="announcementModal" class="modal fade" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="announcementModalLabel">화상채팅 이용 시 주의사항</h5>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" id="announcementTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button aria-controls="korea" aria-selected="true" class="nav-link active" data-bs-toggle="tab"
+                                href="#korea" id="korea-tab" role="tab">Korea
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button aria-controls="eng" aria-selected="false" class="nav-link" data-bs-toggle="tab"
+                                href="#eng" id="eng-tab" role="tab">Eng
+                        </button>
+                    </li>
+                </ul>
+
+            </div>
+            <div class="modal-footer">
+                <div class="form-check">
+                    <input class="form-check-input" id="dontShowAgain" type="checkbox"/>
+                    <label class="form-check-label" for="dontShowAgain">오늘은 더 이상 안보기(Don't show again today)</label>
+                </div>
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">확인</button>
+            </div>
+        </div>
+    </div>
+</div>
