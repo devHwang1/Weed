@@ -11,7 +11,7 @@
     font-size: 16px;
 }
 
-input:focus {outline: 2px solid #695CFE;}
+input:focus {outline: 2px solid #00C473FF;}
 .rinput{
     padding: 12px;
     font-size: 16px;
@@ -31,7 +31,7 @@ input:focus {outline: 2px solid #695CFE;}
 .registerButton{
     border-radius: 6px;
     color: #fff;
-    background-color: #695CFE;
+    background-color: #00c473;
     font-weight: 500;
     font-size: 18px;
     line-height: 30px;

@@ -26,6 +26,9 @@ public class MainController {
 
         List<Dept> deptList = memberService.getDeptListWithMembers();
         model.addAttribute("deptList", deptList);
+
+        int totalMembers = memberService.getTotalMembers();
+        model.addAttribute("totalMembers", totalMembers);
         return "/layouts/main";
     }
 

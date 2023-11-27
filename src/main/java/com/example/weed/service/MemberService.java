@@ -4,32 +4,75 @@ import com.example.weed.domain.dept.Dept;
 import com.example.weed.domain.dept.DeptRepository;
 import com.example.weed.domain.members.Member;
 import com.example.weed.domain.members.MemberRepository;
-import lombok.RequiredArgsConstructor;
+import javassist.bytecode.DuplicateMemberException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 @Service
-public class MemberService {
+public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final DeptRepository deptRepository;
 
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, DeptRepository deptRepository) {
+        this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.deptRepository = deptRepository;
+    }
+
+
+
+    public boolean login(Member member) {
+        log.info("Entering login method");
+
+        Optional<Member> optionalUser = memberRepository.findByEmail(member.getEmail());
+
+        return optionalUser.map(findUser -> {
+            log.info("User found in the database");
+
+            if (findUser.getPassword() == null) {
+                log.info("User password is null");
+                return false;
+            }
+
+            log.info("User password: {}", findUser.getPassword());
+
+            // 입력된 비밀번호를 저장된 암호와 비교
+            boolean passwordMatches = passwordEncoder.matches(member.getPassword(), findUser.getPassword());
+            log.info("Password matches: {}", passwordMatches);
+
+            return passwordMatches;
+        }).orElseGet(() -> {
+            log.info("User not found in the database");
+            return false;
+        });
+    }
+
+
+
+
+
+
     public List<Dept> getDeptListWithMembers() {
         return deptRepository.findAll();
     }
+
+
 
 
     public ArrayList<Member> ReadMember(){
@@ -49,10 +92,15 @@ public class MemberService {
     }
 
     private void vaidateDuplicateMember(Member member) {
-        Member findMember = memberRepository.findByEmail(member.getEmail());
-        if (findMember != null && !findMember.getId().equals(member.getId())) {
-            throw new IllegalStateException("이미 가입된 이메일입니다.");
-        }
+        memberRepository.findByEmail(member.getEmail())
+                .ifPresent(existingMember -> {
+                    log.info("Duplicate member found with email: {}", member.getEmail());
+                    try {
+                        throw new DuplicateMemberException("Duplicate member found with email: " + member.getEmail());
+                    } catch (DuplicateMemberException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
     }
 
     @Transactional
@@ -72,10 +120,33 @@ public class MemberService {
         return userEmailDuplicate;
     }
 
+    //조직도에 전체인원 뽑아오기
+    public int getTotalMembers() {
+        return (int) memberRepository.count();
+    }
 
+    @Override
+    @Transactional(readOnly = true)
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<Member> member = memberRepository.findByEmail(email);
 
+        return toUserDetails(member);
+    }
+
+    private UserDetails toUserDetails(Optional<Member> member) {
+        if (member.isEmpty()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return User.builder()
+                .username(String.valueOf(member.get().getId()))
+                .password(member.get().getPassword())
+                .authorities(new SimpleGrantedAuthority(member.get().getRole().getName()))
+                .build();
+    }
 
 
 
 
 }
+

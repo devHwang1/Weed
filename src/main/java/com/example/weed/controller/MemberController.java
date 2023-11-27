@@ -5,7 +5,6 @@ import com.example.weed.domain.members.CheckUsernameValidator;
 import com.example.weed.domain.members.Member;
 import com.example.weed.dto.MemberFormDto;
 import com.example.weed.service.MemberService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,10 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -37,25 +39,45 @@ public class MemberController {
 
     @GetMapping(value = "/new")
     public String memberForm(Model model) {
-        model.addAttribute("memberFormDto", new MemberFormDto());
+//        model.addAttribute("memberFormDto", new MemberFormDto());
 
         List<Dept> deptList = memberService.getDeptListWithMembers();
         model.addAttribute("deptList", deptList);
+
         return "/register";
     }
 
+    @GetMapping(value = "/login")
+    public String login(){
+
+        return "/login";
+    }
+
+    @PostMapping("/login-proc")
+    public String login(@ModelAttribute Member member, Model model) {
+        if (memberService.login(member)) {
+            // 로그인 성공
+            return "redirect:/"; // 필요에 따라 리디렉션 URL을 조정하세요
+        } else {
+            // 로그인 실패
+            model.addAttribute("error", true);
+            return "redirect:/login"; // 필요에 따라 뷰 이름을 조정하세요
+        }
+    }
+
+
     @PostMapping(value = "/new")
-    public String memberForm(@Valid MemberFormDto memberFormDto, BindingResult bindingResult, Model model , Errors errors){
+    public String memberForm(@Valid @ModelAttribute MemberFormDto memberFormDto, BindingResult bindingResult, Model model , Errors errors){
 
         if(errors.hasErrors()){
-            model.addAttribute("memberFormDto",memberFormDto);
+//            model.addAttribute("memberFormDto", memberFormDto);
 
             Map<String, String> validatorResult = memberService.validateHandling(errors);
             for(String key : validatorResult.keySet()) {
                 model.addAttribute(key, validatorResult.get(key));
             }
 
-            return "/register";
+            return "redirect:/register";
         }
         boolean emailDuplicate = memberService.checkEmailDuplication(memberFormDto.getEmail());
         if (emailDuplicate) {
@@ -68,6 +90,8 @@ public class MemberController {
         return "redirect:/main";
 
     }
+
+
 
 
     @GetMapping("/new/{email}/exists")
