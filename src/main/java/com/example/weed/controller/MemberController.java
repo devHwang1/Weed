@@ -61,7 +61,7 @@ public class MemberController {
         } else {
             // 로그인 실패
             model.addAttribute("error", true);
-            return "login"; // 필요에 따라 뷰 이름을 조정하세요
+            return "redirect:/login"; // 필요에 따라 뷰 이름을 조정하세요
         }
     }
 
@@ -77,7 +77,7 @@ public class MemberController {
                 model.addAttribute(key, validatorResult.get(key));
             }
 
-            return "/register";
+            return "redirect:/register";
         }
         boolean emailDuplicate = memberService.checkEmailDuplication(memberFormDto.getEmail());
         if (emailDuplicate) {
