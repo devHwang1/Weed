@@ -1,25 +1,66 @@
 package com.example.weed.config;
 
+
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
-@EnableWebSecurity
 @Configuration
-public class SecurityConfig  {
+@EnableWebSecurity
+@AllArgsConstructor
+@Log4j2
+public class SecurityConfig {
+
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http.authorizeHttpRequests((request) -> {
+//                    request.requestMatchers("/","/members/new").permitAll()
+//                            .anyRequest().authenticated();
+//                })
+//                .formLogin(Customizer.withDefaults());
+//
+//         return http.build();
+//    }
+//
+//    @Bean
+//    PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
+//}
+
+//@EnableWebSecurity
+//@Configuration
+//public class SecurityConfig {
+
+
+
+        @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        return http
+                .csrf((csrf) -> csrf.disable())
+                .authorizeHttpRequests(request -> request.requestMatchers(String.valueOf(PathRequest.toStaticResources().atCommonLocations())).permitAll()
+                        .requestMatchers( "/**").permitAll()
+                        .anyRequest().authenticated())
+                .formLogin(Customizer.withDefaults())
+                .build();
+    }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        return http.build();
+    public WebSecurityCustomizer webSecurityCustomizer(){
+            return (web) -> web.ignoring().requestMatchers(String.valueOf(PathRequest.
+                    toStaticResources().atCommonLocations()));
     }
 
 
