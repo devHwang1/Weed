@@ -2,8 +2,6 @@ package com.example.weed.controller;
 
 import com.example.weed.entity.Member;
 import com.example.weed.service.MemberService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;

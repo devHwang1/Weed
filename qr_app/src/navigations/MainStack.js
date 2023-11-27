@@ -1,9 +1,9 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import ListScreen from '../screens/ListScreen';
 import { PRIMARY, WHITE } from '../colors';
 import HeaderLeftButton from '../components/HeaderLeftButton';
 import HeaderRightButton from '../components/HeaderRightButton';
-import SettingsScreen from '../screens/SettingsScreen';
+import W2002_QRcode from '../screens/W2002_QRcode';
+import W2003_Working from '../screens/W2003_Working';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,14 +21,14 @@ const MainStack = () => {
       }}
     >
       <Stack.Screen
-        name="List"
-        component={ListScreen}
+        name="QR"
+        component={W2002_QRcode}
         options={{
-          title: '출퇴근 Qr',
+          title: '출퇴근 QR',
           headerRight: HeaderRightButton,
         }}
       />
-      <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen name="List" component={W2003_Working} />
     </Stack.Navigator>
   );
 };

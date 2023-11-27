@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import SignInScreen from '../screens/SignInScreen';
 import { WHITE } from '../colors';
+import W2001_SignIn from '../screens/W2001_SignIn';
 
 const Stack = createNativeStackNavigator();
 
@@ -13,7 +13,7 @@ const AuthStack = () => {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="SignIn" component={SignInScreen} />
+      <Stack.Screen name="SignIn" component={W2001_SignIn} />
     </Stack.Navigator>
   );
 };
