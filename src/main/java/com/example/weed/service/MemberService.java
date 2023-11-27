@@ -1,10 +1,9 @@
 package com.example.weed.service;
 
+import com.example.weed.dto.CustomDetails;
 import com.example.weed.dto.UserSessionDto;
 import com.example.weed.entity.Member;
 import com.example.weed.repository.MemberRepository;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,17 +40,28 @@ public class MemberService implements UserDetailsService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("email"));
 
-        session.setAttribute("username", new UserSessionDto(member));
+        UserSessionDto userSessionDto = new UserSessionDto(member);
+        session.setAttribute("userSession", userSessionDto);
 
         return toUserDetails(member);
     }
 
-    private UserDetails toUserDetails(Member member) {
-        return User.builder()
-                .username(member.getEmail())
-                .password(member.getPassword())
-                .authorities(new SimpleGrantedAuthority(member.getAuthority().getName()))
-                .build();
-    }
+//    private UserDetails toUserDetails(Member member) {
+//        return User.builder()
+//                .username(member.getEmail())
+//
+//                .password(member.getPassword())
+//                .authorities(new SimpleGrantedAuthority(member.getAuthority().getName()))
+//                .build();
+//    }
+private UserDetails toUserDetails(Member member) {
+    return new CustomDetails(
+            member.getEmail(),
+            member.getName(),
+            member.getPassword(),
+           member.getAuthority().getName()
+    );
+}
+
 
 }

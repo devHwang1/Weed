@@ -1,32 +1,41 @@
 package com.example.weed.dto;
 
-import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 
-@AllArgsConstructor
+@Data
 public class CustomDetails implements UserDetails {
+    private final String username;
+    private final String name;
+    private final String password;
+    private final String authorities;
 
-    private  final User user;
-
-
+    public CustomDetails(String username, String name, String password, String authorities) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.authorities = authorities;
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Collections.singleton(new SimpleGrantedAuthority(authorities));
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return this.username;
     }
+
 
     @Override
     public boolean isAccountNonExpired() {
