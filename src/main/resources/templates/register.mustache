@@ -13,12 +13,10 @@
 </head>
 
 <body>
-<!--헤더-->
-    <div style="margin: 0 auto; background-color: white; height: 50px; border-bottom: #cccccc 1px solid">
-    </div>
     <!--내용-->
 <form id="form-register" onsubmit="return false;">
-    <div class="nameInput" style="margin-top: 60px">
+    <div class="nameInput" style="margin-top: 60px;display: flex;justify-content: space-evenly;">
+        <div style="height: 754px;width: 500px;border: 1px solid #d2cfcf;">
         <h1 style="margin: 0 auto;text-align: center;margin-top:50px;position: relative;margin-bottom: 55px;right: 124px;">회원가입</h1>
 
         <div class="rname" style="right: 171px">이름</div>
@@ -57,7 +55,8 @@
         <button class="registerButton" type="submit" id="registerButton">회원가입</button>
 
         <div style="margin-top: 15px">
-            이미 가입하셨나요? <a style="cursor: pointer; text-decoration: underline">로그인</a>
+            이미 가입하셨나요? <a href="login" style="cursor: pointer; text-decoration: underline; color: black">로그인</a>
+        </div>
         </div>
     </div>
 </form>
@@ -127,6 +126,8 @@
         document.getElementById('form-register').addEventListener('submit', (event) => {
             // Validate the form before submitting
             if (validateForm()) {
+                const currentTime = new Date().toISOString();
+
                 fetch('/api/member', {
                     method: 'POST',
                     headers: {
@@ -136,7 +137,8 @@
                         'name': document.getElementById('name').value,
                         'email': document.getElementById('email').value,
                         'password': document.getElementById('password').value,
-                        'authority': 'USER'
+                        'authority': 'USER',
+                        'registrationTime' : currentTime
                     })
                 })
                         .then((res) => {

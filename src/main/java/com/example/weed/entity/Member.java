@@ -7,11 +7,12 @@ import com.example.weed.authority.MemberAuthority;
 import lombok.*;
 
 import java.nio.file.Path;
+import java.sql.Date;
 
 @NoArgsConstructor
 @Getter
 @Data
-@Entity(name = "MEMBER")
+@Entity
 public class Member {
     // id 컬럼을 MEMBER 테이블의 기본키로 설정
     @Id
@@ -21,16 +22,18 @@ public class Member {
     private String email;
     private String password;
     private MemberAuthority authority;
+    private Date registrationTime;
 
 
 
     @Builder
-    public Member(Long id, String password, MemberAuthority authority, String email,String name) {
+    public Member(Long id, String password, MemberAuthority authority, String email,String name,Date registrationTime) {
         this.id = id;
         this.name = name;
         this.password = password;
         this.email = email;
         this.authority = authority;
+        this.registrationTime = registrationTime;
     }
 
     @Getter
@@ -51,6 +54,8 @@ public class Member {
 
         private MemberAuthority authority;
 
+        private Date registrationTime;
+
         @Transient
         public Member toEntity() {
             return Member.builder()
@@ -59,6 +64,7 @@ public class Member {
                     .email(this.email)
                     .password(this.password)
                     .authority(this.authority)
+                    .registrationTime(this.registrationTime)
                     .build();
         }
     }
