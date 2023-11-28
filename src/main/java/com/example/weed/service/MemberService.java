@@ -46,14 +46,6 @@ public class MemberService implements UserDetailsService {
         return toUserDetails(member);
     }
 
-//    private UserDetails toUserDetails(Member member) {
-//        return User.builder()
-//                .username(member.getEmail())
-//
-//                .password(member.getPassword())
-//                .authorities(new SimpleGrantedAuthority(member.getAuthority().getName()))
-//                .build();
-//    }
 private UserDetails toUserDetails(Member member) {
     return new CustomDetails(
             member.getEmail(),
@@ -62,6 +54,11 @@ private UserDetails toUserDetails(Member member) {
            member.getAuthority().getName()
     );
 }
+    public boolean isEmailInUse(String email) {
+        return memberRepository.existsByEmail(email);
+    }
+
+
 
 
 }

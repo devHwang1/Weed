@@ -32,6 +32,10 @@ public class SecurityConfiguration {
                 .failureHandler(authenticationFailureHandler)
                 .and()
                 .logout()
+                .logoutUrl("/logout")  // 로그아웃 URL 지정
+                .logoutSuccessUrl("/login")  // 로그아웃 성공 시 이동할 페이지 지정
+                .invalidateHttpSession(true)  // 세션 무효화
+                .deleteCookies("JSESSIONID")  // 필요에 따라 쿠키 삭제
                 .and()
                 .csrf().disable();
 

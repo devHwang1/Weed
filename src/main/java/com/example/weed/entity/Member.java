@@ -1,5 +1,7 @@
 package com.example.weed.entity;
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 import com.example.weed.authority.MemberAuthority;
 import lombok.*;
@@ -36,9 +38,17 @@ public class Member {
     @NoArgsConstructor
     public static class SaveRequest {
         private String id;
+
+        @NotBlank(message = "이름은 필수 입력값입니다.")
         private String name;
+
+        @NotBlank(message = "비밀번호는 필수 입력값입니다.")
         private String password;
+
+        @NotBlank(message = "이메일은 필수 입력값입니다.")
+        @Email(message = "이메일 형식으로 입력해주세요.")
         private String email;
+
         private MemberAuthority authority;
 
         @Transient
