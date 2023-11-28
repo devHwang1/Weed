@@ -62,4 +62,8 @@ public class Member {
                     .build();
         }
     }
+
+    @ManyToOne
+    @JoinColumn(name = "dept_id")
+    private Dept dept;
 }

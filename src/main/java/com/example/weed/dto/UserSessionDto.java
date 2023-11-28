@@ -14,12 +14,14 @@ public class UserSessionDto implements Serializable {
     private String name;
     private String email;
     private String password;
+    private String deptName;
     private MemberAuthority authority;
 
     public UserSessionDto(Member member){
         this.name = member.getName();
         this.password = member.getPassword();
         this.email = member.getEmail();
+        this.deptName = member.getDept().getDeptName();
         this.authority =member.getAuthority();
     }
 }

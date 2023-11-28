@@ -1,5 +1,7 @@
 package com.example.weed.controller;
 
+import com.example.weed.entity.Dept;
+import com.example.weed.repository.DeptRepository;
 import com.example.weed.service.MemberService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -17,15 +19,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
 @Log4j2
 public class IndexController {
     private final MemberService memberService;
+    private final DeptRepository deptRepository;
     @GetMapping("/")
-    public String main(@AuthenticationPrincipal User user) {
+    public String main(@AuthenticationPrincipal User user,Model model) {
+
         log.info("로그인세션확인@@@@@@@@@@@@@@@@@@@@{}",user);
+//        List<Dept> depts = deptRepository.findAll();
+//        model.addAttribute("depts", depts);
         return "layouts/qrcode";
     }
 

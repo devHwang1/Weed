@@ -14,9 +14,11 @@ public class CustomDetails implements UserDetails {
     private final String name;
     private final String password;
     private final String authorities;
+    private final String deptName;
 
-    public CustomDetails(String username, String name, String password, String authorities) {
+    public CustomDetails(String username, String name, String password, String authorities,String deptName) {
         this.username = username;
+        this.deptName =deptName;
         this.password = password;
         this.name = name;
         this.authorities = authorities;

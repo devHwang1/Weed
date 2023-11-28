@@ -51,6 +51,7 @@ private UserDetails toUserDetails(Member member) {
             member.getEmail(),
             member.getName(),
             member.getPassword(),
+           member.getDept().getDeptName(),
            member.getAuthority().getName()
     );
 }
