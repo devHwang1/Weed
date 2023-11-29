@@ -6,7 +6,7 @@
     <div style="padding: 17px">
         <div>
             <span class="orT">조직도</span>
-            <span style="color: #A2A2A2">총 명</span>
+            <span style="color: #A2A2A2" class="total-members">총 {{totalMembers}}명</span>
         </div>
     </div>
     <div style="border-bottom: 1px solid #e5e5e5"></div>
@@ -38,7 +38,9 @@
 </div>
 <script>
     $(document).ready(function () {
+
         // 검색 입력을 기반으로 회원을 필터링하는 함수
+
         function filterMembers() {
             var searchTerm = $('.m-search').val().toLowerCase();
 
@@ -55,5 +57,7 @@
             filterMembers();
             $('.bb').hide();
         });
+
     });
+
 </script>

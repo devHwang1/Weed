@@ -173,6 +173,17 @@
 
         }
     });
+    const userSession = document.querySelector(".name");
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const userSession = document.querySelector(".name");
+
+        if (!userSession) {
+            window.location.href = '/login';
+        }
+
+        // 나머지 코드...
+    });
 
 
 </script>

@@ -1,0 +1,67 @@
+{{>layouts/header}}
+<link rel="stylesheet" href="/css/register.css">
+<div style="margin-top: 20px;border-radius: 15px;text-align: center;margin-left: 136px;height: 90%;width: 90%;background: white;" class="mypage1">
+    <body>
+    <!--내용-->
+    <form id="form-register" onsubmit="return false;">
+        <div class="nameInput" style="margin: 0 !important;display: flex;justify-content: space-evenly;align-items: center;">
+            <div>
+                <img src="/Img/logo2.png">
+            </div>
+            <div style="height: 754px;width: 500px;margin-top: 50px;">
+<!--                <h1 style="margin: 0 auto;text-align: center;margin-top: 17px;position: relative;margin-bottom: 17px;right: 124px;">마이페이지</h1>-->
+                <div class="rname" style="right: 171px">사진</div>
+                <div>
+                    <div style="text-align: left;display: flex;align-items: center;" >
+                        <img src="/Img/profile.png" style="border-radius: 50%;width: 100px;margin-left: 100px;margin-bottom: 15px;margin-right: 35px;">
+                        <button style="margin-bottom: 17px;background: white;width: 80px;height: 30px;border-radius: 5px;color: #9f9f9f;border: 1px solid #9f9f9f; margin-right: 15px">삭제</button>
+                        <button style="background: white;width: 80px;height: 30px;border-radius: 5px;color: #00c473;border: 1px solid #00c473; margin-bottom: 17px">수정</button>
+                    </div>
+                </div>
+
+
+                <div class="rname" style="right: 171px">이름</div>
+                <div>
+                    <div>
+                        <input  class="rinput" name="name" id="name" style="height: 47px" placeholder="{{userSession.name}}">
+                    </div>
+                </div>
+
+                <div class="rname" style="right:163px " id="en">이메일</div>
+                <div>
+                    <div>
+                        <input class="rinput" id="email" name="email" style="height: 47px" placeholder="{{userSession.email}}" disabled>
+                        <div id="olmessage" style="color:#00C473FF;"></div>
+                    </div>
+                </div>
+                <div class="rname" style="right:163px " id="en">부서명</div>
+                <div>
+                    <div>
+                        <input class="rinput" id="email" name="email" style="height: 47px" placeholder="{{userSession.deptName}}" disabled>
+                        <div id="olmessage" style="color:#00C473FF;"></div>
+                    </div>
+                </div>
+
+                <div class="rname" style="right:154px;">비밀번호</div>
+                <div>
+                    <div>
+                        <input placeholder="비밀번호 입력" class="rinput" name="password" id="password" type="password" style="height: 47px">
+                    </div>
+                </div>
+
+                <div>
+                    <div>
+                        <input placeholder="비밀번호 확인" class="rinput" id="pc" type="password" onkeyup="validatePassword()" style="height: 47px">
+                        <!-- 비밀번호 일치 여부 오류 메시지 -->
+                        <div id="password-error" style="color: #00c473; margin-bottom: 10px;"></div>
+                    </div>
+                </div>
+
+                <button class="registerButton" type="submit" id="registerButton">회원수정</button>
+
+            </div>
+        </div>
+    </form>
+
+    </body>
+</div>

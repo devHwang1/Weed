@@ -44,6 +44,11 @@ public class IndexController {
     public String login() {
         return "login";
     }
+    
+    @GetMapping("/mypage")
+    public String mypage() {
+        return "mypage";
+    }
 
     @GetMapping("/findPassword")
     public String findPassword() {
