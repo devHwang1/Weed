@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class CalendarController {
     @GetMapping("/calendar")
     public String Calendar() {
-        return "/layouts/calendar";
+        return "W1004";
     }
 
 }
