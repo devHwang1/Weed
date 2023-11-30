@@ -27,7 +27,7 @@
 /* ========일정 설정 모달창디자인======== */
 
 /*모달창*/
-.modal{
+.modal {
     display: none;
     position: fixed;
     top: 50%;
@@ -35,37 +35,26 @@
     width: fit-content;
     padding: 2px;
     border-radius: 3px;
-    background-color: white;
+    background-color: #ffffff;
     border: 1px solid #ccc;
     z-index: 1000;
 }
 
-/* fade-in 애니메이션 정의 */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-/* fade-out 애니메이션 정의 */
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
+.modal-detail{
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: fit-content;
+    padding: 2px;
+    border-radius: 3px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    z-index: 1000;
 }
 
 .show{
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-.hide{
-    animation: fadeOut 0.3s ease-in-out;
+    display: block;
 }
 
 
@@ -184,4 +173,12 @@
 /* 이벤트시간등록 안보이게설정 */
 .fc-event-time{
     display: none;
+}
+
+.fc-event-draggable {
+    cursor: move; /* 이동 가능한 일정에 대한 마우스 커서 스타일을 '이동'으로 지정합니다. */
+}
+
+.fc-event-resizable {
+    cursor: ew-resize; /* 크기 조절 가능한 일정에 대한 마우스 커서 스타일을 '좌우 조절'으로 지정합니다. */
 }

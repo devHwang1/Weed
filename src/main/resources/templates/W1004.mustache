@@ -51,43 +51,40 @@
     </div>
 
         <div class="modalbutton">
-            <div class="deletediv">
-            <button id="deleteModal" class="deletecEvent">삭제</button>
-            </div>
             <button id="closeModal" class="closeEvent">취소</button>
             <button id="saveEvent" class="saveEvent">저장</button>
         </div>
     </div>
 
-    <!-- 이벤트 보여주기만 하는 모달창 -->
-    <div id="eventModal_show" class="modal">
-        <div class="modalTitle">일정추가</div>
+    <!-- 이벤트 상세 모달창 -->
+    <div id="eventModalDetail" class="modal-detail">
+        <div class="modalTitle">일정추가7777</div>
 
         <div class="contentBox">
             <div class="eventFormGroup">
-                <label for="eventTitle" class="eventText">일정 제목:</label><br>
-                <label id="eventTitle_show" class="inputTitle"></label><br>
+                <div class="eventText">일정 제목:</div>
+                <div id="eventTitleDetail" class="Title"></div>
             </div>
 
             <div class="eventFormGroup">
-                <label for="eventTitle" class="eventText">시작일:</label>
-                <label id="startDate_show"></label>
-                <label for="eventTitle" class="eventText">종료일:</label>
-                <label id="endDate_show"></label>
+                <div class="eventText">시작일:</div>
+                <div id="startDateDetail"></div>
+                <div class="eventText">종료일:</div>
+                <div id="endDateDetail" ></div>
             </div>
 
             <div class="eventFormGroup">
-                <label for="eventContent" class="eventText">일정 내용:</label><br>
-                <label id="eventContent_show" class="inputContent"></label><br>
+                <div class="eventText">일정 내용:</div>
+                <div id="eventContentDetail" class="inputContent"></div>
             </div>
         </div>
 
         <div class="modalbutton">
             <div class="deletediv">
-                <button id="deleteModal" class="deletecEvent">삭제</button>
+                <button id="deleteModalDetail" class="deletecEvent">삭제</button>
             </div>
-            <button id="closeModal" class="closeEvent">취소</button>
-            <button id="saveEvent" class="saveEvent">저장</button>
+            <button id="closeModalDetail" class="closeEvent">취소</button>
+            <button id="saveEventDetail" class="saveEvent">수정</button>
         </div>
     </div>
 

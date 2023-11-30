@@ -12,16 +12,19 @@ document.addEventListener('DOMContentLoaded', function () {
     var eventContentInput = document.getElementById('eventContent');
 
     //모달상세
-    var eventModalShow = document.getElementById('eventModal_show')    //상세모달창
-    var eventTitleinputShow = document.getElementById('eventTitle_show')
-    var startDateShow = document.getElementById('startDate_show')
-    var endDateShow = document.getElementById('endDate_show')
-    var eventContentShow = document.getElementById('eventContent_show')
+    var eventModalDetail = document.getElementById('eventModalDetail');    //상세모달창
+    var eventTitleDetail = document.getElementById('eventTitleDetail');
+    var startDateDetail = document.getElementById('startDateDetail');
+    var endDateDetail = document.getElementById('endDateDetail');
+    var eventContentDetail = document.getElementById('eventContentDetail');
+
+    //모달상세버튼
+    var closeModalButtonDetail = document.getElementById('closeModalDetail');
+    var deleteModalButtonDetail =document.getElementById('deleteModalDetail');
 
     //모달버튼
     var saveEventButton = document.getElementById('saveEvent');
     var closeModalButton = document.getElementById('closeModal');
-    var deleteModalButton =document.getElementById('deleteModal');
 
     // 날짜인풋
     var startDateInput = document.getElementById('startDate');
@@ -37,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showEventinfo(arg) {
         // 모달 창 나타내기
-        eventModal.classList.add('show');
+        eventModalDetail.classList.add('show');
 
         // 이벤트 정보 표시
         var eventTitle = arg.event.title;
@@ -45,26 +48,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var eventStart = arg.event.start;
         var eventEnd = arg.event.end;
+        
+        //종료 시작일 날짜 설정
+        if (eventStart) {
+            startDateDetail.innerHTML = formatDate(eventStart);
 
-        // 시작일과 종료일이 같을 경우, 종료일에 시작일 표시
-        if (eventStart && eventEnd) {
-            if (eventStart.toDateString() === eventEnd.toDateString()) {
-                eventEnd = new Date(eventStart); // 종료일을 시작일로 설정
+            if (eventEnd) {
+                if (eventStart.toDateString() === eventEnd.toDateString()) {
+                    endDateInput.value = formatDate(eventEnd);
+                    endDateDetail.innerHTML = formatDate(eventEnd);
+                } else {
+                    endDateInput.value = formatDate(eventEnd);
+                    endDateDetail.innerHTML = formatDate(eventEnd);
+                }
+            } else {
+                endDateInput.value = formatDate(eventStart);
+                endDateDetail.innerHTML = formatDate(eventStart);
             }
-            endDateInput.value = formatDate(eventEnd);
-        } else if (eventStart && !eventEnd) {
-            endDateInput.value = formatDate(eventStart);
         }
-
-
+        
+        
+        //input 값 가져오기 
         eventTitleInput.value = eventTitle;
         eventContentInput.value=eventContent;
-        startDateInput.value = formatDate(eventStart);
+
+        // 이벤트 정보를 특정 HTML 요소에 표시
+        eventTitleDetail.innerHTML = eventTitle;       //제목
+        eventContentDetail.innerHTML = eventContent;   //내용
+
 
         info.id = arg.event.id;
 
         // 모달 창의 높이 계산
-        var modalHeight = eventModal.clientHeight;
+        var modalHeight = eventModalDetail.clientHeight;
 
         // 클릭한 위치를 기준으로 모달창 위치 설정
         var modalLeft = arg.jsEvent.clientX;
@@ -77,10 +93,10 @@ document.addEventListener('DOMContentLoaded', function () {
             modalTop = screenHeight - modalHeight;
         }
 
-        eventModal.style.left = modalLeft + 'px';
-        eventModal.style.top = modalTop + 'px';
+        eventModalDetail.style.left = modalLeft + 'px';
+        eventModalDetail.style.top = modalTop + 'px';
 
-        eventModal.style.display = 'block';
+        eventModalDetail.style.display = 'block';
 
     }
 
@@ -251,13 +267,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
 
-            calendar.unselect();
-            eventModal.style.display = 'none';
+        calendar.unselect();
+        eventModal.style.display = 'none';
 
     });
 
-    // 삭제 버튼을 눌렀을 때
-    deleteModalButton.addEventListener('click', function () {
+    // 삭제 버튼을 눌렀을 때 (상세)
+    deleteModalButtonDetail.addEventListener('click', function () {
         console.log('Deleting event with ID:', info.id); // 추가된 로그
 
         if (confirm('이 일정을 삭제하시겠습니까?')) {
@@ -270,19 +286,26 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // 모달 닫기
-            eventModal.style.display = 'none';
+            eventModalDetail.style.display = 'none';
         }
     });
 
 
+    // 취소 버튼을 눌렀을때 (작성 , 상세)
+        //일정작성
+        closeModalButton.addEventListener('click', function () {
+            calendar.unselect();
+            eventModal.style.display = 'none';
 
+        });
 
-    // 취소 버튼을 눌렀을때
-    closeModalButton.addEventListener('click', function () {
-        calendar.unselect();
-        eventModal.style.display = 'none';
+        //일정상세
+        closeModalButtonDetail.addEventListener('click', function () {
+            calendar.unselect();
+            eventModalDetail.style.display = 'none';
 
-    });
+        });
+
 
     calendar.render();
 
