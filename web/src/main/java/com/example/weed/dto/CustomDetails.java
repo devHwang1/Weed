@@ -1,6 +1,9 @@
 package com.example.weed.dto;
 
+import com.example.weed.entity.Member;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,19 +12,23 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Data
+@Setter
+@Getter
 public class CustomDetails implements UserDetails {
     private final String username;
     private final String name;
     private final String password;
     private final String authorities;
     private final String deptName;
+    private final Member loggedInMember;
 
-    public CustomDetails(String username, String name, String password, String authorities,String deptName) {
+    public CustomDetails(String username, String name, String password, String authorities,String deptName,Member loggedInMember) {
         this.username = username;
         this.deptName =deptName;
         this.password = password;
         this.name = name;
         this.authorities = authorities;
+        this.loggedInMember = loggedInMember;
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -37,7 +44,6 @@ public class CustomDetails implements UserDetails {
     public String getUsername() {
         return this.username;
     }
-
 
     @Override
     public boolean isAccountNonExpired() {
