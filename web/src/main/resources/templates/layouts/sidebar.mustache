@@ -1,0 +1,179 @@
+<link rel="stylesheet" href="css/sidebar.css">
+
+
+<nav class="sidebar close">
+
+    <header>
+        <div class="image-text">
+                <span class="image" style="width: 75px;position: relative;right: 7px;">
+                    <img src="img/avatar.png" alt="" style="width: 45px">
+                </span>
+
+            <div class="text logo-text">
+                <span class="name">{{userSession.name}}</span>
+                <span class="profession">{{userSession.deptName}}</span>
+            </div>
+        </div>
+
+        <i class='bx bx-chevron-right toggle'></i>
+    </header>
+
+    <div class="menu-bar">
+        <div class="menu">
+
+            <li class="search-box">
+                <i class='bx bx-search icon'></i>
+                <input type="text" placeholder="대화방검색...">
+            </li>
+
+            <ul class="menu-links">
+                <li class="nav-link">
+                    <a href="/">
+                        <i class='bx bx-qr-scan icon'></i>
+                        <span class="text nav-text">전자출입명부</span>
+                    </a>
+                </li>
+
+                <li class="nav-link">
+                    <a href="#">
+                        <i class='bx bx-message-rounded-dots icon'></i>
+                        <span class="text nav-text">채팅</span>
+                    </a>
+                </li>
+
+                <li class="nav-link">
+                    <a href="#">
+                        <i class='bx bx-bell icon'></i>
+                        <span class="text nav-text">알림</span>
+                    </a>
+                </li>
+
+                <li class="nav-link">
+                    <a href="#">
+                        <i class='bx bx-pie-chart-alt icon' ></i>
+                        <span class="text nav-text">근태관리</span>
+                    </a>
+                </li>
+
+                <li class="nav-link">
+                    <a href="#">
+                        <i class='bx bx-calendar icon'></i>
+                        <span class="text nav-text">일정</span>
+                    </a>
+                </li>
+
+                <li class="nav-link">
+                    <a href="#">
+                        <i class='bx bx-badge-check icon' ></i>
+                        <span class="text nav-text">관리자</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="bottom-content">
+            <li class="">
+                <a href="/logout">
+                    <i class='bx bx-log-out icon' ></i>
+                    <span class="text nav-text">로그아웃</span>
+                </a>
+            </li>
+
+            <li class="mode">
+                <div class="sun-moon">
+                    <i class='bx bx-moon icon moon'></i>
+                    <i class='bx bx-sun icon sun'></i>
+                </div>
+                <span class="mode-text text">모드변경</span>
+
+                <div class="toggle-switch">
+                    <span class="switch"></span>
+                </div>
+            </li>
+
+        </div>
+    </div>
+
+</nav>
+<div class="modal" id="myModal">
+    <div class="modal-content">
+        <!-- 모달 내용 -->
+        <div class="modal-header" style="position: relative; height: 190px; overflow: hidden;">
+            <!-- 배경 이미지 -->
+            <div style="background-image: url(./Img/profile.png); background-size: cover; position: absolute; top: 0; left: 0; width: 100%; height: 100%; "></div>
+
+            <!-- 검정색 투명 배경 -->
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); filter: none"></div>
+
+            <!-- 모달 내용 텍스트 -->
+            <span class="close" id="closeModal" style="float: right; position: relative; bottom: 10px;">&times;</span>
+            <div style="padding: 20px; position: relative; top: 92px; z-index: 1;">
+                <input class="nameEdit" placeholder="{{userSession.name}}" style="background: none;border: none;color: white;font-size: 20px;font-weight: 600;">
+                <h3></h3>
+                <p>{{userSession.deptName}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    // JavaScript 코드
+    // JavaScript 코드
+    const modal = document.getElementById('myModal');
+    const closeModalBtn = document.getElementById('closeModal');
+
+    // 이미지-텍스트 영역 클릭 시 모달 열기
+    document.querySelector('.image-text').addEventListener('click', (event) => {
+        // 클릭한 위치를 기준으로 모달 위치 지정
+        modal.style.left = `${event.clientX}px`;
+        modal.style.top = `${event.clientY}px-10px`;
+
+        modal.style.display = 'block';
+    });
+
+    // 모달 닫기 버튼 클릭 시 모달 닫기
+    closeModalBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    // 모달 외부 클릭 시 모달 닫기
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+
+    const body = document.querySelector('body'),
+            sidebar = body.querySelector('nav'),
+            toggle = body.querySelector(".toggle"),
+            searchBtn = body.querySelector(".search-box"),
+            modeSwitch = body.querySelector(".toggle-switch"),
+            modeText = body.querySelector(".mode-text");
+
+
+    toggle.addEventListener("click" , () =>{
+        sidebar.classList.toggle("close");
+    })
+
+    searchBtn.addEventListener("click" , () =>{
+        sidebar.classList.remove("close");
+    })
+
+    modeSwitch.addEventListener("click" , () =>{
+        body.classList.toggle("dark");
+
+        if(body.classList.contains("dark")){
+            modeText.innerText = "Light mode";
+        }else{
+            modeText.innerText = "Dark mode";
+
+        }
+    });
+
+
+</script>
+
