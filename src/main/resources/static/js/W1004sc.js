@@ -110,6 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         locale: "ko",   // 언어설정
 
+
         // 날짜 '일' 없애기
         dayCellContent: function (info) {
             var number = document.createElement("a");
@@ -129,6 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         selectable: true,
         editable: true, // 일정 이동 및 기간수정 가능하도록 활성화
+        eventResizableFromStart: true,
 
 
         select: function (info) {
@@ -221,8 +223,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         },
+        eventResize: function (eventResizeInfo) {
+            var resizedEvent = eventResizeInfo.event;
+            var newEndDate = resizedEvent.end;
+
+            console.log('이벤트가 리사이즈되었습니다.');
+            console.log('새로운 종료 날짜:', newEndDate);},
 
     });
+
+
 
     // 저장 버튼을 눌렀을 때
     saveEventButton.addEventListener('click', function () {
@@ -244,28 +254,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         // 시작일과 종료일이 같을 때만 allDay를 true로 설정
-        if (startDate.toDateString() === endDate.toDateString()) {
-            calendar.addEvent({
-                id:generateEventId(),       //이벤트아이디를 저장
-                title: title,
-                start: startDate,
-                end: endDate,
-                allDay: true,
-                content: content,
-                color:selectedColor
-            });
-        } else {
-            calendar.addEvent({
-                id:generateEventId(),
-                title: title,
-                start: startDate,
-                end: endDate,
-                allDay: false,
-                content: content,
-                color:selectedColor
-            });
-
+        if (startDate && endDate && startDate.toDateString() !== endDate.toDateString()) {
+            endDate.setDate(endDate.getDate() + 1);
         }
+
+        calendar.addEvent({
+            id: generateEventId(),
+            title: title,
+            start: startDate,
+            end: endDate || startDate, // 종료일이 없을 경우 시작일로 설정
+            allDay: startDate.toDateString() === endDate.toDateString(),
+            content: content,
+            color: selectedColor
+        });
 
         calendar.unselect();
         eventModal.style.display = 'none';

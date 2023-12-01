@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap");
+@import url('');
+
 
 /*캘린더 사이즈*/
 #calendar {
@@ -11,6 +13,13 @@
 .fc-view-harness{
     background-color: rgba(255, 255, 255, 0.47);
 }
+
+/* 날짜위치(적용안됨)*/
+.fc-daygrid-day-top{
+    display: flex;
+    flex-direction: column;
+}
+
 
 /* 일요일 날짜 빨간색 */
 .fc-day-sun a {
@@ -175,6 +184,7 @@
     display: none;
 }
 
+/* 이벤트편집 */
 .fc-event-draggable {
     cursor: move; /* 이동 가능한 일정에 대한 마우스 커서 스타일을 '이동'으로 지정합니다. */
 }
@@ -182,3 +192,4 @@
 .fc-event-resizable {
     cursor: ew-resize; /* 크기 조절 가능한 일정에 대한 마우스 커서 스타일을 '좌우 조절'으로 지정합니다. */
 }
+
