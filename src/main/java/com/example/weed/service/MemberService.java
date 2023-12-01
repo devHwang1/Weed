@@ -3,10 +3,14 @@ package com.example.weed.service;
 import com.example.weed.dto.CustomDetails;
 import com.example.weed.dto.MailDTO;
 import com.example.weed.dto.UserSessionDto;
+import com.example.weed.entity.File;
 import com.example.weed.entity.Member;
+import com.example.weed.repository.FileRepository;
 import com.example.weed.repository.MemberRepository;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,12 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.security.auth.callback.PasswordCallback;
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
-
 public class MemberService implements UserDetailsService {
 
 
@@ -29,11 +32,40 @@ public class MemberService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
 
-    public MemberService(HttpSession session, MemberRepository memberRepository, PasswordEncoder passwordEncoder,JavaMailSender mailSender) {
+    private final FileRepository fileRepository;
+
+    public MemberService(HttpSession session, MemberRepository memberRepository, PasswordEncoder passwordEncoder, JavaMailSender mailSender, FileRepository fileRepository) {
         this.session = session;
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailSender = mailSender;
+        this.fileRepository = fileRepository;
+    }
+
+    public Member getLoggedInMember() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            // 사용자가 인증되지 않았거나 인증 정보가 없는 경우
+            return null;
+        }
+
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof CustomDetails) {
+
+            CustomDetails customDetails = (CustomDetails) principal;
+            Member loggedInMember = customDetails.getLoggedInMember();
+
+            // 로그인한 사용자 정보가 있는 경우
+            // 파일 리스트를 멤버와 연관시켜 저장
+            File file = loggedInMember.getFile();
+            loggedInMember.setFile(file);
+
+            return loggedInMember;
+        }
+
+        return null;
     }
 
     public void save(Member.SaveRequest member) {
@@ -47,22 +79,36 @@ public class MemberService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("email"));
+        Member loggedInMember = member;
+        if (loggedInMember != null) {
+            // 로그인한 사용자 정보가 있는 경우
+            // 파일 리스트를 멤버와 연관시켜 저장
+            File file = loggedInMember.getFile();
 
+
+            if(file != null) {
+
+                loggedInMember.setFile(file);
+            }
+            // 멤버를 저장하면서 파일 연관 업데이트
+            memberRepository.save(loggedInMember);
+        }
         UserSessionDto userSessionDto = new UserSessionDto(member);
         session.setAttribute("userSession", userSessionDto);
 
-        return toUserDetails(member);
+        return toUserDetails(member, loggedInMember);
     }
 
-private UserDetails toUserDetails(Member member) {
-    return new CustomDetails(
-            member.getEmail(),
-            member.getName(),
-            member.getPassword(),
-           member.getDept().getDeptName(),
-           member.getAuthority().getName()
-    );
-}
+    private UserDetails toUserDetails(Member member, Member loggedInMember) {
+        return new CustomDetails(
+                member.getEmail(),
+                member.getName(),
+                member.getPassword(),
+                member.getDept().getDeptName(),
+                member.getAuthority().getName(),
+                loggedInMember
+        );
+    }
     public boolean isEmailInUse(String email) {
         return memberRepository.existsByEmail(email);
     }
@@ -121,6 +167,11 @@ private UserDetails toUserDetails(Member member) {
         memberRepository.updatePassword(str, userEmail);
     }
 
+    @Transactional
+    public void updateMemberFiles(Member member) {
+        member.setFile(fileRepository.findByMemberId(member.getId()));
+//        memberRepository.save(member);
+        memberRepository.updateId(member.getFile().getId(), member.getId());
 
-
+    }
 }

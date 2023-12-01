@@ -18,10 +18,15 @@ import java.util.List;
 public class OrganizeController {
 
     private final DeptRepository deptRepository;
+    private final MemberRepository memberRepository;
 
     @ModelAttribute
     public void addCommonAttributes(Model model) {
         List<Dept> depts = deptRepository.findAll();
         model.addAttribute("depts", depts);
+
+        long totalMembers = memberRepository.count();
+        model.addAttribute("totalMembers",totalMembers);
+
     }
 }
