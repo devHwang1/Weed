@@ -9,6 +9,7 @@
     transition: right 0.3s ease-in-out;
     overflow-x: hidden;
 }
+/* CSS 파일에 추가하세요 */
 
 .show {
     right: 0px; /* Move the container to the viewport */
@@ -35,7 +36,7 @@ body {
     width: 100%;
     border: 1px solid #ddd;
 }
-input:focus {outline:2px solid #695cfe;}
+input:focus {outline:2px solid #00c473;}
 
 .bx-search-alt-2{
     position: relative;
