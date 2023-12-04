@@ -7,15 +7,16 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
+import java.util.UUID;
 
-@NoArgsConstructor
+
 @Getter
 @Setter
 @Entity
 public class W1004Entity {
     @Id
-    @GeneratedValue
-    private String ScheduleId;  //스케줄 ID
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long ScheduleId;  //스케줄 ID
 
     @NotBlank
     private String ScheduleTitle; //스케줄 제목

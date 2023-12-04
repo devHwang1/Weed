@@ -246,27 +246,35 @@ document.addEventListener('DOMContentLoaded', function () {
         // 사용자가 선택한 색상 가져오기
         selectedColor = eventColorInput.value;
 
-
-        // info 객체에 저장
-        info.id = generateEventId();
-        info.date = info.start;
-        info.allDay = info.allDay;
+        // 이벤트 ID 생성
+        var eventId = generateEventId();
 
 
-        // 시작일과 종료일이 같을 때만 allDay를 true로 설정
-        if (startDate && endDate && startDate.toDateString() !== endDate.toDateString()) {
-            endDate.setDate(endDate.getDate());
-        }
-
-        calendar.addEvent({
-            id: generateEventId(),
-            title: title,
-            start: startDate,
-            end: endDate || startDate, // 종료일이 없을 경우 시작일로 설정
-            allDay: startDate.toDateString() === endDate.toDateString(),
-            content: content,
-            color: selectedColor
+        // AJAX를 이용하여 서버로 데이터 전송
+        $.ajax({
+            type: 'POST',
+            url: '/saveW1004', // 실제 백엔드 서버의 URL에 맞게 조정
+            contentType: 'application/json',
+            data: JSON.stringify({
+                id:eventId,
+                title: title,
+                content: content,
+                startDate: startDate,
+                endDate: endDate,
+                color: selectedColor
+            }),
+            success: function (response) {
+                // 서버로부터의 응답 처리
+                console.log('Event saved successfully:', response);
+                // 여기에 성공적으로 저장되었을 때의 로직을 추가
+            },
+            error: function (error) {
+                // 서버로부터의 응답에 에러가 있을 때 처리
+                console.error('Error saving event:', error.responseText);
+                // 여기에 에러 발생 시의 로직을 추가
+            }
         });
+
 
         calendar.unselect();
         eventModal.style.display = 'none';
