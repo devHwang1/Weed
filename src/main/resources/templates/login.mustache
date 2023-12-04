@@ -15,16 +15,16 @@
 
 <body>
 <!--헤더-->
-<div style="margin: 0 auto; background-color: white; height: 50px; border-bottom: #cccccc 1px solid">
 </div>
 <!--내용-->
 <form action="/login" method="POST">
     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-    <div class="nameInput" style="margin-top: 60px">
+    <div class="nameInput" style="display: flex; flex-wrap: nowrap;justify-content: space-around;">
+        <div style="height: 550px; border: 1px solid #d2cfcf;">
         <h1 style="margin: 0 auto;text-align: center;margin-top:50px;position: relative;margin-bottom: 55px;right: 140px;">로그인</h1>
 
         <div class="rname" style="right: 165px">이메일</div>
-        <div>
+        <div style="width: 500px;">
             <div><input placeholder="이메일 입력" class="rinput" name="email" id="email" type="email"></div>
         </div>
 
@@ -36,8 +36,12 @@
 
         <button class="registerButton" type="submit">로그인</button>
 
+        <div style="margin-top: 22px">
+            위드가 처음이신가요? <a href="register" style="cursor: pointer; text-decoration: underline; color: black" >회원가입</a>
+        </div>
         <div style="margin-top: 15px">
-            위드가 처음이신가요? <a style="cursor: pointer; text-decoration: underline">회원가입</a>
+            비밀번호를 잊으셨나요? <a href="register" style="cursor: pointer; text-decoration: underline; color: black" >비밀번호 찾기</a>
+        </div>
         </div>
     </div>
 

@@ -10,8 +10,8 @@
                 </span>
 
             <div class="text logo-text">
-                <span class="name"></span>
-                <span class="profession">개발팀</span>
+                <span class="name">{{userSession.name}}</span>
+                <span class="profession">{{userSession.deptName}}</span>
             </div>
         </div>
 
@@ -28,7 +28,7 @@
 
             <ul class="menu-links">
                 <li class="nav-link">
-                    <a href="#">
+                    <a href="/">
                         <i class='bx bx-qr-scan icon'></i>
                         <span class="text nav-text">전자출입명부</span>
                     </a>
@@ -55,8 +55,8 @@
                     </a>
                 </li>
 
-                <li class="nav-link" style="cursor: pointer">
-                    <a th:href="@{/calendar}" onclick="navigateToCalendar()">
+                <li class="nav-link">
+                    <a href="#">
                         <i class='bx bx-calendar icon'></i>
                         <span class="text nav-text">일정</span>
                     </a>
@@ -74,7 +74,7 @@
 
         <div class="bottom-content">
             <li class="">
-                <a href="#">
+                <a href="/logout">
                     <i class='bx bx-log-out icon' ></i>
                     <span class="text nav-text">로그아웃</span>
                 </a>
@@ -96,11 +96,58 @@
     </div>
 
 </nav>
+<div class="modal" id="myModal">
+    <div class="modal-content">
+        <!-- 모달 내용 -->
+        <div class="modal-header" style="position: relative; height: 190px; overflow: hidden;">
+            <!-- 배경 이미지 -->
+            <div style="background-image: url(./Img/profile.png); background-size: cover; position: absolute; top: 0; left: 0; width: 100%; height: 100%; "></div>
+
+            <!-- 검정색 투명 배경 -->
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); filter: none"></div>
+
+            <!-- 모달 내용 텍스트 -->
+            <span class="close" id="closeModal" style="float: right; position: relative; bottom: 10px;">&times;</span>
+            <div style="padding: 20px; position: relative; top: 92px; z-index: 1;">
+                <input class="nameEdit" placeholder="{{userSession.name}}" style="background: none;border: none;color: white;font-size: 20px;font-weight: 600;">
+                <h3></h3>
+                <p>{{userSession.deptName}}</p>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
 <script>
-const body = document.querySelector('body'),
+    // JavaScript 코드
+    // JavaScript 코드
+    const modal = document.getElementById('myModal');
+    const closeModalBtn = document.getElementById('closeModal');
+
+    // 이미지-텍스트 영역 클릭 시 모달 열기
+    document.querySelector('.image-text').addEventListener('click', (event) => {
+        // 클릭한 위치를 기준으로 모달 위치 지정
+        modal.style.left = `${event.clientX}px`;
+        modal.style.top = `${event.clientY}px-10px`;
+
+        modal.style.display = 'block';
+    });
+
+    // 모달 닫기 버튼 클릭 시 모달 닫기
+    closeModalBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    // 모달 외부 클릭 시 모달 닫기
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+
+    const body = document.querySelector('body'),
             sidebar = body.querySelector('nav'),
             toggle = body.querySelector(".toggle"),
             searchBtn = body.querySelector(".search-box"),
@@ -116,20 +163,27 @@ const body = document.querySelector('body'),
         sidebar.classList.remove("close");
     })
 
-    modeSwitch.addEventListener("click" , () => {
+    modeSwitch.addEventListener("click" , () =>{
         body.classList.toggle("dark");
-    })
 
-        if (body.classList.contains("dark")) {
+        if(body.classList.contains("dark")){
             modeText.innerText = "Light mode";
-        } else {
+        }else{
             modeText.innerText = "Dark mode";
+
+        }
+    });
+    const userSession = document.querySelector(".name");
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const userSession = document.querySelector(".name");
+
+        if (!userSession) {
+            window.location.href = '/login';
         }
 
-//캘린더 페이지 이동
-function navigateToCalendar() {
-    window.location.href ='/calendar';
-}
+        // 나머지 코드...
+    });
 
 
 </script>
