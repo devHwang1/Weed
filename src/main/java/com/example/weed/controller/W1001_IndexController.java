@@ -39,10 +39,10 @@ public class W1001_IndexController {
         return "/layouts/W1003_qrcode";
     }
 
-    @GetMapping("/admin")
-    public String admin(){
-        return "W1009_admin";
-    }
+//    @GetMapping("/admin")
+//    public String admin(){
+//        return "W1009_admin";
+//    }
     @GetMapping("/login")
     public String login(@RequestParam(value = "error", required = false) String error,
                         @RequestParam(value = "exception", required = false) String exception,

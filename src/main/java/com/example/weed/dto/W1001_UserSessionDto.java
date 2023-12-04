@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @Getter
@@ -15,12 +16,15 @@ public class W1001_UserSessionDto implements Serializable {
     private String password;
     private String deptName;
     private String fileName;
+    private Date registrationTime;
     private W1001_MemberAuthority authority;
+
 
     public W1001_UserSessionDto(Member member){
         this.name = member.getName();
         this.password = member.getPassword();
         this.email = member.getEmail();
+        this.registrationTime = member.getRegistrationTime();
         this.deptName = member.getDept().getDeptName();
         this.fileName = member.getFile().getFileName();
         this.authority =member.getAuthority();
