@@ -3,7 +3,7 @@ package com.example.weed.service;
 
 import com.example.weed.entity.File;
 import com.example.weed.entity.Member;
-import com.example.weed.repository.FileRepository;
+import com.example.weed.repository.W1008_FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,22 +20,22 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class FileServiceImpl implements FileService {
+public class W1008FileServiceImpl implements W1008_FileService {
 
     @Autowired
-    private FileRepository fileRepository;
+    private W1008_FileRepository w1008FileRepository;
 
     @Value("${com.example.upload.path}")
     private String uploadPath;
 
     @Override
     public File findByFileName(String fileName) {
-        return fileRepository.findByFileName(fileName);
+        return w1008FileRepository.findByFileName(fileName);
     }
 
     @Override
     public void save(File file) {
-        fileRepository.save(file);
+        w1008FileRepository.save(file);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class FileServiceImpl implements FileService {
                 uploadFile.transferTo(savePath);
 
                 File existingFile = findByFileName(fileName);
-                File memberId = fileRepository.findByMemberId(loggedInMember.getId());
+                File memberId = w1008FileRepository.findByMemberId(loggedInMember.getId());
                 if (loggedInMember.getFile() == null || memberId == null) {
                     File newFile = new File();
                     newFile.setFileName(fileName);

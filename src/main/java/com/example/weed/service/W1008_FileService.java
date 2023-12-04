@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-public interface FileService {
+public interface W1008_FileService {
 
     File findByFileName(String fileName);
 

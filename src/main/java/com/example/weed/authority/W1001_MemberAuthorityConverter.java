@@ -5,9 +5,9 @@ import javax.persistence.Converter;
 import java.util.stream.Stream;
 
 @Converter(autoApply = true)
-public class MemberAuthorityConverter implements AttributeConverter<MemberAuthority, String> {
+public class W1001_MemberAuthorityConverter implements AttributeConverter<W1001_MemberAuthority, String> {
     @Override
-    public String convertToDatabaseColumn(MemberAuthority authority) {
+    public String convertToDatabaseColumn(W1001_MemberAuthority authority) {
         if (authority == null) {
             return null;
         }
@@ -16,12 +16,12 @@ public class MemberAuthorityConverter implements AttributeConverter<MemberAuthor
     }
 
     @Override
-    public MemberAuthority convertToEntityAttribute(String authority) {
+    public W1001_MemberAuthority convertToEntityAttribute(String authority) {
         if (authority == null) {
             return null;
         }
 
-        return Stream.of(MemberAuthority.values())
+        return Stream.of(W1001_MemberAuthority.values())
                 .filter(memberRole -> memberRole.getName().equals(authority))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);

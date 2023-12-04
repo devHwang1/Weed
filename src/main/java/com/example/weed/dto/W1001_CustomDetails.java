@@ -14,7 +14,7 @@ import java.util.Collections;
 @Data
 @Setter
 @Getter
-public class CustomDetails implements UserDetails {
+public class W1001_CustomDetails implements UserDetails {
     private final String username;
     private final String name;
     private final String password;
@@ -23,7 +23,7 @@ public class CustomDetails implements UserDetails {
     private final String fileName;
     private final Member loggedInMember;
 
-    public CustomDetails(String username, String name, String password, String authorities, String deptName, String fileName, Member loggedInMember) {
+    public W1001_CustomDetails(String username, String name, String password, String authorities, String deptName, String fileName, Member loggedInMember) {
         this.username = username;
         this.deptName =deptName;
         this.password = password;

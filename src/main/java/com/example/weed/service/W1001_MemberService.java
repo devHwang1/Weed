@@ -1,12 +1,12 @@
 package com.example.weed.service;
 
-import com.example.weed.dto.CustomDetails;
-import com.example.weed.dto.MailDTO;
-import com.example.weed.dto.UserSessionDto;
+import com.example.weed.dto.W1001_CustomDetails;
+import com.example.weed.dto.W1001_MailDTO;
+import com.example.weed.dto.W1001_UserSessionDto;
 import com.example.weed.entity.File;
 import com.example.weed.entity.Member;
-import com.example.weed.repository.FileRepository;
-import com.example.weed.repository.MemberRepository;
+import com.example.weed.repository.W1008_FileRepository;
+import com.example.weed.repository.W1001_MemberRepository;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
@@ -21,23 +21,23 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpSession;
 
 @Service
-public class MemberService implements UserDetailsService {
+public class W1001_MemberService implements UserDetailsService {
 
 
 
     private final HttpSession session;
-    private final MemberRepository memberRepository;
+    private final W1001_MemberRepository w1001MemberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
 
-    private final FileRepository fileRepository;
+    private final W1008_FileRepository w1008FileRepository;
 
-    public MemberService(HttpSession session, MemberRepository memberRepository, PasswordEncoder passwordEncoder, JavaMailSender mailSender, FileRepository fileRepository) {
+    public W1001_MemberService(HttpSession session, W1001_MemberRepository w1001MemberRepository, PasswordEncoder passwordEncoder, JavaMailSender mailSender, W1008_FileRepository w1008FileRepository) {
         this.session = session;
-        this.memberRepository = memberRepository;
+        this.w1001MemberRepository = w1001MemberRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailSender = mailSender;
-        this.fileRepository = fileRepository;
+        this.w1008FileRepository = w1008FileRepository;
     }
 
     public Member getLoggedInMember() {
@@ -50,10 +50,10 @@ public class MemberService implements UserDetailsService {
 
         Object principal = authentication.getPrincipal();
 
-        if (principal instanceof CustomDetails) {
+        if (principal instanceof W1001_CustomDetails) {
 
-            CustomDetails customDetails = (CustomDetails) principal;
-            Member loggedInMember = customDetails.getLoggedInMember();
+            W1001_CustomDetails w1001CustomDetails = (W1001_CustomDetails) principal;
+            Member loggedInMember = w1001CustomDetails.getLoggedInMember();
 
             // 로그인한 사용자 정보가 있는 경우
             // 파일 리스트를 멤버와 연관시켜 저장
@@ -69,13 +69,13 @@ public class MemberService implements UserDetailsService {
     public void save(Member.SaveRequest member) {
         member.setPassword(passwordEncoder.encode(member.getPassword()));
 
-        memberRepository.save(member.toEntity());
+        w1001MemberRepository.save(member.toEntity());
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Member member = memberRepository.findByEmail(email)
+        Member member = w1001MemberRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("email"));
         Member loggedInMember = member;
         if (loggedInMember != null) {
@@ -89,16 +89,16 @@ public class MemberService implements UserDetailsService {
                 loggedInMember.setFile(file);
             }
             // 멤버를 저장하면서 파일 연관 업데이트
-            memberRepository.save(loggedInMember);
+            w1001MemberRepository.save(loggedInMember);
         }
-        UserSessionDto userSessionDto = new UserSessionDto(member);
-        session.setAttribute("userSession", userSessionDto);
+        W1001_UserSessionDto w1001UserSessionDto = new W1001_UserSessionDto(member);
+        session.setAttribute("userSession", w1001UserSessionDto);
 
         return toUserDetails(member, loggedInMember);
     }
 
 private UserDetails toUserDetails(Member member, Member loggedInMember) {
-    return new CustomDetails(
+    return new W1001_CustomDetails(
             member.getEmail(),
             member.getName(),
             member.getPassword(),
@@ -110,14 +110,14 @@ private UserDetails toUserDetails(Member member, Member loggedInMember) {
     );
 }
     public boolean isEmailInUse(String email) {
-        return memberRepository.existsByEmail(email);
+        return w1001MemberRepository.existsByEmail(email);
     }
 
-    public MailDTO createMailAndChangePassword(String memberEmail) {
+    public W1001_MailDTO createMailAndChangePassword(String memberEmail) {
         String tempPassword = getTempPassword();
         String encryptedPassword = passwordEncoder.encode(tempPassword); // 임시 비밀번호 암호화
 
-        MailDTO dto = new MailDTO();
+        W1001_MailDTO dto = new W1001_MailDTO();
         dto.setAddress(memberEmail);
         dto.setTitle("Weed 임시비밀번호 안내 이메일 입니다.");
         dto.setMessage("안녕하세요. Weed 임시비밀번호 안내 관련 이메일 입니다." + " 회원님의 임시 비밀번호는 "
@@ -150,12 +150,12 @@ private UserDetails toUserDetails(Member member, Member loggedInMember) {
         return str;
     }
     // 메일보내기
-    public void mailSend(MailDTO mailDTO) {
+    public void mailSend(W1001_MailDTO w1001MailDTO) {
         System.out.println("전송 완료!");
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(mailDTO.getAddress());
-        message.setSubject(mailDTO.getTitle());
-        message.setText(mailDTO.getMessage());
+        message.setTo(w1001MailDTO.getAddress());
+        message.setSubject(w1001MailDTO.getTitle());
+        message.setText(w1001MailDTO.getMessage());
         message.setFrom("comeday7741@gmail.com");
         message.setReplyTo("comeday7741@gmail.com");
         System.out.println("message"+message);
@@ -164,20 +164,20 @@ private UserDetails toUserDetails(Member member, Member loggedInMember) {
 
     //비밀번호 변경
     public void updatePassword(String str, String userEmail) {
-        memberRepository.updatePassword(str, userEmail);
+        w1001MemberRepository.updatePassword(str, userEmail);
 
     }
 
     @Transactional
     public void updateMemberFiles(Member member) {
-        member.setFile(fileRepository.findByMemberId(member.getId()));
-        memberRepository.save(member);
-        memberRepository.updateId(member.getFile().getId(), member.getId());
+        member.setFile(w1008FileRepository.findByMemberId(member.getId()));
+        w1001MemberRepository.save(member);
+        w1001MemberRepository.updateId(member.getFile().getId(), member.getId());
 
     }
 
     public String getProfileImageName(Long memberId) {
-        Member member = memberRepository.findById(memberId).orElse(null);
+        Member member = w1001MemberRepository.findById(memberId).orElse(null);
         if (member != null) {
             File file = member.getFile();
             if (file != null) {
@@ -188,6 +188,6 @@ private UserDetails toUserDetails(Member member, Member loggedInMember) {
     }
 
     public void saveMember(Member loggedInMember) {
-        memberRepository.save(loggedInMember);
+        w1001MemberRepository.save(loggedInMember);
     }
 }

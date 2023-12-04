@@ -1,11 +1,11 @@
 package com.example.weed.authority;
 
-public enum MemberAuthority {
+public enum W1001_MemberAuthority {
     USER("USER"), ADMIN("ADMIN");
 
     private String name;
 
-    private MemberAuthority(String name) {
+    private W1001_MemberAuthority(String name) {
         this.name = name;
     }
 

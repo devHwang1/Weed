@@ -1,7 +1,7 @@
 package com.example.weed.controller;
 
 import com.example.weed.entity.Member;
-import com.example.weed.service.MemberService;
+import com.example.weed.service.W1001_MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -11,17 +11,17 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-public class MemberApiController {
-    private final MemberService memberService;
+public class W1001_MemberApiController {
+    private final W1001_MemberService w1001MemberService;
 
-    public MemberApiController(MemberService memberService) {
-        this.memberService = memberService;
+    public W1001_MemberApiController(W1001_MemberService w1001MemberService) {
+        this.w1001MemberService = w1001MemberService;
     }
 
     @PostMapping("/api/member")
     public ResponseEntity<String> save(@RequestBody @Valid Member.SaveRequest member, BindingResult bindingResult, Model model) {
         // 이미 사용 중인 ID 확인
-        boolean isIdInUse = memberService.isEmailInUse(member.getEmail());
+        boolean isIdInUse = w1001MemberService.isEmailInUse(member.getEmail());
 
         // 만약 사용 중이면 클라이언트에게 알려주고 회원가입을 막음
         if (isIdInUse) {
@@ -37,13 +37,13 @@ public class MemberApiController {
             return new ResponseEntity<>(errorMessage.toString(), HttpStatus.BAD_REQUEST);
         }
 
-        memberService.save(member);
+        w1001MemberService.save(member);
         return new ResponseEntity<>("회원가입 성공", HttpStatus.OK);
     }
 
     @GetMapping("/api/member/check-email")
     public ResponseEntity<String> checkEmail(@RequestParam("email") String email) {
-        boolean isEmailInUse = memberService.isEmailInUse(email);
+        boolean isEmailInUse = w1001MemberService.isEmailInUse(email);
 
         return new ResponseEntity<>(isEmailInUse ? "이미 사용중인 ID 입니다." : "사용 가능한 ID 입니다.", HttpStatus.OK);
     }

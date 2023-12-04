@@ -1,24 +1,22 @@
 package com.example.weed.config;
 
-import com.example.weed.service.MemberService;
+import com.example.weed.service.W1001_MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @RequiredArgsConstructor
-public class SecurityConfiguration {
+public class W1001_SecurityConfiguration {
 
     @Autowired
-    private MemberService memberService; // MemberService를 주입받아 사용자 정보를 가져올 수 있어야 함
+    private W1001_MemberService w1001MemberService; // MemberService를 주입받아 사용자 정보를 가져올 수 있어야 함
 
     @Autowired
     private final AuthenticationFailureHandler authenticationFailureHandler;
@@ -26,8 +24,8 @@ public class SecurityConfiguration {
     private final AuthenticationFailureHandler customFailureHandler;
 
     @Autowired
-    public void setMemberService(MemberService memberService) {
-        this.memberService = memberService;
+    public void setW1001MemberService(W1001_MemberService w1001MemberService) {
+        this.w1001MemberService = w1001MemberService;
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {

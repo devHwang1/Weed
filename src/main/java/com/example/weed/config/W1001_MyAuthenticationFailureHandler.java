@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class MyAuthenticationFailureHandler implements AuthenticationFailureHandler {
+public class W1001_MyAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
 
     @Override
