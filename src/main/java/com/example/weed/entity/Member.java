@@ -41,6 +41,8 @@ public class Member {
     @JoinColumn(name = "dept_id")
     private Dept dept;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Working> workings;
 //    @ManyToOne
 //    @JoinColumn(name = "file_id")  // 외래 키 명칭 수정
 //    private File file;
