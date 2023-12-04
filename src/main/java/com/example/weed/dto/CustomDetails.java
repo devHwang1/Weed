@@ -20,14 +20,16 @@ public class CustomDetails implements UserDetails {
     private final String password;
     private final String authorities;
     private final String deptName;
+    private final String fileName;
     private final Member loggedInMember;
 
-    public CustomDetails(String username, String name, String password, String authorities,String deptName,Member loggedInMember) {
+    public CustomDetails(String username, String name, String password, String authorities, String deptName, String fileName, Member loggedInMember) {
         this.username = username;
         this.deptName =deptName;
         this.password = password;
         this.name = name;
         this.authorities = authorities;
+        this.fileName = fileName;
         this.loggedInMember = loggedInMember;
     }
     @Override

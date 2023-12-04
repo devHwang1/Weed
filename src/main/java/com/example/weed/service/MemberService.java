@@ -104,7 +104,9 @@ private UserDetails toUserDetails(Member member, Member loggedInMember) {
             member.getPassword(),
            member.getDept().getDeptName(),
            member.getAuthority().getName(),
+            member.getFile().getFileName(),
             loggedInMember
+
     );
 }
     public boolean isEmailInUse(String email) {
@@ -169,7 +171,7 @@ private UserDetails toUserDetails(Member member, Member loggedInMember) {
     @Transactional
     public void updateMemberFiles(Member member) {
         member.setFile(fileRepository.findByMemberId(member.getId()));
-//        memberRepository.save(member);
+        memberRepository.save(member);
         memberRepository.updateId(member.getFile().getId(), member.getId());
 
     }

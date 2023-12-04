@@ -15,6 +15,7 @@ public class UserSessionDto implements Serializable {
     private String email;
     private String password;
     private String deptName;
+    private String fileName;
     private MemberAuthority authority;
 
     public UserSessionDto(Member member){
@@ -22,6 +23,7 @@ public class UserSessionDto implements Serializable {
         this.password = member.getPassword();
         this.email = member.getEmail();
         this.deptName = member.getDept().getDeptName();
+        this.fileName = member.getFile().getFileName();
         this.authority =member.getAuthority();
     }
 }

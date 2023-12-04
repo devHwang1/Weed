@@ -23,6 +23,8 @@ public class SecurityConfiguration {
     @Autowired
     private final AuthenticationFailureHandler authenticationFailureHandler;
 
+    private final AuthenticationFailureHandler customFailureHandler;
+
     @Autowired
     public void setMemberService(MemberService memberService) {
         this.memberService = memberService;
@@ -38,6 +40,7 @@ public class SecurityConfiguration {
                 .formLogin() // Form Login 설정
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
+                .failureHandler(customFailureHandler)
                 .usernameParameter("email")
                 .defaultSuccessUrl("/")
                 .failureHandler(authenticationFailureHandler)

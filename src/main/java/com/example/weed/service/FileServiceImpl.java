@@ -57,8 +57,8 @@ public class FileServiceImpl implements FileService {
                 uploadFile.transferTo(savePath);
 
                 File existingFile = findByFileName(fileName);
-
-                if (existingFile == null) {
+                File memberId = fileRepository.findByMemberId(loggedInMember.getId());
+                if (loggedInMember.getFile() == null || memberId == null) {
                     File newFile = new File();
                     newFile.setFileName(fileName);
                     newFile.setFilePath(saveName);
@@ -69,8 +69,9 @@ public class FileServiceImpl implements FileService {
 
                     save(newFile);
                 } else {
-                    existingFile.setFilePath(saveName);
-                    save(existingFile);
+                    memberId.setFilePath(saveName);
+                    memberId.setFileName(fileName);
+                    save(memberId);
                 }
 
             } catch (IOException e) {
