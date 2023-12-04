@@ -9,54 +9,57 @@
     <link rel="stylesheet" href="/css/register.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Noto+Sans+KR:wght@500;600;700&family=Single+Day&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Noto+Sans+KR:wght@500;600;700&family=Single+Day&display=swap"
+          rel="stylesheet">
 </head>
 
 <body>
-    <!--내용-->
+<!--내용-->
 <form id="form-register" onsubmit="return false;">
     <div class="nameInput" style="margin-top: 60px;display: flex;justify-content: space-evenly;">
         <div style="height: 754px;width: 500px;border: 1px solid #d2cfcf;">
-        <h1 style="margin: 0 auto;text-align: center;margin-top:50px;position: relative;margin-bottom: 55px;right: 124px;">회원가입</h1>
+            <h1 style="margin: 0 auto;text-align: center;margin-top:50px;position: relative;margin-bottom: 55px;right: 124px;">
+                회원가입</h1>
 
-        <div class="rname" style="right: 171px">이름</div>
-        <div>
+            <div class="rname" style="right: 171px">이름</div>
             <div>
-                <input placeholder="이름 입력" class="rinput" name="name" id="name">
-                <div id="name-error" style="color: red;">{{#nameError}}{{nameError}}{{/nameError}}</div>
+                <div>
+                    <input placeholder="이름 입력" class="rinput" name="name" id="name">
+                    <div id="name-error" style="color: red;">{{#nameError}}{{nameError}}{{/nameError}}</div>
+                </div>
             </div>
-        </div>
 
-        <div class="rname" style="right:163px " id="en">이메일</div>
-        <div>
+            <div class="rname" style="right:163px " id="en">이메일</div>
             <div>
-                <input placeholder="이메일 입력" class="rinput" id="email" name="email">
-                <div id="olmessage" style="color:#00C473FF;"></div>
-                <div id="email-error" style="color: red;">{{#emailError}}{{emailError}}{{/emailError}}</div>
+                <div>
+                    <input placeholder="이메일 입력" class="rinput" id="email" name="email">
+                    <div id="olmessage" style="color:#00C473FF;"></div>
+                    <div id="email-error" style="color: red;">{{#emailError}}{{emailError}}{{/emailError}}</div>
+                </div>
             </div>
-        </div>
 
-        <div class="rname" style="right:154px;">비밀번호</div>
-        <div>
+            <div class="rname" style="right:154px;">비밀번호</div>
             <div>
-                <input placeholder="비밀번호 입력" class="rinput" name="password" id="password" type="password">
-                <div id="password-confirm-error" style="color: red; margin-bottom: 10px;">{{#passwordConfirmError}}{{passwordConfirmError}}{{/passwordConfirmError}}</div>
+                <div>
+                    <input placeholder="비밀번호 입력" class="rinput" name="password" id="password" type="password">
+                    <div id="password-confirm-error"
+                         style="color: red; margin-bottom: 10px;">{{#passwordConfirmError}}{{passwordConfirmError}}{{/passwordConfirmError}}</div>
+                </div>
             </div>
-        </div>
 
-        <div>
             <div>
-                <input placeholder="비밀번호 확인" class="rinput" id="pc" type="password" onkeyup="validatePassword()">
-                <!-- 비밀번호 일치 여부 오류 메시지 -->
-                <div id="password-error" style="color: #00c473; margin-bottom: 10px;"></div>
+                <div>
+                    <input placeholder="비밀번호 확인" class="rinput" id="pc" type="password" onkeyup="validatePassword()">
+                    <!-- 비밀번호 일치 여부 오류 메시지 -->
+                    <div id="password-error" style="color: #00c473; margin-bottom: 10px;"></div>
+                </div>
             </div>
-        </div>
 
-        <button class="registerButton" type="submit" id="registerButton">회원가입</button>
+            <button class="registerButton" type="submit" id="registerButton">회원가입</button>
 
-        <div style="margin-top: 15px">
-            이미 가입하셨나요? <a href="login" style="cursor: pointer; text-decoration: underline; color: black">로그인</a>
-        </div>
+            <div style="margin-top: 15px">
+                이미 가입하셨나요? <a href="login" style="cursor: pointer; text-decoration: underline; color: black">로그인</a>
+            </div>
         </div>
     </div>
 </form>
@@ -138,7 +141,7 @@
                         'email': document.getElementById('email').value,
                         'password': document.getElementById('password').value,
                         'authority': 'USER',
-                        'registrationTime' : currentTime
+                        'registrationTime': currentTime
                     })
                 })
                         .then((res) => {
@@ -178,7 +181,7 @@
             }
         }
     })();
-    $("#email").on("input", function() {
+    $("#email").on("input", function () {
         const email = $(this).val();
 
         // 중복 여부 확인
@@ -186,15 +189,12 @@
             type: "GET",
             async: false,
             url: "http://localhost:8099/api/member/check-email",
-            data: { email: email },
+            data: {email: email},
             success: function (data) {
                 $("#olmessage").text(data);
             }
         });
     });
-
-
-
 
 
 </script>
