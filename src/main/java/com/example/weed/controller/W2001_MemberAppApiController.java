@@ -3,8 +3,8 @@ package com.example.weed.controller;
 import com.example.weed.Util.W2001_JwtTokenUtil;
 import com.example.weed.entity.Member;
 import com.example.weed.entity.Working;
-import com.example.weed.repository.MemberRepository;
-import com.example.weed.repository.WorkingRepository;
+import com.example.weed.repository.W1001_MemberRepository;
+import com.example.weed.repository.W2002_WorkingRepository;
 import com.example.weed.service.W2001_QrJwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,18 +22,18 @@ import java.util.Map;
 @RequestMapping("/api/app/member")
 public class W2001_MemberAppApiController {
     private final PasswordEncoder passwordEncoder;
-    private final MemberRepository memberRepository;
+    private final W1001_MemberRepository memberRepository;
     private final W2001_JwtTokenUtil jwtTokenUtil;
     private final W2001_QrJwtService jwtService;
-    private final WorkingRepository workingRepository;
+    private final W2002_WorkingRepository w2002WorkingRepository;
 
     @Autowired
-    public W2001_MemberAppApiController(PasswordEncoder passwordEncoder, MemberRepository memberRepository, W2001_JwtTokenUtil jwtTokenUtil, W2001_QrJwtService jwtService, WorkingRepository workingRepository) {
+    public W2001_MemberAppApiController(PasswordEncoder passwordEncoder, W1001_MemberRepository memberRepository, W2001_JwtTokenUtil jwtTokenUtil, W2001_QrJwtService jwtService, W2002_WorkingRepository w2002WorkingRepository) {
         this.passwordEncoder = passwordEncoder;
         this.memberRepository = memberRepository;
         this.jwtTokenUtil = jwtTokenUtil;
         this.jwtService = jwtService;
-        this.workingRepository = workingRepository;
+        this.w2002WorkingRepository = w2002WorkingRepository;
     }
 
     @PostMapping("/login")
@@ -82,7 +82,7 @@ public class W2001_MemberAppApiController {
                 working.setMember(foundMember);
 
                 // 여기에서 출근 처리 로직을 수행
-                workingRepository.save(working);
+                w2002WorkingRepository.save(working);
 
                 // 출근 성공 시 응답
                 Map<String, String> response = new HashMap<>();
@@ -112,7 +112,7 @@ public class W2001_MemberAppApiController {
 
             if (foundMember != null && foundMember.getEmail().equals(email)) {
                 // 출근 기록이 있는지 확인
-                Working working = (Working) workingRepository.findByMemberAndDate(foundMember, LocalDate.now()).orElse(null);
+                Working working = (Working) w2002WorkingRepository.findByMemberAndDate(foundMember, LocalDate.now()).orElse(null);
 
                 if (working != null) {
                     // 이미 출근 기록이 있는 경우
@@ -126,7 +126,7 @@ public class W2001_MemberAppApiController {
                             working.setCheckOutTime(currentTime);
 
                             // 여기에서 퇴근 처리 로직을 수행
-                            workingRepository.save(working);
+                            w2002WorkingRepository.save(working);
 
                             // 퇴근 성공 시 응답
                             Map<String, String> response = new HashMap<>();
