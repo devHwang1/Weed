@@ -33,7 +33,7 @@ public class Member {
 
     private Date registrationTime;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "file_id")
     private File file;
 

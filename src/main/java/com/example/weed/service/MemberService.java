@@ -19,8 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class MemberService implements UserDetailsService {
@@ -165,6 +163,7 @@ private UserDetails toUserDetails(Member member, Member loggedInMember) {
     //비밀번호 변경
     public void updatePassword(String str, String userEmail) {
         memberRepository.updatePassword(str, userEmail);
+
     }
 
     @Transactional
@@ -173,5 +172,20 @@ private UserDetails toUserDetails(Member member, Member loggedInMember) {
 //        memberRepository.save(member);
         memberRepository.updateId(member.getFile().getId(), member.getId());
 
+    }
+
+    public String getProfileImageName(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElse(null);
+        if (member != null) {
+            File file = member.getFile();
+            if (file != null) {
+                return file.getFileName();
+            }
+        }
+        return null;
+    }
+
+    public void saveMember(Member loggedInMember) {
+        memberRepository.save(loggedInMember);
     }
 }
