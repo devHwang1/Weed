@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 시작일과 종료일이 같을 때만 allDay를 true로 설정
         if (startDate && endDate && startDate.toDateString() !== endDate.toDateString()) {
-            endDate.setDate(endDate.getDate() + 1);
+            endDate.setDate(endDate.getDate());
         }
 
         calendar.addEvent({
@@ -306,10 +306,7 @@ document.addEventListener('DOMContentLoaded', function () {
             eventModalDetail.style.display = 'none';
 
         });
-
-
     calendar.render();
-
 });
 
 // 문자열 변환
