@@ -2,6 +2,7 @@ package com.example.weed.controller;
 
 import com.example.weed.entity.Member;
 import com.example.weed.service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -47,5 +48,6 @@ public class MemberApiController {
 
         return new ResponseEntity<>(isEmailInUse ? "이미 사용중인 ID 입니다." : "사용 가능한 ID 입니다.", HttpStatus.OK);
     }
+
 }
 

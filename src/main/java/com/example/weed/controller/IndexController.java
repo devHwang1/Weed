@@ -78,17 +78,7 @@ public class IndexController {
         return "register";
     }
 
-    @GetMapping("/sidebar")
-    public String getSidebar(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
 
-        UserDetails userDetails = memberService.loadUserByUsername(email);
-        model.addAttribute("userSession", userDetails);
-
-        return "sidebar";
-
-    }
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

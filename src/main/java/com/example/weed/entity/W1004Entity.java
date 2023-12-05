@@ -21,10 +21,10 @@ public class W1004Entity {
     @NotBlank
     private String ScheduleTitle; //스케줄 제목
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date ScheduleStart; //시작날짜
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date ScheduleEnd; //종료날짜
 
     private String ScheduleColor; //스케줄 컬러

@@ -3,6 +3,26 @@ function generateEventId() {
     // 이벤트를 위한 고유한 ID를 생성하는 로직을 구현
     return Date.now().toString() + window.performance.now().toString().replace('.', '');
 }
+
+function getLoggedInMemberId() {
+    //로그인된 정보 불러오기
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            type: 'GET',
+            url: '/api/member',
+            success: function(response) {
+                // 서버로부터 받은 응답에서 멤버의 ID 추출
+                var loggedInMemberId = response.id;
+                resolve(loggedInMemberId);
+            },
+            error: function(error) {
+                console.error('Error getting logged-in member ID:', error.responseText);
+                reject(error);
+            }
+        });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     var info = {}; // info 변수를 빈 객체로 초기화
 
@@ -48,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var eventStart = arg.event.start;
         var eventEnd = arg.event.end;
-        
+
         //종료 시작일 날짜 설정
         if (eventStart) {
             startDateDetail.innerHTML = formatDate(eventStart);
@@ -66,9 +86,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 endDateDetail.innerHTML = formatDate(eventStart);
             }
         }
-        
-        
-        //input 값 가져오기 
+
+
+        //input 값 가져오기
         eventTitleInput.value = eventTitle;
         eventContentInput.value=eventContent;
 
@@ -249,19 +269,20 @@ document.addEventListener('DOMContentLoaded', function () {
         // 이벤트 ID 생성
         var eventId = generateEventId();
 
-
         // AJAX를 이용하여 서버로 데이터 전송
         $.ajax({
             type: 'POST',
             url: '/saveW1004', // 실제 백엔드 서버의 URL에 맞게 조정
             contentType: 'application/json',
             data: JSON.stringify({
-                id:eventId,
+                // memberId: memberId,
+                id: eventId,
                 title: title,
                 content: content,
                 startDate: startDate,
                 endDate: endDate,
-                color: selectedColor
+                color: selectedColor,
+                loggedInMemberId: getLoggedInMemberId() // 현재 로그인한 멤버의 ID 추가
             }),
             success: function (response) {
                 // 서버로부터의 응답 처리

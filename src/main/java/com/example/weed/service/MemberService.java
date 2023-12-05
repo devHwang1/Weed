@@ -18,12 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 
 @Service
 public class MemberService implements UserDetailsService {
-
-
 
     private final HttpSession session;
     private final MemberRepository memberRepository;
@@ -39,6 +38,7 @@ public class MemberService implements UserDetailsService {
         this.mailSender = mailSender;
         this.fileRepository = fileRepository;
     }
+
 
     public Member getLoggedInMember() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -64,6 +64,12 @@ public class MemberService implements UserDetailsService {
         }
 
         return null;
+    }
+
+    //로그인된 멤버id 가져오기
+    public Member findById(Long loggedInMemberId) {
+        return memberRepository.findById(loggedInMemberId)
+                .orElseThrow(() -> new EntityNotFoundException("Member not found with id: " + loggedInMemberId));
     }
 
     public void save(Member.SaveRequest member) {
@@ -188,4 +194,5 @@ private UserDetails toUserDetails(Member member, Member loggedInMember) {
     public void saveMember(Member loggedInMember) {
         memberRepository.save(loggedInMember);
     }
+
 }
