@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.web.servlet.handler.UserRoleAuthorizationInterceptor;
 
 @Configuration
 @RequiredArgsConstructor
@@ -34,8 +35,11 @@ public class W1001_SecurityConfiguration {
                     .antMatchers("/").permitAll()
                     .antMatchers("/api/app/member/login").permitAll()
                     .antMatchers("/api/app/member/protected/**").authenticated()
-                    .anyRequest().permitAll()
-                .and()
+                    .antMatchers("/login","/api/**","/register","/findPassword","/css/**","/js/**","/Img/**").permitAll()
+                    .antMatchers("/admin").hasAuthority("ADMIN")
+                    .antMatchers("/**").hasAnyAuthority("ADMIN","USER")
+                    .anyRequest().authenticated();
+        httpSecurity
                 .formLogin() // Form Login 설정
                     .loginPage("/login")
                     .loginProcessingUrl("/login")
@@ -44,11 +48,14 @@ public class W1001_SecurityConfiguration {
                     .defaultSuccessUrl("/")
                     .failureHandler(authenticationFailureHandler)
                 .and()
-                .logout()
+                .logout().permitAll()
                     .logoutUrl("/logout")  // 로그아웃 URL 지정
                     .logoutSuccessUrl("/login")  // 로그아웃 성공 시 이동할 페이지 지정
                     .invalidateHttpSession(true)  // 세션 무효화
                     .deleteCookies("JSESSIONID")  // 필요에 따라 쿠키 삭제
+                .and()
+                .exceptionHandling()
+                .accessDeniedPage("/error")
                 .and()
                 .csrf().disable();
 

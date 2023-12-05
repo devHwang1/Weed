@@ -55,7 +55,7 @@
         <button class="registerButton" type="submit" id="registerButton">회원가입</button>
 
         <div style="margin-top: 15px">
-            이미 가입하셨나요? <a href="login" style="cursor: pointer; text-decoration: underline; color: black">로그인</a>
+            이미 가입하셨나요? <a href="login" style="cursor: pointer; text-decoration: underline; color: black" id="login">로그인</a>
         </div>
         </div>
     </div>
@@ -64,6 +64,10 @@
 </body>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
+
+
+
+
     function validatePassword() {
         var password = document.getElementById('password').value;
         var confirmPassword = document.getElementById('pc').value;
@@ -137,7 +141,7 @@
                         'name': document.getElementById('name').value,
                         'email': document.getElementById('email').value,
                         'password': document.getElementById('password').value,
-                        'authority': 'USER',
+                        'authority': 'GUEST',
                         'registrationTime' : currentTime
                     })
                 })
