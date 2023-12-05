@@ -34,6 +34,7 @@ public class W1001_SecurityConfiguration {
                 .authorizeRequests() // 요청에 대한 권한 설정
                 .antMatchers("/login","/api/**","/register","/findPassword","/css/**","/js/**","/Img/**").permitAll()
                 .antMatchers("/admin").hasAuthority("ADMIN")
+                .antMatchers("/**").hasAnyAuthority("ADMIN","USER")
                 .anyRequest().authenticated();
         httpSecurity
                 .formLogin() // Form Login 설정
@@ -49,6 +50,9 @@ public class W1001_SecurityConfiguration {
                 .logoutSuccessUrl("/login")  // 로그아웃 성공 시 이동할 페이지 지정
                 .invalidateHttpSession(true)  // 세션 무효화
                 .deleteCookies("JSESSIONID")  // 필요에 따라 쿠키 삭제
+                .and()
+                .exceptionHandling()
+                .accessDeniedPage("/error")
                 .and()
                 .csrf().disable();
 

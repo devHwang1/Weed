@@ -87,7 +87,6 @@ public class W1001_MemberService implements UserDetailsService {
             // 파일 리스트를 멤버와 연관시켜 저장
             File file = loggedInMember.getFile();
 
-
             if(file == null) {
                 file = new File();
                 String saveName =  "default.png";
