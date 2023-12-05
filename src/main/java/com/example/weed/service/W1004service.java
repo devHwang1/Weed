@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class W1004service {
     @Autowired
-    private MemberService memberService;
+    private W1001_MemberService memberService;
 
     @Autowired
     private W1004Repository w1004Repository;

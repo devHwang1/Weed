@@ -1,13 +1,12 @@
 package com.example.weed.entity;
 
-import com.example.weed.authority.MemberAuthority;
+import com.example.weed.authority.W1001_MemberAuthority;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.sql.Date;
-import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -29,7 +28,7 @@ public class Member {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private MemberAuthority authority;
+    private W1001_MemberAuthority authority;
 
     private Date registrationTime;
 
@@ -46,7 +45,7 @@ public class Member {
 //    private File file;
 
     @Builder
-    public Member(Long id, String name, String email, String password, MemberAuthority authority, Date registrationTime,File file, Dept dept) {
+    public Member(Long id, String name, String email, String password, W1001_MemberAuthority authority, Date registrationTime, File file, Dept dept) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -74,7 +73,7 @@ public class Member {
         @NotBlank(message = "비밀번호는 필수 입력값입니다.")
         private String password;
 
-        private MemberAuthority authority;
+        private W1001_MemberAuthority authority;
 
         private Date registrationTime;
 

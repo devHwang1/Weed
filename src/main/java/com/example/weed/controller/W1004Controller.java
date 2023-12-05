@@ -1,11 +1,13 @@
 package com.example.weed.controller;
 
-import com.example.weed.dto.CustomDetails;
+import com.example.weed.dto.W1001_CustomDetails;
+import com.example.weed.dto.W1001_CustomDetails;
 import com.example.weed.dto.W1004DTO;
 import com.example.weed.entity.Member;
 import com.example.weed.entity.W1004Entity;
 import com.example.weed.repository.W1004Repository;
-import com.example.weed.service.MemberService;
+import com.example.weed.service.W1001_MemberService;
+import com.example.weed.service.W1001_MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,7 +26,7 @@ public class W1004Controller {
 
 
     @Autowired
-    private MemberService memberService;
+    private W1001_MemberService memberService;
 
     @GetMapping("/calendar")
     public String calendar() {
@@ -45,14 +47,14 @@ public class W1004Controller {
         entity.setScheduleColor(w1004dto.getColor());
         entity.setScheduleContent(w1004dto.getContent());
 
-        // 현재 로그인한 멤버의 ID 가져오기
-        Long loggedInMemberId = getLoggedInMemberId();
-
-        // 해당 ID로 Member 엔터티 가져오기
-        Member loggedInMember = memberService.findById(loggedInMemberId);
-
-        // Member 엔터티를 W1004Entity에 설정
-        entity.setMember(loggedInMember);
+//        // 현재 로그인한 멤버의 ID 가져오기
+//        Long loggedInMemberId = getLoggedInMemberId();
+//
+//        // 해당 ID로 Member 엔터티 가져오기
+//        Member loggedInMember = memberService.findById(loggedInMemberId);
+//
+//        // Member 엔터티를 W1004Entity에 설정
+//        entity.setMember(loggedInMember);
 
         //db저장
         w1004Repository.save(entity);
@@ -65,8 +67,7 @@ public class W1004Controller {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             Object principal = authentication.getPrincipal();
-            if (principal instanceof CustomDetails) {
-                CustomDetails customDetails = (CustomDetails) principal;
+            if (principal instanceof W1001_CustomDetails customDetails) {
                 Member loggedInMember = customDetails.getLoggedInMember();
                 if (loggedInMember != null) {
                     return loggedInMember.getId();
