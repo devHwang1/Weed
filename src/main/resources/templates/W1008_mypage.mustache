@@ -56,7 +56,7 @@
                 <div class="rname" style="right: 157px">사진</div>
                 <div>
                     <div style="text-align: left; display: flex; align-items: center;">
-                        <img id="profileImage" src="/Img/profile.png" style="border-radius: 50%; width: 100px; margin-left: 100px; margin-bottom: 15px; margin-right: 35px;">
+                        <img id="profileImage" src="/display?fileName={{userSession.fileName}}" style="border-radius: 50%; width: 100px; margin-left: 100px; margin-bottom: 15px; margin-right: 35px;">
 <!--                        <button onclick="deleteImage()" style="margin-bottom: 57px; background: white; width: 80px; height: 30px; border-radius: 5px; color: #9f9f9f; border: 1px solid #9f9f9f; margin-right: 15px">삭제</button>-->
                         <label for="file">
                             <div class="btn-upload" style="background: white;width: 124px;height: 30px;border-radius: 5px;color: #00c473;border: 1px solid #00c473;margin-bottom: 58px;padding-left: 48px;font-size: 13px;padding-top: 4px;">수정</div>
@@ -114,6 +114,7 @@
     </body>
 </div>
     <script>
+
         $(document).ready(function() {
 
             $.ajax({
@@ -122,7 +123,7 @@
                 success: function(result) {
                     if (result !== null) {
                         // 파일명이 존재하면 이미지 업데이트
-                        document.getElementById('profileImage').src = '/Img/' + result;
+                        // document.getElementById('profileImage').src = '/Img/' + result;
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -131,10 +132,7 @@
             });
         });
 
-        function deleteImage() {
-        // 이미지 삭제 로직을 구현하세요.
-        document.getElementById('profileImage').src = '/Img/avatar.png'; // 기본 이미지로 변경 예시
-    }
+
 
         function previewImage(input) {
         var file = input.files[0];
@@ -172,7 +170,8 @@
         console.log(result);
         if (result && result === "File uploaded successfully") {
         // 파일 업로드 성공
-        document.getElementById('profileImage').src = '/Img/' + files[0].name;
+        // document.getElementById('profileImage').src = '/display?fileName=' + files[0].name;
+            document.getElementById('profileImage').src = '/display?fileName=' + files[0].name;
     } else {
         // 파일 업로드 실패 또는 다른 예외 처리
     }
@@ -182,6 +181,10 @@
     }
     }); // ajax 끝
             alert("프로필 사진이 변경되었습니다.");
+
+
+            // location.replace("/mypage");
+
 
 
     });

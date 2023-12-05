@@ -7,6 +7,7 @@ import com.example.weed.entity.File;
 import com.example.weed.entity.Member;
 import com.example.weed.repository.W1008_FileRepository;
 import com.example.weed.repository.W1001_MemberRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
@@ -31,6 +32,9 @@ public class W1001_MemberService implements UserDetailsService {
     private final JavaMailSender mailSender;
 
     private final W1008_FileRepository w1008FileRepository;
+
+    @Value("${com.example.upload.path}")
+    private String uploadPath;
 
     public W1001_MemberService(HttpSession session, W1001_MemberRepository w1001MemberRepository, PasswordEncoder passwordEncoder, JavaMailSender mailSender, W1008_FileRepository w1008FileRepository) {
         this.session = session;
@@ -84,13 +88,18 @@ public class W1001_MemberService implements UserDetailsService {
             File file = loggedInMember.getFile();
 
 
-            if(file != null) {
+            if(file == null) {
+                file = new File();
+                String saveName =  "default.png";
+                file.setFileName(saveName);
 
-                loggedInMember.setFile(file);
+
             }
+            loggedInMember.setFile(file);
             // 멤버를 저장하면서 파일 연관 업데이트
             w1001MemberRepository.save(loggedInMember);
         }
+
         W1001_UserSessionDto w1001UserSessionDto = new W1001_UserSessionDto(member);
         session.setAttribute("userSession", w1001UserSessionDto);
 

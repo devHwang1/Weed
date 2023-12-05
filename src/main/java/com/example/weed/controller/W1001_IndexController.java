@@ -95,6 +95,10 @@ public class W1001_IndexController {
         UserDetails userDetails = w1001MemberService.loadUserByUsername(email);
         model.addAttribute("userSession", userDetails);
 
+
+
+
+
         return "/layouts/W1003_sidebar";
 
     }

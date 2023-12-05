@@ -5,11 +5,17 @@ import com.example.weed.entity.Member;
 import com.example.weed.service.W1008_FileService;
 import com.example.weed.service.W1001_MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.net.URLDecoder;
+import java.nio.file.Files;
 
 
 @RestController
@@ -23,6 +29,9 @@ public class W1008_UploadController {
 
     @Autowired
     private W1001_MemberService w1001MemberService;
+
+    @Value("${com.example.upload.path}")
+    private String uploadPath;
 
     @PostMapping("/uploadAjax")
     public ResponseEntity<String> uploadFile(@RequestPart("uploadFiles") MultipartFile[] uploadFiles) {
@@ -38,6 +47,28 @@ public class W1008_UploadController {
             return new ResponseEntity<>("File upload failed", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+    @GetMapping("/display")
+    public ResponseEntity<byte[]> getFile(String fileName) {
+        ResponseEntity<byte[]> result = null;
+
+        try {
+            String srcFileName = URLDecoder.decode(fileName, "UTF-8");
+            java.io.File file = new java.io.File(uploadPath + java.io.File.separator +
+                    srcFileName);
+            HttpHeaders header = new HttpHeaders();
+
+            // MIME타입 처리
+            header.add("Content-Type",
+                    Files.probeContentType(file.toPath()));
+            // 파일 데이터 처리
+            result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file),
+                    header, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return result;
     }
 
     @GetMapping("/getProfileImageName")

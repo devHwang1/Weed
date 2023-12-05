@@ -47,10 +47,10 @@ public class W1008FileServiceImpl implements W1008_FileService {
             }
 
             String originalName = uploadFile.getOriginalFilename();
-            String fileName = Paths.get(originalName).getFileName().toString();
-            String folderPath = makeFolder();
             String uuid = UUID.randomUUID().toString();
-            String saveName = uploadPath + java.io.File.separator + folderPath + java.io.File.separator + uuid + "_" + fileName;
+            String fileName = uuid + "_" + Paths.get(originalName).getFileName().toString();
+//            String folderPath = makeFolder();
+            String saveName = uploadPath + java.io.File.separator  + java.io.File.separator + fileName;
             Path savePath = Paths.get(saveName);
 
             try {

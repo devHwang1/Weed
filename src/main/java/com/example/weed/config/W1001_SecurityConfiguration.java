@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.web.servlet.handler.UserRoleAuthorizationInterceptor;
 
 @Configuration
 @RequiredArgsConstructor
@@ -31,9 +32,9 @@ public class W1001_SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeRequests() // 요청에 대한 권한 설정
-                .antMatchers("/").permitAll()
-                .anyRequest().permitAll();
-
+                .antMatchers("/login","/api/**","/register","/findPassword","/css/**","/js/**","/Img/**").permitAll()
+                .antMatchers("/admin").hasAuthority("ADMIN")
+                .anyRequest().authenticated();
         httpSecurity
                 .formLogin() // Form Login 설정
                 .loginPage("/login")
@@ -43,7 +44,7 @@ public class W1001_SecurityConfiguration {
                 .defaultSuccessUrl("/")
                 .failureHandler(authenticationFailureHandler)
                 .and()
-                .logout()
+                .logout().permitAll()
                 .logoutUrl("/logout")  // 로그아웃 URL 지정
                 .logoutSuccessUrl("/login")  // 로그아웃 성공 시 이동할 페이지 지정
                 .invalidateHttpSession(true)  // 세션 무효화

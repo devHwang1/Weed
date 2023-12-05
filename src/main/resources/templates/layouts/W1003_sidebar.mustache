@@ -6,7 +6,7 @@
     <header>
         <div class="image-text">
                 <span class="image" style="width: 75px;position: relative;right: 7px;">
-                    <img src="img/{{userSession.fileName}}" alt="" style="width: 45px">
+                    <img src="/display?fileName={{userSession.fileName}}" alt="" style="width: 45px">
                 </span>
 
             <div class="text logo-text">
@@ -63,7 +63,7 @@
                 </li>
 
                 <li class="nav-link">
-                    <a href="#">
+                    <a href="admin" id="admin">
                         <i class='bx bx-badge-check icon' ></i>
                         <span class="text nav-text">관리자</span>
                     </a>
@@ -183,6 +183,20 @@
         }
 
         // 나머지 코드...
+    });
+
+    document.querySelector('#admin').addEventListener('click', function (event) {
+        event.preventDefault(); // 기본 이벤트(페이지 이동) 막기
+
+        // userSession은 Mustache 템플릿에서 생성된 것으로 가정합니다.
+        // 실제로는 서버에서 가져온 정보를 사용해야 합니다.
+        var userAuthority = "{{userSession.authority}}";
+
+        if (userAuthority === "ADMIN") {
+            location.href = "/admin";
+        } else {
+            alert("관리자만 입장 가능합니다.");
+        }
     });
 
 

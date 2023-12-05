@@ -1,7 +1,7 @@
 package com.example.weed.authority;
 
 public enum W1001_MemberAuthority {
-    USER("USER"), ADMIN("ADMIN");
+    USER("USER"), ADMIN("ADMIN"), GUEST("GUEST");
 
     private String name;
 
