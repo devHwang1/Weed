@@ -62,20 +62,20 @@ public class W1004Controller {
         return "success";
     }
 
-    // 현재 로그인한 멤버의 ID를 가져오는 메서드
-    private Long getLoggedInMemberId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            Object principal = authentication.getPrincipal();
-            if (principal instanceof W1001_CustomDetails customDetails) {
-                Member loggedInMember = customDetails.getLoggedInMember();
-                if (loggedInMember != null) {
-                    return loggedInMember.getId();
-                }
-            }
-        }
-        return null;
-    }
+//    // 현재 로그인한 멤버의 ID를 가져오는 메서드
+//    private Long getLoggedInMemberId() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication != null && authentication.isAuthenticated()) {
+//            Object principal = authentication.getPrincipal();
+//            if (principal instanceof W1001_CustomDetails customDetails) {
+//                Member loggedInMember = customDetails.getLoggedInMember();
+//                if (loggedInMember != null) {
+//                    return loggedInMember.getId();
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
 
 }
