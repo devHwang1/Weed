@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap");
-@import url('');
+
 
 
 /*캘린더 사이즈*/
@@ -20,8 +20,13 @@
     flex-direction: column;
 }
 
+/*이벤트추가 날짜높이 고정*/
+.fc .fc-daygrid-day-frame{
+    height: 100px;
+}
 
-/* 일요일 날짜 빨간색 */
+
+    /* 일요일 날짜 빨간색 */
 .fc-day-sun a {
     color: red;
     text-decoration: none;
@@ -194,4 +199,6 @@
 .fc-event-resizable {
     cursor: ew-resize; /* 크기 조절 가능한 일정에 대한 마우스 커서 스타일을 '좌우 조절'으로 지정합니다. */
 }
+
+
 

@@ -31,4 +31,5 @@ public class W1004DTO {
         this.color = color;
     }
 
+
 }

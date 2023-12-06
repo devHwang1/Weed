@@ -9,19 +9,18 @@ function getLoggedInMemberId() {
     return new Promise(function(resolve, reject) {
         $.ajax({
             type: 'GET',
-            url: '/api/member',
+            url: '/api/current',
             success: function(response) {
-                // 서버로부터 받은 응답에서 멤버의 ID 추출
-                var loggedInMemberId = response.id;
-                resolve(loggedInMemberId);
+                resolve(response.id)
             },
             error: function(error) {
                 console.error('Error getting logged-in member ID:', error.responseText);
-                reject(error);
             }
-        });
+        })
     });
 }
+
+
 
 document.addEventListener('DOMContentLoaded', function () {
     var info = {}; // info 변수를 빈 객체로 초기화
@@ -56,6 +55,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var clickCount = 0;
     var timeout;
+
+    // 서버로부터 업데이트된 전체 일정을 가져와 FullCalendar에 반영
+    $.ajax({
+        type: 'GET',
+        url: '/api/events',
+        success: function (response) {
+            calendar.removeAllEvents(); // 기존 이벤트 제거
+            calendar.addEventSource(response); // 새로운 이벤트 소스 추가
+        },
+        error: function (error) {
+            console.error('Failed to fetch updated events:', error);
+            // 오류 처리
+        }
+    });
 
 
     function showEventinfo(arg) {
@@ -128,7 +141,22 @@ document.addEventListener('DOMContentLoaded', function () {
             right: 'next today'
         },
 
+        eventContent: function (info) {
+            // 이벤트의 콘텐츠를 생성하는 함수
+            var content = document.createElement('div');
+            content.classList.add('event-content');
+
+            // 이벤트의 제목과 기타 정보를 추가
+            content.innerHTML = '<b>' + info.event.title + '</b><br>';
+
+            // 추가적인 콘텐츠 설정이 필요한 경우 여기에 추가
+
+            return { domNodes: [content] };
+        },
+
+
         locale: "ko",   // 언어설정
+        dayMaxEvents: 2, // 하나의 날짜에 표시할 수 있는 최대 이벤트 수
 
 
         // 날짜 '일' 없애기
@@ -286,14 +314,71 @@ document.addEventListener('DOMContentLoaded', function () {
             }),
             success: function (response) {
                 // 서버로부터의 응답 처리
+
+                var event = {
+                    id: eventId,
+                    title: title,
+                    content: content,
+                    start: startDate,
+                    end: endDate,
+                    color: selectedColor
+                };
+
+                calendar.addEvent(event); // FullCalendar에 이벤트 추가
+
+                // 서버로부터 업데이트된 전체 일정을 가져와 FullCalendar에 반영
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/events',
+                    success: function (response) {
+                        calendar.removeAllEvents(); // 기존 이벤트 제거
+                        calendar.addEventSource(response); // 새로운 이벤트 소스 추가
+                    },
+                    error: function (error) {
+                        console.error('Failed to fetch updated events:', error);
+                        // 오류 처리
+                    }
+                });
+
                 console.log('Event saved successfully:', response);
                 // 여기에 성공적으로 저장되었을 때의 로직을 추가
+
+
+
             },
             error: function (error) {
                 // 서버로부터의 응답에 에러가 있을 때 처리
                 console.error('Error saving event:', error.responseText);
                 // 여기에 에러 발생 시의 로직을 추가
             }
+        });
+
+        // 페이지 로드 시 서버에서 저장된 이벤트 불러오기
+        $(document).ready(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/loadEvents', // 실제 백엔드 서버의 URL에 맞게 조정
+                success: function (response) {
+                    console.log('Events loaded successfully:', response);
+
+                    // 불러온 이벤트를 FullCalendar에 추가
+                    response.forEach(function (eventData) {
+                        var event = {
+                            id: eventData.id,
+                            title: eventData.title,
+                            content: eventData.content,
+                            start: new Date(eventData.start),
+                            end: new Date(eventData.end),
+                            color: eventData.color
+                        };
+
+                        calendar.addEvent(event);
+                    });
+                },
+                error: function (error) {
+                    console.error('Error loading events:', error.responseText);
+                }
+            });
         });
 
 

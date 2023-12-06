@@ -201,4 +201,8 @@ private UserDetails toUserDetails(Member member, Member loggedInMember) {
     }
 
 
+    public Member findById(Long memberId) {
+        return w1001MemberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("해당 ID의 멤버를 찾을 수 없습니다."));
+    }
 }
