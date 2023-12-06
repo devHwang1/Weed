@@ -22,20 +22,13 @@ public class W1004service {
 
     @Transactional
     public List<W1004EventDTO> getAllEvents() {
-        Member loggedInMember = memberService.getLoggedInMember();
+        // 모든 멤버의 스케줄 가져오기
+        List<W1004Entity> allSchedules = w1004Repository.findAll();
 
-        if (loggedInMember != null) {
-            // 로그인된 멤버의 스케줄 가져오기
-            List<W1004Entity> userSchedules = w1004Repository.findByMember(loggedInMember);
-
-            // W1004Entity를 W1004EventDTO로 변환
-            return userSchedules.stream()
-                    .map(this::convertToW1004EventDTO)
-                    .collect(Collectors.toList());
-        } else {
-            // 로그인되지 않은 경우에 대한 처리
-            throw new IllegalStateException("로그인된 멤버가 없습니다.");
-        }
+        // W1004Entity를 W1004EventDTO로 변환
+        return allSchedules.stream()
+                .map(this::convertToW1004EventDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional
