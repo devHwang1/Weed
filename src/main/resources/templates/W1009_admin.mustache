@@ -95,12 +95,33 @@
                             <tr>
                                 <td>{{name}}</td>
                                 {{#dept}}
-                                <td>{{dept.deptName}}</td>
+                                <td>
+                                    <div style="display: flex; justify-content: space-between">
+                                        <select class="form-select" aria-label="Default select example" style="display: flex; height: 30px; width: 150px; padding: 0rem 2.25rem 0rem 0.75rem;" >
+                                            <option selected> {{dept.deptName}}</option>
+                                            <option value="1">개발팀</option>
+                                            <option value="2">디자인팀</option>
+                                            <option value="3">기획팀</option>
+                                            <option value="4">영업팀</option>
+                                        </select>
+                                        <button type="button" class="deptBtn btn btn-primary" style="height: 30px;padding-top: 3px;background-color: #00c473;border-color: #00c473;">변경</button>
+                                    </div>
+                                </td>
                                 {{/dept}}
                                 <td>{{email}}</td>
-                                <td>{{id}}</td>
+                                <td class="member-id">{{id}}</td>
                                 <td>{{registrationTime}}</td>
-                                <td>{{authority}}</td>
+                                <td style="display: flex !important;";>
+                                    <div style="display: flex; justify-content: space-between">
+                                    <select class="form-select" aria-label="Default select example" style="display: flex; height: 30px; width: 100px; padding: 0rem 2.25rem 0rem 0.75rem;" >
+                                        <option selected>{{authority}}</option>
+                                        <option value="1">USER</option>
+                                        <option value="2">ADMIN</option>
+                                        <option value="3">GUEST</option>
+                                    </select>
+                                        <button  type="button" class="authorityBtn btn btn-primary" style="height: 30px;padding-top: 3px;background-color: #00c473;border-color: #00c473;">변경</button>
+                                    </div>
+                                </td>
                             </tr>
                             {{/members}}
                             </tbody>
@@ -109,18 +130,7 @@
                 </div>
             </div>
         </main>
-        <footer class="py-4 bg-light mt-auto">
-            <div class="container-fluid px-4">
-                <div class="d-flex align-items-center justify-content-between small">
-                    <div class="text-muted">Copyright &copy; Weed 위드 2023</div>
-<!--                    <div>-->
-<!--                        <a href="#">Privacy Policy</a>-->
-<!--                        &middot;-->
-<!--                        <a href="#">Terms &amp; Conditions</a>-->
-<!--                    </div>-->
-                </div>
-            </div>
-        </footer>
+
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -150,6 +160,62 @@
             });
         });
     });
+
+        $(document).ready(function(){
+            $(".authorityBtn").on("click", function(){
+
+                // 클릭된 버튼이 속한 행(tr)을 찾음
+                var row = $(this).closest('tr');
+                console.log(row);
+                // 데이터 속성을 이용해 memberId 가져오기
+                //var memberId = row.querySelector('.member-id').textContent;
+                var memberId = row.children().eq(3).text();
+                console.log("!!!!!!! - " + memberId);
+                console.log(row.children(":eq(5)").find(":selected"));
+                var newAuthority = row.children(":eq(5)").find(":selected").text();
+                console.log("@@@@ - " + newAuthority);
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/updateMemberAuthority/' + memberId,
+                    data: { authority: newAuthority }, // authority를 데이터로 전달
+                    success: function (response) {
+                        alert(response); // 성공 또는 실패 메시지를 받아서 처리
+                    },
+                    error: function (error) {
+                        alert('권한 업데이트 중 오류 발생');
+                    }
+                });
+            });
+        });
+        $(document).ready(function(){
+            $(".deptBtn").on("click", function(){
+
+                // 클릭된 버튼이 속한 행(tr)을 찾음
+                var row = $(this).closest('tr');
+                console.log(row);
+                // 데이터 속성을 이용해 memberId 가져오기
+                //var memberId = row.querySelector('.member-id').textContent;
+                var memberId = row.children().eq(3).text();
+                console.log("!!!!!!! - " + memberId);
+                console.log(row.children(":eq(1)").find(":selected"));
+                var dept = row.children(":eq(1)").find(":selected").val();
+                console.log("@@@@ - " + dept);
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/updateMemberDept/' + memberId,
+                    data: { deptId: dept }, // authority를 데이터로 전달
+                    success: function (response) {
+                        alert(response); // 성공 또는 실패 메시지를 받아서 처리
+                    },
+                    error: function (error) {
+                        alert('권한 업데이트 중 오류 발생');
+                    }
+                });
+            });
+        });
+
+
+
 
 </script>
 </body>

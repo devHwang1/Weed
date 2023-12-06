@@ -62,7 +62,6 @@ public class Member {
 
     @Getter
     @Setter
-    @NoArgsConstructor
     public static class SaveRequest {
         private String id;
 
@@ -80,6 +79,11 @@ public class Member {
 
         private Date registrationTime;
 
+        private Long dept_id = 0L;
+
+        public SaveRequest() {
+            this.dept_id = Long.valueOf("0");
+        }
         @Transient
         public Member toEntity() {
             return Member.builder()
@@ -89,6 +93,7 @@ public class Member {
                     .password(this.password)
                     .authority(this.authority)
                     .registrationTime(this.registrationTime)
+                    .dept(new Dept(dept_id))
                     .build();
         }
     }
