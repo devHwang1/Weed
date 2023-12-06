@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-//@CrossOrigin(origins = "http://10.100.203.31:8099", allowCredentials = "true")
-@CrossOrigin(origins = "http://3.35.59.205:8099", allowCredentials = "true")
+@CrossOrigin(origins = "http://10.100.203.31:8099", allowCredentials = "true")
+//@CrossOrigin(origins = "http://3.35.59.205:8099", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/app/member")
 public class W2001_MemberAppApiController {

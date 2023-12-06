@@ -28,13 +28,13 @@ import java.util.Optional;
 public class W1001_MemberService implements UserDetailsService {
 
 
-
     private final HttpSession session;
     private final W1001_MemberRepository w1001MemberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
 
     private final W1008_FileRepository w1008FileRepository;
+
 
     @Value("${com.example.upload.path}")
     private String uploadPath;
@@ -90,9 +90,9 @@ public class W1001_MemberService implements UserDetailsService {
             // 파일 리스트를 멤버와 연관시켜 저장
             File file = loggedInMember.getFile();
 
-            if(file == null) {
+            if (file == null) {
                 file = new File();
-                String saveName =  "default.png";
+                String saveName = "default.png";
                 file.setFileName(saveName);
 
 
@@ -120,6 +120,7 @@ public class W1001_MemberService implements UserDetailsService {
 
         );
     }
+
     public boolean isEmailInUse(String email) {
         return w1001MemberRepository.existsByEmail(email);
     }
@@ -134,9 +135,10 @@ public class W1001_MemberService implements UserDetailsService {
         dto.setMessage("안녕하세요. Weed 임시비밀번호 안내 관련 이메일 입니다." + " 회원님의 임시 비밀번호는 "
                 + tempPassword + " 입니다." + "로그인 후에 비밀번호를 변경을 해주세요");
 
-        updatePassword(encryptedPassword,memberEmail); // 암호화된 임시 비밀번호로 업데이트
+        updatePassword(encryptedPassword, memberEmail); // 암호화된 임시 비밀번호로 업데이트
 
-        return dto;}
+        return dto;
+    }
 
     //임시 비밀번호로 업데이트
 //    public void updatePassword(String str, String userEmail){
@@ -146,9 +148,9 @@ public class W1001_MemberService implements UserDetailsService {
 //    }
 
     //랜덤함수로 임시비밀번호 구문 만들기
-    public String getTempPassword(){
-        char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
-                'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+    public String getTempPassword() {
+        char[] charSet = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
+                'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
         String str = "";
 
@@ -160,6 +162,7 @@ public class W1001_MemberService implements UserDetailsService {
         }
         return str;
     }
+
     // 메일보내기
     public void mailSend(W1001_MailDTO w1001MailDTO) {
         System.out.println("전송 완료!");
@@ -169,7 +172,7 @@ public class W1001_MemberService implements UserDetailsService {
         message.setText(w1001MailDTO.getMessage());
         message.setFrom("comeday7741@gmail.com");
         message.setReplyTo("comeday7741@gmail.com");
-        System.out.println("message"+message);
+        System.out.println("message" + message);
         mailSender.send(message);
     }
 
@@ -202,6 +205,11 @@ public class W1001_MemberService implements UserDetailsService {
         w1001MemberRepository.save(loggedInMember);
     }
 
+    public Member findById(Long memberId) {
+        return w1001MemberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("해당 ID의 멤버를 찾을 수 없습니다."));
+    }
+
     public void updateMemberAuthority(Long memberId, String authority) {
         Optional<Member> optionalMember = w1001MemberRepository.findById(memberId);
         optionalMember.ifPresent(member -> {
@@ -223,6 +231,7 @@ public class W1001_MemberService implements UserDetailsService {
             // 리파지토리를 사용하여 업데이트
             w1001MemberRepository.save(member);
         });
+
     }
 }
 

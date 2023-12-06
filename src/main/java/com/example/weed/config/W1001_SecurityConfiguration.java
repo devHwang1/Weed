@@ -36,8 +36,9 @@ public class W1001_SecurityConfiguration {
 //                    .antMatchers("/api/app/member/protected/**").authenticated()
                     .antMatchers("/login","/api/**","/register","/findPassword","/css/**","/js/**","/Img/**", "/api/app/member/**").permitAll()
                     .antMatchers("/admin").hasAuthority("ADMIN")
-                    .antMatchers("/**").hasAnyAuthority("ADMIN","USER")
+                    .antMatchers("/**", "/calendar").hasAnyAuthority("ADMIN","USER")
                     .anyRequest().authenticated();
+
         httpSecurity
                 .formLogin() // Form Login 설정
                     .loginPage("/login")
