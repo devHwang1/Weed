@@ -8,5 +8,10 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public interface W2002_WorkingRepository extends JpaRepository<Working, Long> {
-    Optional<Object> findByMemberAndDate(Member foundMember, LocalDate now);
+
+    Optional<Working> findTopByMemberOrderByDateDescCheckInTimeDesc(Member foundMember);
+
+    Optional<Working> findFirstByDateAndCheckInTimeIsNotNullOrderByCheckInTimeDesc(LocalDate currentDate);
+
+    Optional<Working> findFirstByDateAndCheckOutTimeIsNotNullOrderByCheckOutTimeDesc(LocalDate currentDate);
 }

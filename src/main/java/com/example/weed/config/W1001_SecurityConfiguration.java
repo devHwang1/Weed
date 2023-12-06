@@ -32,10 +32,9 @@ public class W1001_SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeRequests()
-                    .antMatchers("/").permitAll()
-                    .antMatchers("/api/app/member/login").permitAll()
-                    .antMatchers("/api/app/member/protected/**").authenticated()
-                    .antMatchers("/login","/api/**","/register","/findPassword","/css/**","/js/**","/Img/**").permitAll()
+//                    .antMatchers("/api/app/member/login").permitAll()
+//                    .antMatchers("/api/app/member/protected/**").authenticated()
+                    .antMatchers("/login","/api/**","/register","/findPassword","/css/**","/js/**","/Img/**", "/api/app/member/**").permitAll()
                     .antMatchers("/admin").hasAuthority("ADMIN")
                     .antMatchers("/**").hasAnyAuthority("ADMIN","USER")
                     .anyRequest().authenticated();

@@ -1,27 +1,37 @@
 package com.example.weed.dto;
 
+import com.example.weed.entity.File;
 import com.example.weed.entity.Member;
+import com.example.weed.entity.Working;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Data
+@Getter
+@Setter
 public class W2004_WorkingDto {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private LocalDate date;
-
-    private LocalTime checkInTime;
-
-    private LocalTime checkOutTime;
-
+    private LocalDateTime checkInTime;
+    private LocalDateTime checkOutTime;
     private double workingHours;
 
-    @ManyToOne
-    @JoinColumn(name = "m_id")
+    @JsonIgnore
     private Member member;
+
+    public static W2004_WorkingDto mapWorkingToDto(Working working) {
+        W2004_WorkingDto workingDto = new W2004_WorkingDto();
+        workingDto.setId(working.getId());
+        workingDto.setDate(working.getDate());
+        workingDto.setCheckInTime(working.getCheckInTime() != null ? LocalDateTime.from(working.getCheckInTime()) : null);
+        workingDto.setCheckOutTime(working.getCheckOutTime() != null ? LocalDateTime.from(working.getCheckOutTime()) : null);
+        workingDto.setWorkingHours(working.getWorkingHours());
+        workingDto.setMember(working.getMember());
+        return workingDto;
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.weed.controller;
 
 import com.example.weed.Util.W2001_JwtTokenUtil;
+import com.example.weed.dto.W2004_WorkingDto;
 import com.example.weed.entity.Member;
 import com.example.weed.entity.Working;
 import com.example.weed.repository.W1001_MemberRepository;
@@ -12,10 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @CrossOrigin(origins = "http://10.100.203.31:8099", allowCredentials = "true")
 @RestController
@@ -36,6 +38,7 @@ public class W2001_MemberAppApiController {
         this.w2002WorkingRepository = w2002WorkingRepository;
     }
 
+    // 로그인
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody Member member) {
         String email = member.getEmail();
@@ -75,14 +78,14 @@ public class W2001_MemberAppApiController {
             Member foundMember = memberRepository.findById(userId.longValue()).orElse(null);
 
             if (foundMember != null && foundMember.getEmail().equals(email)) {
-                // 출근 기록이 있는지 확인
-                Working working = (Working) w2002WorkingRepository.findByMemberAndDate(foundMember, LocalDate.now()).orElse(null);
+                // 최근의 출근 기록을 찾기
+                Working working = w2002WorkingRepository.findTopByMemberOrderByDateDescCheckInTimeDesc(foundMember).orElse(null);
 
-                if (working == null) {
-                    // 출근 기록이 없으면 출근 처리
+                if (working == null || working.getCheckOutTime() != null) {
+                    // 최근의 출근 기록이 없거나 이미 퇴근한 경우 새로운 출근 기록 생성
                     Working checkInWorking = new Working();
                     checkInWorking.setDate(LocalDate.now());
-                    checkInWorking.setCheckInTime(LocalTime.now());
+                    checkInWorking.setCheckInTime(LocalDateTime.now());
                     checkInWorking.setMember(foundMember);
                     w2002WorkingRepository.save(checkInWorking);
 
@@ -92,24 +95,15 @@ public class W2001_MemberAppApiController {
                     response.put("checkIn", true);
                     return ResponseEntity.ok(response);
                 } else {
-                    // 출근 기록이 있으면 퇴근 처리
-                    if (working.getCheckOutTime() == null) {
-                        // 이미 출근한 경우
-                        working.setCheckOutTime(LocalTime.now());
-                        w2002WorkingRepository.save(working);
+                    // 이미 출근한 경우 퇴근 기록 생성
+                    working.setCheckOutTime(LocalDateTime.now());
+                    w2002WorkingRepository.save(working);
 
-                        // 퇴근 성공 응답
-                        Map<String, Object> response = new HashMap<>();
-                        response.put("success", true);
-                        response.put("checkIn", false);
-                        return ResponseEntity.ok(response);
-                    } else {
-                        // 이미 퇴근한 경우
-                        Map<String, Object> response = new HashMap<>();
-                        response.put("success", false);
-                        response.put("error", "이미 퇴근했습니다.");
-                        return ResponseEntity.status(401).body(response);
-                    }
+                    // 퇴근 성공 응답
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("success", true);
+                    response.put("checkIn", false);
+                    return ResponseEntity.ok(response);
                 }
             } else {
                 // 해당하는 유저를 찾지 못하면 실패 응답
@@ -127,5 +121,34 @@ public class W2001_MemberAppApiController {
         }
     }
 
-    // 다른 필요한 API 엔드포인트들은 여기에 추가
+    // 앱의 출퇴근 기록
+    @GetMapping("/working")
+    public ResponseEntity<Map<String, Object>> getRecentWorkingInfo() {
+        try {
+            LocalDate currentDate = LocalDate.now();
+
+            Optional<Working> recentCheckIn = w2002WorkingRepository.findFirstByDateAndCheckInTimeIsNotNullOrderByCheckInTimeDesc(currentDate);
+            Optional<Working> recentCheckOut = w2002WorkingRepository.findFirstByDateAndCheckOutTimeIsNotNullOrderByCheckOutTimeDesc(currentDate);
+
+            Map<String, Object> response = new HashMap<>();
+            if (recentCheckIn.isPresent() || recentCheckOut.isPresent()) {
+                // 출근 또는 퇴근 기록이 하나라도 존재하는 경우
+                response.put("success", true);
+                recentCheckIn.ifPresent(working -> response.put("recentCheckIn", W2004_WorkingDto.mapWorkingToDto(working)));
+                recentCheckOut.ifPresent(working -> response.put("recentCheckOut", W2004_WorkingDto.mapWorkingToDto(working)));
+                return ResponseEntity.ok(response);
+            } else {
+                // 출근 또는 퇴근 기록이 없는 경우
+                response.put("success", false);
+                response.put("error", "출근 또는 퇴근 기록이 없습니다.");
+                return ResponseEntity.status(404).body(response);
+            }
+        } catch (Exception e) {
+            // 예외 처리
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("error", "서버 오류");
+            return ResponseEntity.status(500).body(response);
+        }
+    }
 }
