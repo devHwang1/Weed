@@ -31,25 +31,28 @@ public class W1001_SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .authorizeRequests() // 요청에 대한 권한 설정
-                .antMatchers("/login","/api/**","/register","/findPassword","/css/**","/js/**","/Img/**").permitAll()
-                .antMatchers("/admin").hasAuthority("ADMIN")
-                .antMatchers("/**").hasAnyAuthority("ADMIN","USER")
-                .anyRequest().authenticated();
+                .authorizeRequests()
+//                    .antMatchers("/api/app/member/login").permitAll()
+//                    .antMatchers("/api/app/member/protected/**").authenticated()
+                    .antMatchers("/login","/api/**","/register","/findPassword","/css/**","/js/**","/Img/**", "/api/app/member/**").permitAll()
+                    .antMatchers("/admin").hasAuthority("ADMIN")
+                    .antMatchers("/**", "/calendar").hasAnyAuthority("ADMIN","USER")
+                    .anyRequest().authenticated();
+
         httpSecurity
                 .formLogin() // Form Login 설정
-                .loginPage("/login")
-                .loginProcessingUrl("/login")
-                .failureHandler(customFailureHandler)
-                .usernameParameter("email")
-                .defaultSuccessUrl("/main")
-                .failureHandler(authenticationFailureHandler)
+                    .loginPage("/login")
+                    .loginProcessingUrl("/login")
+                    .failureHandler(customFailureHandler)
+                    .usernameParameter("email")
+                    .defaultSuccessUrl("/main")
+                    .failureHandler(authenticationFailureHandler)
                 .and()
                 .logout().permitAll()
-                .logoutUrl("/logout")  // 로그아웃 URL 지정
-                .logoutSuccessUrl("/login")  // 로그아웃 성공 시 이동할 페이지 지정
-                .invalidateHttpSession(true)  // 세션 무효화
-                .deleteCookies("JSESSIONID")  // 필요에 따라 쿠키 삭제
+                    .logoutUrl("/logout")  // 로그아웃 URL 지정
+                    .logoutSuccessUrl("/login")  // 로그아웃 성공 시 이동할 페이지 지정
+                    .invalidateHttpSession(true)  // 세션 무효화
+                    .deleteCookies("JSESSIONID")  // 필요에 따라 쿠키 삭제
                 .and()
                 .exceptionHandling()
                 .accessDeniedPage("/error")

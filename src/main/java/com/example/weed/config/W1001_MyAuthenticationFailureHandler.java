@@ -23,5 +23,5 @@ public class W1001_MyAuthenticationFailureHandler implements AuthenticationFailu
         // 로그인 페이지로 이동
         request.getRequestDispatcher("/login").forward(request, response);
     }
-    }
+}
 

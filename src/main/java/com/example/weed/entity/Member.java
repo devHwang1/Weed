@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.sql.Date;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -32,7 +33,7 @@ public class Member {
 
     private Date registrationTime;
 
-    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "file_id")
     private File file;
 
@@ -40,12 +41,14 @@ public class Member {
     @JoinColumn(name = "dept_id")
     private Dept dept;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Working> workings;
 //    @ManyToOne
 //    @JoinColumn(name = "file_id")  // 외래 키 명칭 수정
 //    private File file;
 
     @Builder
-    public Member(Long id, String name, String email, String password, W1001_MemberAuthority authority, Date registrationTime, File file, Dept dept) {
+    public Member(Long id, String name, String email, String password, W1001_MemberAuthority authority, Date registrationTime,File file, Dept dept) {
         this.id = id;
         this.name = name;
         this.email = email;
