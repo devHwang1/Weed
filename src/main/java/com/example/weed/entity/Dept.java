@@ -23,5 +23,17 @@ public class Dept {
     @OneToMany(mappedBy = "dept")
     private List<Member> members;
 
+    public Dept() {
+        // Default constructor
+    }
 
+    // Constructor with id parameter
+    public Dept(Long id) {
+        this.id = id;
+    }
+
+    // Constructor with deptName parameter
+    public Dept(String deptName) {
+        this.deptName = deptName;
+    }
 }

@@ -42,7 +42,7 @@ public class W1001_SecurityConfiguration {
                 .loginProcessingUrl("/login")
                 .failureHandler(customFailureHandler)
                 .usernameParameter("email")
-                .defaultSuccessUrl("/")
+                .defaultSuccessUrl("/main")
                 .failureHandler(authenticationFailureHandler)
                 .and()
                 .logout().permitAll()

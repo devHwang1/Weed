@@ -30,13 +30,13 @@ public class W1001_IndexController {
     private final W1003_DeptRepository w1003DeptRepository;
 //    private final SendEmailService sendEmailService;
 
-    @GetMapping("/")
+    @GetMapping("/main")
     public String main(@AuthenticationPrincipal User user,Model model) {
 
-        log.info("로그인세션확인@@@@@@@@@@@@@@@@@@@@{}",user);
+//        log.info("로그인세션확인@@@@@@@@@@@@@@@@@@@@{}",user);
 //        List<Dept> depts = deptRepository.findAll();
 //        model.addAttribute("depts", depts);
-        return "/layouts/W1003_qrcode";
+        return "W1003_qrcode";
     }
 
 //    @GetMapping("/admin")

@@ -1,8 +1,10 @@
 package com.example.weed.service;
 
+import com.example.weed.authority.W1001_MemberAuthority;
 import com.example.weed.dto.W1001_CustomDetails;
 import com.example.weed.dto.W1001_MailDTO;
 import com.example.weed.dto.W1001_UserSessionDto;
+import com.example.weed.entity.Dept;
 import com.example.weed.entity.File;
 import com.example.weed.entity.Member;
 import com.example.weed.repository.W1008_FileRepository;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 @Service
 public class W1001_MemberService implements UserDetailsService {
@@ -197,5 +200,28 @@ private UserDetails toUserDetails(Member member, Member loggedInMember) {
 
     public void saveMember(Member loggedInMember) {
         w1001MemberRepository.save(loggedInMember);
+    }
+
+    public void updateMemberAuthority(Long memberId, String authority) {
+        Optional<Member> optionalMember = w1001MemberRepository.findById(memberId);
+        optionalMember.ifPresent(member -> {
+            member.setAuthority(W1001_MemberAuthority.valueOf(authority));
+            w1001MemberRepository.save(member);
+        });
+    }
+
+    public void updateDept(Long memberId, Long deptId) {
+        Optional<Member> optionalMember = w1001MemberRepository.findById(memberId);
+
+        optionalMember.ifPresent(member -> {
+            // 부서 업데이트 로직을 구현
+            // 예를 들어, 부서 엔터티를 새로 만들거나, 기존 부서 엔터티를 가져와서 설정
+            Dept newDept = new Dept();
+            newDept.setId(deptId);
+            member.setDept(newDept);
+
+            // 리파지토리를 사용하여 업데이트
+            w1001MemberRepository.save(member);
+        });
     }
 }
