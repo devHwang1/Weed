@@ -80,4 +80,8 @@ public class W1004service {
         return w1004Entity;
     }
 
+
+    public W1004EventDTO getEventDetails(Long eventId) {
+
+    }
 }

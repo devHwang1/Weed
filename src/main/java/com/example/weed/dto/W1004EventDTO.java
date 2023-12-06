@@ -18,4 +18,12 @@ public class W1004EventDTO {
     private String content;
     private Long memberId; // 이벤트를 등록한 멤버의 아이디
     private String memberName; // 이벤트를 등록한 멤버의 이름
+
+    public W1004EventDTO() {
+        // 기본 생성자
+    }
+
+
+
+
 }

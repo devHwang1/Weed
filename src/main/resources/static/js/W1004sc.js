@@ -4,14 +4,14 @@ function generateEventId() {
     return Date.now().toString() + window.performance.now().toString().replace('.', '');
 }
 
-function getLoggedInMemberInfo() {
+function getLoggedInMemberId() {
     //로그인된 정보 불러오기
     return new Promise(function(resolve, reject) {
         $.ajax({
             type: 'GET',
             url: '/api/current',
             success: function(response) {
-                resolve(response)
+                resolve(response.id)
             },
             error: function(error) {
                 console.error('Error getting logged-in member ID:', error.responseText);
@@ -290,6 +290,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var startDate = new Date(startDateInput.value);
         var endDate = new Date(endDateInput.value);
+        endDate.setDate(endDate.getDate() + 1);
 
         // 사용자가 선택한 색상 가져오기
         selectedColor = eventColorInput.value;
@@ -298,78 +299,85 @@ document.addEventListener('DOMContentLoaded', function () {
         var eventId = generateEventId();
 
         // AJAX를 이용하여 서버로 데이터 전송
-        getLoggedInMemberInfo().then(function (memberInfo) {
-            $.ajax({
-                type: 'POST',
-                url: '/saveW1004', // 실제 백엔드 서버의 URL에 맞게 조정
-                contentType: 'application/json',
-                data: JSON.stringify({
+        $.ajax({
+            type: 'POST',
+            url: '/saveW1004', // 실제 백엔드 서버의 URL에 맞게 조정
+            contentType: 'application/json',
+            data: JSON.stringify({
+                // memberId: memberId,
+                id: eventId,
+                title: title,
+                content: content,
+                startDate: startDate,
+                endDate: endDate,
+                color: selectedColor,
+                loggedInMemberId: getLoggedInMemberId() // 현재 로그인한 멤버의 ID 추가
+            }),
+            success: function (response) {
+                // 서버로부터의 응답 처리
+
+                var event = {
                     id: eventId,
                     title: title,
                     content: content,
-                    startDate: startDate,
-                    endDate: endDate,
-                    color: selectedColor,
-                    loggedInMemberId: memberInfo.id,
-                    loggedInMemberName: memberInfo.name
-                }),
-                success: function (response) {
-                    // 서버로부터의 응답 처리
+                    start: startDate,
+                    end: endDate,
+                    color: selectedColor
+                };
 
-                    var event = {
-                        id: eventId,
-                        title: title,
-                        content: content,
-                        start: startDate,
-                        end: endDate,
-                        color: selectedColor,
-                        loggedInMemberName: memberInfo.name
-                    };
+                calendar.addEvent(event); // FullCalendar에 이벤트 추가
 
-                    // 저장된 이벤트만을 가져와 FullCalendar에 추가
-                    calendar.addEvent({
-                        id: eventId,
-                        title: title,
-                        content: content,
-                        start: startDate,
-                        end: endDate,
-                        color: selectedColor,
-                        loggedInMemberName: memberInfo.name
-                    });
-
-
-                    // 서버로부터 업데이트된 전체 일정을 가져와 FullCalendar에 반영
-                    $.ajax({
-                        type: 'GET',
-                        url: '/api/events',
-                        success: function (updatedEvents) {
-                            // 기존 이벤트 제거
-                            calendar.getEvents().forEach(function (existingEvent) {
-                                existingEvent.remove();
-                            });
-
-                            // 새로운 이벤트 소스 추가
-                            calendar.addEventSource(updatedEvents);
-                        },
-                        error: function (error) {
-                            console.error('Failed to fetch updated events:', error);
-                            // 오류 처리
-                        }
-                    });
-
-                    // 여기에 성공적으로 저장되었을 때의 로직을 추가
-                    console.log('Event saved successfully:', response);
-
-                    // 유저네임을 저장하고 표시
-                    var savedUsernameElement = document.getElementById('savedUsername'); // 변경 필요한 요소의 ID를 사용
-                    if (savedUsernameElement) {
-                        savedUsernameElement.innerText = memberInfo.name;
+                // 서버로부터 업데이트된 전체 일정을 가져와 FullCalendar에 반영
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/events',
+                    success: function (response) {
+                        calendar.removeAllEvents(); // 기존 이벤트 제거
+                        calendar.addEventSource(response); // 새로운 이벤트 소스 추가
+                    },
+                    error: function (error) {
+                        console.error('Failed to fetch updated events:', error);
+                        // 오류 처리
                     }
+                });
+
+                console.log('Event saved successfully:', response);
+                // 여기에 성공적으로 저장되었을 때의 로직을 추가
+
+
+
+            },
+            error: function (error) {
+                // 서버로부터의 응답에 에러가 있을 때 처리
+                console.error('Error saving event:', error.responseText);
+                // 여기에 에러 발생 시의 로직을 추가
+            }
+        });
+
+        // 페이지 로드 시 서버에서 저장된 이벤트 불러오기
+        $(document).ready(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/loadEvents', // 실제 백엔드 서버의 URL에 맞게 조정
+                success: function (response) {
+                    console.log('Events loaded successfully:', response);
+
+                    // 불러온 이벤트를 FullCalendar에 추가
+                    response.forEach(function (eventData) {
+                        var event = {
+                            id: eventData.id,
+                            title: eventData.title,
+                            content: eventData.content,
+                            start: new Date(eventData.start),
+                            end: new Date(eventData.end),
+                            color: eventData.color
+                        };
+
+                        calendar.addEvent(event);
+                    });
                 },
                 error: function (error) {
-                    // 서버로부터의 응답에 에러가 있을 때 처리
-                    console.error('Error saving event:', error.responseText);
-                    // 여기에 에러 발생 시의 로직을 추가
+                    console.error('Error loading events:', error.responseText);
                 }
             });
         });

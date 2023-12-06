@@ -9,13 +9,11 @@ import com.example.weed.repository.W1004Repository;
 import com.example.weed.service.W1001_MemberService;
 import com.example.weed.service.W1004service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -79,6 +77,20 @@ public class W1004Controller {
         }
 
         return eventDTOs;
+    }
+
+    //이벤트 정보 불러오기
+    @GetMapping("/api/event/{eventId}")
+    @ResponseBody
+    public ResponseEntity<W1004EventDTO> getEventDetails(@PathVariable Long eventId) {
+        // eventId를 사용하여 이벤트의 상세 정보를 데이터베이스에서 조회
+        W1004EventDTO eventDetails = w1004service.getEventDetails(eventId);
+
+        if (eventDetails != null) {
+            return ResponseEntity.ok(eventDetails);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private Long getLoggedInMemberId() {
