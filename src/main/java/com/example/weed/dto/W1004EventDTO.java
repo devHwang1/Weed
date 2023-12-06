@@ -1,5 +1,7 @@
 package com.example.weed.dto;
 
+import antlr.debug.Event;
+import com.example.weed.entity.Member;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,4 +16,6 @@ public class W1004EventDTO {
     private Date end;
     private String color;
     private String content;
+    private Long memberId; // 이벤트를 등록한 멤버의 아이디
+    private String memberName; // 이벤트를 등록한 멤버의 이름
 }

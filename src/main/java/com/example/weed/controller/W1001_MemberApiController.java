@@ -17,11 +17,14 @@ import javax.validation.Valid;
 
 @RestController
 public class W1001_MemberApiController {
+
+
     private final W1001_MemberService w1001MemberService;
 
     public W1001_MemberApiController(W1001_MemberService w1001MemberService) {
         this.w1001MemberService = w1001MemberService;
     }
+
 
     //로그인에 응답하는 api 추가
     @GetMapping("/api/current")
@@ -37,6 +40,7 @@ public class W1001_MemberApiController {
         W1001_UserSessionDto userSessionDto = new W1001_UserSessionDto(loggedInMember);
         return ResponseEntity.ok(userSessionDto);
     }
+
 
     @PostMapping("/api/member")
     public ResponseEntity<String> save(@RequestBody @Valid Member.SaveRequest member, BindingResult bindingResult, Model model) {

@@ -62,7 +62,23 @@ public class W1004Controller {
     @GetMapping("/api/events")
     @ResponseBody
     public List<W1004EventDTO> getAllEvents() {
-        return w1004service.getAllEvents();
+        List<W1004EventDTO> eventDTOs = w1004service.getAllEvents();
+
+        // 현재 로그인된 사용자의 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            W1001_CustomDetails customDetails = (W1001_CustomDetails) authentication.getPrincipal();
+            Member loggedInMember = customDetails.getLoggedInMember();
+
+            // 이벤트 정보에 현재 로그인된 사용자의 정보 추가 또는 이름 변경
+            eventDTOs.forEach(eventDTO -> {
+                if (loggedInMember != null && loggedInMember.getId().equals(eventDTO.getMemberId())) {
+                    eventDTO.setMemberName("나");
+                }
+            });
+        }
+
+        return eventDTOs;
     }
 
     private Long getLoggedInMemberId() {
