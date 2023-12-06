@@ -80,18 +80,7 @@ public class W1004Controller {
     }
 
     //이벤트 정보 불러오기
-    @GetMapping("/api/event/{eventId}")
-    @ResponseBody
-    public ResponseEntity<W1004EventDTO> getEventDetails(@PathVariable Long eventId) {
-        // eventId를 사용하여 이벤트의 상세 정보를 데이터베이스에서 조회
-        W1004EventDTO eventDetails = w1004service.getEventDetails(eventId);
 
-        if (eventDetails != null) {
-            return ResponseEntity.ok(eventDetails);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
 
     private Long getLoggedInMemberId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

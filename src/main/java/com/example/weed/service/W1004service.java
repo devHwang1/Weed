@@ -81,7 +81,4 @@ public class W1004service {
     }
 
 
-    public W1004EventDTO getEventDetails(Long eventId) {
-
-    }
 }
