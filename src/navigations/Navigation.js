@@ -10,7 +10,7 @@ const Navigation = () => {
   return (
     <NavigationContainer>
       {user ? (
-        user.authority === 'SCANNER' ? <ScannerStack /> : <MainStack/>
+        user.authority === 'GUEST' ? <ScannerStack /> : <MainStack/>
         ) : (
         <AuthStack />
         )}

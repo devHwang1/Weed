@@ -2,9 +2,9 @@ export const WHITE = '#ffffff';
 export const BLACK = '#000000';
 
 export const PRIMARY = {
-  LIGHT: '#93c5fd',
-  DEFAULT: '#2563eb',
-  DARK: '#1e3a8a',
+  LIGHT: '#80dea2',
+  DEFAULT: '#00c473',
+  DARK: '#1eab98',
 };
 
 export const GRAY = {

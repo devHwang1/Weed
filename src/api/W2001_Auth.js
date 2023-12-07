@@ -1,4 +1,3 @@
-// api/auth.js
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -6,6 +5,7 @@ export const signIn = async (email, password) => {
   try {
     const response = await axios.post(
       'http://10.100.203.31:8099/api/app/member/login',
+      // 'http://3.35.59.205:8099/api/app/member/login',
       { email, password },
       {
         headers: { 'Content-Type': 'application/json' },
@@ -20,20 +20,14 @@ export const signIn = async (email, password) => {
       await AsyncStorage.setItem('accessToken', response.data.accessToken);
       await AsyncStorage.setItem('refreshToken', response.data.refreshToken);
       await AsyncStorage.setItem('authority', response.data.authority);
-      // await AsyncStorage.setItem('id', response.data.id.toString());
-      // await AsyncStorage.setItem('email', response.data.email);
 
       const storedAccessToken = await AsyncStorage.getItem('accessToken');
       const storedRefreshToken = await AsyncStorage.getItem('refreshToken');
       const storedAuthority = await AsyncStorage.getItem('authority');
-      // const storedId = await AsyncStorage.getItem('id');
-      // const storedEmail = await AsyncStorage.getItem('email');
 
       console.log('Stored AccessToken:', storedAccessToken);
       console.log('Stored RefreshToken:', storedRefreshToken);
       console.log('Stored Authority:', storedAuthority);
-      // console.log('Stored Id:', storedId);
-      // console.log('Stored Email:', storedEmail);
 
       return Promise.resolve({
         authority: storedAuthority,
@@ -72,7 +66,7 @@ export const autoSignIn = async () => {
     // 토큰이 존재하면 로그인 시도
     if (storedAccessToken && storedRefreshToken && storedAuthority) {
       const response = await axios.post(
-        'http://10.100.203.31:8099/api/app/member/login',
+        'http://10.100.203.31:8099/api/app/member/autoLogin',
         { accessToken: storedAccessToken, refreshToken: storedRefreshToken },
         {
           headers: { 'Content-Type': 'application/json' },

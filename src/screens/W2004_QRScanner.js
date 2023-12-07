@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
-import { View, StyleSheet, Button, Alert, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Button, Alert } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { StatusBar } from 'expo-status-bar';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import { useUserContext } from '../contexts/UserContext';
+import { checkInOut } from '../api/W2004_Scanner';
+import { useNavigation } from '@react-navigation/native';
 
 const W2004_QRScanner = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
@@ -21,10 +20,10 @@ const W2004_QRScanner = () => {
   const showAlertAndReset = (title, message) => {
     Alert.alert(title, message);
     
-    // 1.5초 후에 스캔 창을 다시 열기
+    // 3초 후에 스캔 창을 다시 열기
     setTimeout(() => {
       setScanned(false);
-    }, 1500);
+    }, 3000);
   };
 
   const handleBarCodeScanned = async ({ data }) => {
@@ -36,11 +35,7 @@ const W2004_QRScanner = () => {
     setScanned(true);
 
     try {
-      const response = await axios.post(
-        'http://10.100.203.31:8099/api/app/member/checkInOut',
-        { token: data },
-        { headers: { 'Content-Type': 'application/json' } }
-      );
+      const response = await checkInOut(data);
 
       console.log('Server Response:', response.data);
 
@@ -59,22 +54,11 @@ const W2004_QRScanner = () => {
     }
 
     console.log('Scanned Data:', data);
-  };
 
-
-  const { setUser } = useUserContext();
-
-  const handleLogout = async () => {
-    try {
-      // AsyncStorage에서 토큰 제거
-      await AsyncStorage.removeItem('accessToken');
-      await AsyncStorage.removeItem('refreshToken');
-    
-      // 사용자 정보를 null로 설정하여 로그아웃 상태로 변경
-      setUser(null);
-    } catch (error) {
-      console.error('로그아웃 중 에러 발생:', error.message); // 에러 메시지 출력
-    }
+    // 스캔한 QR코드 데이터를 W2002_QRcode로 보냄
+    navigation.navigate('W2002_QRcode', {
+      scannedData: data,
+    });
   };
 
   return (
@@ -89,9 +73,6 @@ const W2004_QRScanner = () => {
       <View style={{ margin: 50 }}>
         <StatusBar style="dark" />
       </View>
-      <TouchableOpacity onPress={handleLogout}>
-        <Text style={styles.logoutText}>로그아웃</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -101,12 +82,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-end',
-  },
-  logoutText: {
-    textAlign: 'right',
-    color: 'blue',
-    padding: 10,
-  },
+  }
 });
 
 export default W2004_QRScanner;

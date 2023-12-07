@@ -8,7 +8,7 @@ import Input, {
 import SafeInputView from '../components/SafeInputView';
 import { useEffect, useRef, useState } from 'react';
 import Button from '../components/Button';
-import { signIn } from '../api/auth';
+import { signIn } from '../api/W2001_Auth';
 import { useUserContext } from '../contexts/UserContext';
 
 const W2001_SignIn = () => {

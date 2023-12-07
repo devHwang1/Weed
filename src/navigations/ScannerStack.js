@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { PRIMARY, WHITE } from '../colors';
+import HeaderRightLogout from '../components/HeaderRightLogout';
 import W2004_QRScanner from '../screens/W2004_QRScanner';
-
 
 const Stack = createNativeStackNavigator();
 
@@ -10,11 +10,13 @@ const ScannerStack = () => {
     <Stack.Navigator
       screenOptions={{
         contentStyle: { backgroundColor: WHITE },
+        headerStyle: { backgroundColor: PRIMARY.DEFAULT },
         headerTitleAlign: 'center',
-        headerTintColor: PRIMARY.DEFAULT, 
+        headerTintColor: WHITE,
         headerTitleStyle: {
           fontWeight: '700',
         },
+        headerRight: () => <HeaderRightLogout />,
       }}
     >
       <Stack.Screen
