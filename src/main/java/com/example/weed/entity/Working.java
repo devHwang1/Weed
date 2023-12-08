@@ -25,8 +25,6 @@ public class Working {
 
     private LocalDateTime checkOutTime;
 
-    private double workingHours;
-
     @ManyToOne
     @JoinColumn(name = "m_id")
     private Member member;

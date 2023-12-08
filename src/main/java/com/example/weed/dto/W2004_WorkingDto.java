@@ -19,7 +19,6 @@ public class W2004_WorkingDto {
     private LocalDate date;
     private LocalDateTime checkInTime;
     private LocalDateTime checkOutTime;
-    private double workingHours;
 
     @JsonIgnore
     private Member member;
@@ -30,7 +29,6 @@ public class W2004_WorkingDto {
         workingDto.setDate(working.getDate());
         workingDto.setCheckInTime(working.getCheckInTime() != null ? LocalDateTime.from(working.getCheckInTime()) : null);
         workingDto.setCheckOutTime(working.getCheckOutTime() != null ? LocalDateTime.from(working.getCheckOutTime()) : null);
-        workingDto.setWorkingHours(working.getWorkingHours());
         workingDto.setMember(working.getMember());
         return workingDto;
     }
