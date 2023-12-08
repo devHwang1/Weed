@@ -22,7 +22,7 @@ public interface W1001_MemberRepository extends JpaRepository<Member, Long> {
     long count();
 
     @Modifying
-    @Query(value = "UPDATE Member m SET m.file_id = :fileId WHERE m.id = :id", nativeQuery = true)
+    @Query(value = "UPDATE member m SET m.file_id = :fileId WHERE m.id = :id", nativeQuery = true)
     void updateId(@Param("fileId") Long fileId, @Param("id") Long id);
 
 }
