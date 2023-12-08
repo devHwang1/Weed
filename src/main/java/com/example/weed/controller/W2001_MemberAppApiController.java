@@ -135,8 +135,14 @@ public class W2001_MemberAppApiController {
             if (recentCheckIn.isPresent() || recentCheckOut.isPresent()) {
                 // 출근 또는 퇴근 기록이 하나라도 존재하는 경우
                 response.put("success", true);
-                recentCheckIn.ifPresent(working -> response.put("recentCheckIn", W2004_WorkingDto.mapWorkingToDto(working)));
-                recentCheckOut.ifPresent(working -> response.put("recentCheckOut", W2004_WorkingDto.mapWorkingToDto(working)));
+                recentCheckIn.ifPresent(working -> {
+                    response.put("recentCheckIn", convertToLocalDateTime(working.getCheckInTime()));
+                    response.put("memberName", working.getMember().getName());
+                });
+                recentCheckOut.ifPresent(working -> {
+                    response.put("recentCheckOut", convertToLocalDateTime(working.getCheckOutTime()));
+                    response.put("memberName", working.getMember().getName());
+                });
                 return ResponseEntity.ok(response);
             } else {
                 // 출근 또는 퇴근 기록이 없는 경우
@@ -152,4 +158,15 @@ public class W2001_MemberAppApiController {
             return ResponseEntity.status(500).body(response);
         }
     }
+
+    private Map<String, Object> convertToLocalDateTime(LocalDateTime dateTime) {
+        Map<String, Object> convertedDateTime = new HashMap<>();
+        convertedDateTime.put("year", dateTime.getYear());
+        convertedDateTime.put("month", dateTime.getMonthValue());
+        convertedDateTime.put("day", dateTime.getDayOfMonth());
+        convertedDateTime.put("hour", dateTime.getHour());
+        convertedDateTime.put("minute", dateTime.getMinute());
+        return convertedDateTime;
+    }
+
 }
