@@ -78,7 +78,7 @@ const W2003_Working = () => {
     <Text>Loading...</Text>
   ) : workingData ? (
     <View>
-      <Text style={{ fontSize: 24 }}>가장 최근 출근 기록</Text>
+      <Text style={{ fontSize: 24, textAlign: 'center' }}>가장 최근 출근 기록</Text>
       <View style={styles.dataContainer}>
         <View style={styles.innerContainer}>
           <Text style={{ fontSize: 20, fontWeight: '700' }}>{workingData.memberName}님</Text>
@@ -92,7 +92,7 @@ const W2003_Working = () => {
         </View>
       </View>
 
-      <Text style={{ fontSize: 24 }}>가장 최근 퇴근 기록</Text>
+      <Text style={{ fontSize: 24, textAlign: 'center' }}>가장 최근 퇴근 기록</Text>
       <View style={styles.dataContainer}>
         {workingData.checkOutDate !== '날짜 정보 없음' && (
           <View style={styles.innerContainer}>

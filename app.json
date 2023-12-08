@@ -30,6 +30,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extras": {
+      "expo": {
+        "allowCellularAccess": true
+      }
     }
+    
   }
 }

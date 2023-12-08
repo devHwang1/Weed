@@ -9,8 +9,8 @@ export const fetchWorkingData = async () => {
     // 토큰이 존재할 경우에만 서버에 요청
     if (storedAccessToken) {
       const response = await axios.get(
-        'http://10.100.203.31:8099/api/app/member/working',{
-        //'http://3.35.59.205:8099/api/app/member/working', {
+        // 'http://10.100.203.31:8099/api/app/member/working',{
+        'http://3.35.59.205:8099/api/app/member/working', {
           headers: {
             Authorization: `Bearer ${storedAccessToken}`,
           },
