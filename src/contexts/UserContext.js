@@ -6,7 +6,9 @@ const UserContext = createContext();
 export const useUserContext = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({
+    onDataReceived: () => {},
+  });
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

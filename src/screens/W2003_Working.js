@@ -7,34 +7,15 @@ const W2003_Working = () => {
   const [workingData, setWorkingData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const mapServerResponseToWorkingData = (serverResponse) => {
-    return {
-      date: serverResponse.date,
-      checkInTime: serverResponse.checkInTime,
-      checkOutTime: serverResponse.checkOutTime,
-      workingHours: serverResponse.workingHours,
-    };
-  };
-
   const fetchData = useCallback(async () => {
     try {
       const response = await fetchWorkingData();
-
+  
       console.log('서버 응답 데이터:', response.data);
-
+  
       if (response.status === 200 && response.data.success) {
-        // 서버 응답 데이터를 프론트엔드에 맞게 가공
-        const { recentCheckIn, recentCheckOut } = response.data;
-
-        if (recentCheckIn) {
-          const formattedCheckIn =
-            mapServerResponseToWorkingData(recentCheckIn);
-          setWorkingData(formattedCheckIn);
-        } else if (recentCheckOut) {
-          const formattedCheckOut =
-            mapServerResponseToWorkingData(recentCheckOut);
-          setWorkingData(formattedCheckOut);
-        }
+        const formattedData = mapServerResponseToWorkingData(response.data);
+        setWorkingData(formattedData);
       } else {
         console.error('서버 응답 에러:', response.status);
       }
@@ -43,60 +24,129 @@ const W2003_Working = () => {
     } finally {
       setLoading(false);
     }
+  }, [mapServerResponseToWorkingData]);
+  
+  
+  const mapServerResponseToWorkingData = useCallback((data) => {
+    return {
+      memberName: data.memberName,
+      checkInDate: convertToDate(data.recentCheckIn),
+      checkInTime: convertToDateTime(data.recentCheckIn),
+      checkOutDate: convertToDate(data.recentCheckOut),
+      checkOutTime: convertToDateTime(data.recentCheckOut),
+    };
   }, []);
+  
+  
+  
+  const convertToDateTime = (dateTimeObject) => {
+    if (dateTimeObject) {
+      const { year, month, day, hour, minute } = dateTimeObject;
+      if (hour !== undefined && minute !== undefined) {
+        return `${hour}시 ${minute}분`;
+      } else {
+        return `${year}년 ${month}월 ${day}일`;
+      }
+    }
+    return '날짜 및 시간 정보 없음';
+  };
+  
+  const convertToDate = (dateTimeObject) => {
+    if (dateTimeObject) {
+      const { year, month, day } = dateTimeObject;
+      return `${year}년 ${month}월 ${day}일`;
+    }
+    return '날짜 정보 없음';
+  };
+
+  
+  const isLate = (checkInTime) => {
+    // checkInTime 예: "9시 30분"
+    const [hour, minute] = checkInTime.split('시 ');
+    return parseInt(hour) > 9 || (parseInt(hour) === 9 && parseInt(minute) > 0);
+  };
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [fetchData, mapServerResponseToWorkingData]);
 
   console.log('workingData:', workingData);
 
   return (
     <View style={styles.container}>
-      {loading ? (
-        <Text>Loading...</Text>
-      ) : workingData ? (
-        <View>
-          <View style={styles.dataContainer1}>
-            <Text>출근 날짜: {workingData.date}</Text>
-            <Text>출근 시간: {workingData.checkInTime}</Text>
-          </View>
-          <View style={styles.dataContainer2}>
-            <Text>퇴근 날짜: {workingData.checkOutTime}</Text>
-            <Text>퇴근 시간: {workingData.checkOutTime}</Text>
-            <Text>근무 시간: {workingData.workingHours} 시간</Text>
-          </View>
+  {loading ? (
+    <Text>Loading...</Text>
+  ) : workingData ? (
+    <View>
+      <Text style={{ fontSize: 24 }}>가장 최근 출근 기록</Text>
+      <View style={styles.dataContainer}>
+        <View style={styles.innerContainer}>
+          <Text style={{ fontSize: 20, fontWeight: '700' }}>{workingData.memberName}님</Text>
+          <View style={styles.horizontalLine}/>
+          <Text style={{ fontSize: 28, fontWeight: '700', textAlign: 'center' }}>{workingData.checkInTime}</Text>
+          <Text style={{ fontSize: 16, fontWeight: '700', textAlign: 'center' }}>({workingData.checkInDate})</Text>
+          <View style={styles.horizontalLine}/>
+          <Text style={isLate(workingData.checkInTime) ? styles.late : styles.onTime}>
+            {isLate(workingData.checkInTime) ? "지각하셨습니다." : "출근이 완료되었습니다."}
+          </Text>
         </View>
-      ) : (
-        <Text>출근 기록이 없습니다.</Text>
-      )}
+      </View>
+
+      <Text style={{ fontSize: 24 }}>가장 최근 퇴근 기록</Text>
+      <View style={styles.dataContainer}>
+        {workingData.checkOutDate !== '날짜 정보 없음' && (
+          <View style={styles.innerContainer}>
+            <Text style={{ fontSize: 20, fontWeight: '700' }}>{workingData.memberName}님</Text>
+            <View style={styles.horizontalLine}/>
+            <Text style={{ fontSize: 28, fontWeight: '700', textAlign: 'center' }}>{workingData.checkOutTime}</Text>
+            <Text style={{ fontSize: 16, fontWeight: '700', textAlign: 'center' }}>({workingData.checkOutDate})</Text>
+            <View style={styles.horizontalLine}/>
+            <Text style={{ fontSize: 16, fontWeight: '700', textAlign: 'center', color: 'blue' }}>퇴근하셨습니다.</Text>
+          </View>
+        )}
+      </View>
     </View>
+  ) : (
+    <Text>출근 기록이 없습니다.</Text>
+  )}
+</View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 40,
   },
-  dataContainer1: {
-    marginBottom: 10, // Add margin-bottom to create space between the two containers
+  dataContainer: {
+    marginTop: 10,
+    marginBottom: 50,
     backgroundColor: '#fff',
     borderRadius: 10,
-    padding: 20,
-    elevation: 3, // for Android shadow
-    shadowOffset: { width: 0, height: 2 }, // for iOS shadow
-    shadowOpacity: 0.2, // for iOS shadow
+    width: 300,
+    padding: 30,
+    elevation: 3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
   },
-  dataContainer2: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
-    elevation: 3, // for Android shadow
-    shadowOffset: { width: 0, height: 2 }, // for iOS shadow
-    shadowOpacity: 0.2, // for iOS shadow
+  onTime: {
+    color: 'green',
+    fontSize: 16,
+    fontWeight: '700',
+    textAlign: 'center'
+  },
+  late: {
+    color: 'red',
+    fontSize: 16, 
+    fontWeight: '700',
+    textAlign: 'center'
+  },
+  horizontalLine: {
+    borderBottomColor: 'gray',
+    borderBottomWidth: 1,
+    width: '100%',
+    margin: 10,
   },
 });
 

@@ -3,18 +3,20 @@ import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import QRCode from 'react-native-qrcode-svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+// import { useUserContext } from '../contexts/UserContext';
+// import { useNavigation } from '@react-navigation/native';
 
 const W2002_QRcode = () => {
   const { bottom } = useSafeAreaInsets();
   const [qrData, setQrData] = useState(null);
   const [showButton, setShowButton] = useState(true);
-  // const [scannedData, setScannedData] = useState(null);
+  // const { user } = useUserContext();
+  // const navigation = useNavigation();
 
   const handlePress = async () => {
     try {
       // AsyncStorage에서 토큰을 가져옴
       const accessToken = await AsyncStorage.getItem('accessToken');
-      
 
       if (accessToken) {
         // 사용자 정보와 AsyncStorage에 저장된 토큰을 이용하여 QR 코드 생성
@@ -37,8 +39,32 @@ const W2002_QRcode = () => {
     } catch (error) {
       console.error(error);
     }
+
   };
+
+  // useEffect(() => {
+  //   console.log('useEffect Hook is called');
+  //   const handleDataReceived = (data) => {
+  //     console.log('Received Data:', data);
   
+  //     // 여기에서 받은 데이터와 토큰 값을 비교하여 일치하면 작업 수행
+  //     if (data === user.token) {
+  //       Alert.alert('확인되었습니다.');
+  //       navigation.navigate('List'); 
+  //       // 필요 시 이동 코드 추가
+  //     }
+  //   };
+  
+  //   // onDataReceived 콜백 등록
+  //   user.onDataReceived = handleDataReceived;
+  
+  //   // cleanup 함수에서 onDataReceived 콜백 제거
+  //   return () => {
+  //     user.onDataReceived = null;
+  //   };
+  // }, [navigation, user, user.token, user.onDataReceived]);
+  
+
 
   return (
     <View style={[styles.container, { paddingBottom: bottom }]}>
@@ -50,13 +76,13 @@ const W2002_QRcode = () => {
         </TouchableOpacity>
       )}
       {qrData && (
-         // qrData가 존재하는 경우에만 렌더링
+        // qrData가 존재하는 경우에만 렌더링
         <View style={styles.qrContainer}>
           <QRCode value={qrData} size={200} />
         </View>
       )}
     </View>
-  );  
+  );
 };
 
 const styles = StyleSheet.create({

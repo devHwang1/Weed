@@ -3,12 +3,12 @@ import { View, StyleSheet, Button, Alert } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { StatusBar } from 'expo-status-bar';
 import { checkInOut } from '../api/W2004_Scanner';
-import { useNavigation } from '@react-navigation/native';
+// import { useUserContext } from '../contexts/UserContext';
 
 const W2004_QRScanner = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const navigation = useNavigation();
+  // const { user, setUser } = useUserContext();
 
   useEffect(() => {
     (async () => {
@@ -48,17 +48,22 @@ const W2004_QRScanner = () => {
       } else {
         showAlertAndReset('에러', response.data.error || '처리에 실패했습니다.');
       }
+
+      console.log('Scanned Data:', data);
+
+      // setUser({ ...user, scannedData: data });
+  
+      // // 데이터를 W2002_QRcode로 직접 전달
+      // user.onDataReceived && user.onDataReceived(data);
+
+      // console.log('user.onDataReceived', user.onDataReceived);
+      // console.log('user.onDataReceived(data)', user.onDataReceived(data));
+
     } catch (error) {
       console.error('Error:', error);
       showAlertAndReset('에러', '처리에 실패했습니다.');
     }
-
-    console.log('Scanned Data:', data);
-
-    // 스캔한 QR코드 데이터를 W2002_QRcode로 보냄
-    navigation.navigate('W2002_QRcode', {
-      scannedData: data,
-    });
+    
   };
 
   return (
