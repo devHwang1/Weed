@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Table(name = "member")
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,6 +61,7 @@ public class Member {
 //        this.file = file;
     }
 
+
     @Getter
     @Setter
     public static class SaveRequest {
@@ -75,6 +77,8 @@ public class Member {
         @NotBlank(message = "비밀번호는 필수 입력값입니다.")
         private String password;
 
+        @Enumerated(EnumType.STRING)
+        @Column(name = "authority")
         private W1001_MemberAuthority authority;
 
         private Date registrationTime;

@@ -6,7 +6,8 @@
     <header>
         <div class="image-text">
                 <span class="image" style="width: 75px;position: relative;right: 7px;">
-                    <img src="/display?fileName={{userSession.fileName}}" alt="" style="width: 45px">
+<!--                    <img src="/display?fileName={{userSession.fileName}}" alt="" style="width: 45px">-->
+                    <img src="https://weedbucket.s3.ap-northeast-2.amazonaws.com/img/{{userSession.fileName}}" alt="" style="width: 45px">
                 </span>
 
             <div class="text logo-text">
@@ -28,7 +29,7 @@
 
             <ul class="menu-links">
                 <li class="nav-link">
-                    <a href="/">
+                    <a href="/main">
                         <i class='bx bx-qr-scan icon'></i>
                         <span class="text nav-text">전자출입명부</span>
                     </a>
@@ -63,7 +64,7 @@
                 </li>
 
                 <li class="nav-link">
-                    <a href="admin" id="admin">
+                    <a href="/admin" id="admin">
                         <i class='bx bx-badge-check icon' ></i>
                         <span class="text nav-text">관리자</span>
                     </a>
