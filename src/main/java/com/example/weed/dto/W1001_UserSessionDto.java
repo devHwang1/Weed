@@ -26,6 +26,7 @@ public class W1001_UserSessionDto implements Serializable {
         this.email = member.getEmail();
         this.registrationTime = member.getRegistrationTime();
         this.deptName = member.getDept().getDeptName();
+        this.fileName = member.getFile().getFileName();
 
         // null 체크를 추가하여 NPE 방지
         if (member.getFile() != null) {

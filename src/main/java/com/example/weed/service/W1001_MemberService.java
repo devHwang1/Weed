@@ -36,8 +36,12 @@ public class W1001_MemberService implements UserDetailsService {
     private final W1008_FileRepository w1008FileRepository;
 
 
-    @Value("${com.example.upload.path}")
+    @Value("${cloud.aws.s3.bucket}")
     private String uploadPath;
+
+    public Member W1001_getMemberInfo(String email) {
+        return w1001MemberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("email"));
+    }
 
     public W1001_MemberService(HttpSession session, W1001_MemberRepository w1001MemberRepository, PasswordEncoder passwordEncoder, JavaMailSender mailSender, W1008_FileRepository w1008FileRepository) {
         this.session = session;

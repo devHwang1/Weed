@@ -33,16 +33,9 @@ public class W1001_IndexController {
     @GetMapping("/main")
     public String main(@AuthenticationPrincipal User user,Model model) {
 
-//        log.info("로그인세션확인@@@@@@@@@@@@@@@@@@@@{}",user);
-//        List<Dept> depts = deptRepository.findAll();
-//        model.addAttribute("depts", depts);
         return "W1003_qrcode";
     }
 
-//    @GetMapping("/admin")
-//    public String admin(){
-//        return "W1009_admin";
-//    }
     @GetMapping("/login")
     public String login(@RequestParam(value = "error", required = false) String error,
                         @RequestParam(value = "exception", required = false) String exception,
