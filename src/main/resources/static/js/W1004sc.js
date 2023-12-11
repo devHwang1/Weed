@@ -25,25 +25,11 @@ function getLoggedInMemberId() {
 document.addEventListener('DOMContentLoaded', function () {
     var info = {}; // info 변수를 빈 객체로 초기화
 
+    //모달작성
     var calendarEl = document.getElementById('calendar');
-    var eventModal = document.getElementById('eventModal');
+    var eventModal = document.getElementById('eventModal'); //모달 창 띄우기
     var eventTitleInput = document.getElementById('eventTitle');
     var eventContentInput = document.getElementById('eventContent');
-
-    //모달상세
-    var eventModalDetail = document.getElementById('eventModalDetail');    //상세모달창
-    var eventTitleDetail = document.getElementById('eventTitleDetail');
-    var startDateDetail = document.getElementById('startDateDetail');
-    var endDateDetail = document.getElementById('endDateDetail');
-    var eventContentDetail = document.getElementById('eventContentDetail');
-
-    //모달상세버튼
-    var closeModalButtonDetail = document.getElementById('closeModalDetail');
-    var deleteModalButtonDetail =document.getElementById('deleteModalDetail');
-
-    //모달버튼
-    var saveEventButton = document.getElementById('saveEvent');
-    var closeModalButton = document.getElementById('closeModal');
 
     // 날짜인풋
     var startDateInput = document.getElementById('startDate');
@@ -52,6 +38,38 @@ document.addEventListener('DOMContentLoaded', function () {
     //사용자 지정 이벤트 색깔
     var selectedColor = "#7A9DA8"; //색깔 초기값설정
     var eventColorInput  = document.getElementById('eventcolor');
+
+    //모달 작성 버튼
+    var saveEventButton = document.getElementById('saveEvent');
+    var closeModalButton = document.getElementById('closeModalsell');
+
+    //모달 상세
+    var eventModalDetail = document.getElementById('eventModalDetail');    //상세모달창
+    var eventTitleDetail = document.getElementById('eventTitleDetail');
+    var startDateDetail = document.getElementById('startDateDetail');
+    var endDateDetail = document.getElementById('endDateDetail');
+    var eventContentDetail = document.getElementById('eventContentDetail');
+
+    //모달 상세 버튼
+    var closeModalButtonDetail = document.getElementById('closeModalDetail');
+    var deleteModalButtonDetail =document.getElementById('deleteModalDetail');
+    
+    
+    //모달 수정
+    var ModifyModal = document.getElementById('modifyModal'); //원래정보를 갖고있는 모달
+    var ModifyTitle = document.getElementById('modifyTitle');
+    var ModifyStartDate=document.getElementById('modifyStartDate');
+    var ModifyEndDate=document.getElementById('modifyEndDate');
+    var ModifyColor=document.getElementById('modifycolor');
+    var ModifyContent = document.getElementById('modifyContent');
+
+    var ModifyButton = document.getElementById('ModifyButton');
+    var ModifyCloseButton = document.getElementById('modifycloseModal');
+    var ModifySaveButton = document.getElementById('modifysaveButton');
+
+
+
+
 
     var clickCount = 0;
     var timeout;
@@ -71,49 +89,125 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    function showEventinfo(arg) {
-        // 모달 창 나타내기
-        eventModalDetail.classList.add('show');
+    // 다른 모든 모달 닫기
+    function closeAllModals() {
+        eventModalDetail.style.display = 'none';
+        ModifyModal.style.display = 'none';
+        eventModal.style.display = 'none';
+    }
 
-        // 이벤트 정보 표시
+
+    function deleteEvent(arg) {
+        // 클라이언트에서 이벤트 아이디 가져오기
+        var eventIdToDelete = arg.event.id;
+
+        // 서버로 삭제 요청 보내기
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/schedule/' + arg.event.id + '/delete',
+            success: function (deleteResponse) {
+                console.log('Server response (Delete Event and Schedule):', deleteResponse);
+
+                // 캘린더에서 이벤트 제거
+                var selectedEvent = calendar.getEventById(eventIdToDelete);
+                if (selectedEvent) {
+                    selectedEvent.remove();
+                } else {
+                    console.error('Event not found with ID:', eventIdToDelete);
+                }
+            },
+            error: function (error) {
+                console.error('Error deleting event and schedule:', error.responseText);
+                // 삭제 실패 시 추가 작업 수행
+            }
+        });
+    }
+
+    //===================================상세 모달창 띄우기===================================
+    function showEventinfo(arg) {
+        closeAllModals();
+        eventModalDetail.classList.add('show'); // 모달 창 나타내기
+
+        //Ajax 요청: 스케줄 아이디를 이용해 스케줄정보 가져오기
+        $.ajax({
+            type: 'GET',
+            url: '/api/schedule/' + arg.event.id + '/info',
+            dataType: 'json',
+            async:false,
+            success: function (response) {
+                console.log('Server response (Schedule Info):', response);
+                console.log(typeof response.memberName);
+
+                // 이벤트 등록한 멤버의 이름 및 정보표시하기
+                var eventMember = document.getElementById('EventMember');
+                if (response.memberName) {
+                    eventMember.innerHTML = response.memberName;
+                }
+
+                eventTitleDetail.innerHTML = response.title;    //제목
+                eventContentDetail.innerHTML = response.content;    //내용
+                startDateDetail.innerHTML = response.startDate;     //시작날짜
+                endDateDetail.innerHTML = response.endDate;     //끝나는날짜
+
+
+                // 모달 창의 높이 계산
+                var modalHeight = eventModalDetail.clientHeight;
+
+                // 클릭한 위치를 기준으로 모달창 위치 설정
+                var modalLeft = arg.jsEvent.clientX;
+                var modalTop = arg.jsEvent.clientY;
+
+                eventModalDetail.style.left = modalLeft + 'px';
+                eventModalDetail.style.top = modalTop + 'px';
+                eventModalDetail.style.display = 'block';
+
+                // setTimeout을 사용하여 모달이 표시된 후에 하단설정
+                setTimeout(function () {
+                    var modalHeight = eventModalDetail.clientHeight;
+                    var screenHeight = window.innerHeight;
+
+                    if (modalTop + modalHeight > screenHeight) {
+                        modalTop = screenHeight - modalHeight - 10; // 10은 여유 여백
+                        eventModalDetail.style.top = modalTop + 'px';
+                    }
+
+                }, 0);
+
+                //====================수정 버튼을 눌렀을때의 이벤트 처리=========================================
+                ModifyButton.addEventListener('click', function (){
+                    closeAllModals();
+                    showModifyModal(arg); // arg를 전달하여 함수 호출
+                });
+
+                //====================삭제 버튼을 눌렀을때의 이벤트 처리=========================================
+                deleteModalButtonDetail.addEventListener('click', function (){
+                    closeAllModals();
+                    deleteEvent(arg); // arg를 전달하여 함수 호출
+                });
+
+            },
+        });
+    }
+    //===================================상세 모달창 띄우기===================================
+
+    //===================================수정 모달창 띄우기===================================
+    function showModifyModal(arg) {
+        eventModalDetail.style.display = 'none';    // 상세정보 닫기
+        ModifyModal.style.display = 'block'; // 수정모달을 나타내는 로직
+
+        // 이벤트 정보 유지
         var eventTitle = arg.event.title;
         var eventContent = arg.event.extendedProps.content; // 이벤트 내용을 가져오기
-
         var eventStart = arg.event.start;
         var eventEnd = arg.event.end;
-
-        //종료 시작일 날짜 설정
-        if (eventStart) {
-            startDateDetail.innerHTML = formatDate(eventStart);
-
-            if (eventEnd) {
-                if (eventStart.toDateString() === eventEnd.toDateString()) {
-                    endDateInput.value = formatDate(eventEnd);
-                    endDateDetail.innerHTML = formatDate(eventEnd);
-                } else {
-                    endDateInput.value = formatDate(eventEnd);
-                    endDateDetail.innerHTML = formatDate(eventEnd);
-                }
-            } else {
-                endDateInput.value = formatDate(eventStart);
-                endDateDetail.innerHTML = formatDate(eventStart);
-            }
-        }
+        var eventColor = arg.event.backgroundColor;
 
 
-        //input 값 가져오기
-        eventTitleInput.value = eventTitle;
-        eventContentInput.value=eventContent;
-
-        // 이벤트 정보를 특정 HTML 요소에 표시
-        eventTitleDetail.innerHTML = eventTitle;       //제목
-        eventContentDetail.innerHTML = eventContent;   //내용
-
-
-        info.id = arg.event.id;
+        // 수정 모달 정보 표시
+        ModifyModal.style.display = 'block';
 
         // 모달 창의 높이 계산
-        var modalHeight = eventModalDetail.clientHeight;
+        var modalHeight = ModifyModal.clientHeight;
 
         // 클릭한 위치를 기준으로 모달창 위치 설정
         var modalLeft = arg.jsEvent.clientX;
@@ -126,12 +220,52 @@ document.addEventListener('DOMContentLoaded', function () {
             modalTop = screenHeight - modalHeight;
         }
 
-        eventModalDetail.style.left = modalLeft + 'px';
-        eventModalDetail.style.top = modalTop + 'px';
+        ModifyModal.style.left = modalLeft + 'px';
+        ModifyModal.style.top = modalTop + 'px';
 
-        eventModalDetail.style.display = 'block';
+        // 이벤트 정보를 수정 모달에 표시
+        ModifyTitle.value = eventTitle;
+        ModifyStartDate.valueAsDate = eventStart;
+        ModifyEndDate.valueAsDate = eventEnd;
+        ModifyContent.value = eventContent;
+        ModifyColor.value = eventColor;
 
+        //수정저장을 눌렀을때 해당 이벤트 업데이트
+        ModifySaveButton.addEventListener('click', function () {
+            //수정된 내용 가져오기
+            var updatedInfo = {
+                title: ModifyTitle.value.trim(),
+                content: ModifyContent.value.trim(),
+                startDate: ModifyStartDate.value,
+                endDate: ModifyEndDate.value,
+                color: ModifyColor.value
+            };
+
+            // 수정된 내용을 서버로 보내는 Ajax 요청
+            $.ajax({
+                type: 'PUT',
+                url: '/api/schedule/' + arg.event.id + '/update',
+                contentType: 'application/json',
+                data: JSON.stringify(updatedInfo),
+                success: function (updateResponse) {
+                    console.log('Server response (Update Schedule):', updateResponse);
+                    // 업데이트 성공 시 추가적인 작업 수행
+                },
+                error: function (error) {
+                    console.error('Error updating schedule:', error.responseText);
+                    // 업데이트 실패 시 추가적인 작업 수행
+                }
+            });
+
+        })
     }
+
+    // 수정모달 닫기
+    ModifyCloseButton.addEventListener('click', function () {
+        ModifyModal.style.display = 'none'; 
+    });
+    //===================================수정 모달창 띄우기===================================
+
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
         // 달력 설정
@@ -141,6 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
             right: 'next today'
         },
 
+        //이벤트스타일 설정
         eventContent: function (info) {
             // 이벤트의 콘텐츠를 생성하는 함수
             var content = document.createElement('div');
@@ -149,14 +284,13 @@ document.addEventListener('DOMContentLoaded', function () {
             // 이벤트의 제목과 기타 정보를 추가
             content.innerHTML = '<b>' + info.event.title + '</b><br>';
 
-            // 추가적인 콘텐츠 설정이 필요한 경우 여기에 추가
-
             return { domNodes: [content] };
         },
 
 
         locale: "ko",   // 언어설정
         dayMaxEvents: 2, // 하나의 날짜에 표시할 수 있는 최대 이벤트 수
+        eventDisplay: 'block',  //단일이벤트도 블럭형태로 표시
 
 
         // 날짜 '일' 없애기
@@ -193,12 +327,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         },
 
-
-
-        // 날짜 더블클릭시 모달 표시
+        // ===================================날짜클릭시 모달창(이벤트 저장 및 등록버튼과 이어짐)===================================
         dateClick: function (eventInfo) {
-            clickCount++;
+            closeAllModals();
 
+            clickCount++;
             info = eventInfo;
 
             // 더블 클릭에 따른 이벤트 처리
@@ -210,19 +343,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 clearTimeout(timeout);
                 clickCount = 0; // 클릭 횟수 초기화
 
-                // 모달 창 나타내기
-                eventModal.classList.add('show');
+                closeAllModals();   //다른 모달창이 나타나면 꺼짐
+                eventModal.classList.add('show'); // 모달 창 나타내기
 
                 // 더블클릭한 날짜를 시작일과 종료일로 설정
                 var selectedDate = eventInfo.date;
                 var startDate = new Date(selectedDate);
-
                 var endDate = new Date(selectedDate);
 
                 startDateInput.value = formatDate(startDate);
                 endDateInput.value = formatDate(endDate);
-
-
 
                 // 더블클릭 이벤트 처리
                 eventTitleInput.value = ''; // 초기화
@@ -236,24 +366,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 var screenHeight = window.innerHeight;
                 var modalHeight = eventModal.clientHeight;
 
+
                 if (modalTop + modalHeight > screenHeight) {
-                    modalTop = screenHeight - modalHeight;
+                    modalTop = screenHeight - modalHeight - 10;
                 }
 
                 eventModal.style.left = modalLeft + 'px';
                 eventModal.style.top = modalTop + 'px';
-
                 eventModal.style.display = 'block';
+
+                // setTimeout을 사용하여 모달이 표시된 후에 하단설정
+                setTimeout(function () {
+                    var modalHeight = eventModal.clientHeight;
+                    var screenHeight = window.innerHeight;
+
+                    if (modalTop + modalHeight > screenHeight) {
+                        modalTop = screenHeight - modalHeight - 10; // 10은 여유 여백
+                        eventModal.style.top = modalTop + 'px';
+                    }
+                    
+                }, 0);
+
             }
         },
-
-        // 닫기 버튼을 눌렀을 때
-        closeEventModal: function () {
-            eventModal.style.display = 'none';
-        },
+        // ===================================날짜클릭시 모달창(이벤트 저장 및 등록버튼과 이어짐)===================================
 
 
-        // 이벤트 클릭시 상세정보 보여주기
+
+        // ===================================이벤트 클릭시 상세정보 보이기(상세모달과이어짐)===================================
         eventClick: function (arg) {
             clickCount++;
 
@@ -279,10 +419,11 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('새로운 종료 날짜:', newEndDate);},
 
     });
+    // ===================================상세정보 보이기===================================
 
 
 
-    // 저장 버튼을 눌렀을 때
+    // ===================================이벤트 등록 및 저장기능 버튼 ===================================
     saveEventButton.addEventListener('click', function () {
         var title = eventTitleInput.value.trim();
         var content = eventContentInput.value.trim();
@@ -290,7 +431,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var startDate = new Date(startDateInput.value);
         var endDate = new Date(endDateInput.value);
-        endDate.setDate(endDate.getDate() + 1);
 
         // 사용자가 선택한 색상 가져오기
         selectedColor = eventColorInput.value;
@@ -353,12 +493,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 // 여기에 에러 발생 시의 로직을 추가
             }
         });
+        // ===================================이벤트 등록 및 저장기능 ===================================
+
 
         // 페이지 로드 시 서버에서 저장된 이벤트 불러오기
         $(document).ready(function () {
             $.ajax({
                 type: 'GET',
-                url: '/loadEvents', // 실제 백엔드 서버의 URL에 맞게 조정
+                url: '/api/events', // 실제 백엔드 서버의 URL에 맞게 조정
                 success: function (response) {
                     console.log('Events loaded successfully:', response);
 
@@ -388,39 +530,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
-    // 삭제 버튼을 눌렀을 때 (상세)
-    deleteModalButtonDetail.addEventListener('click', function () {
-        console.log('Deleting event with ID:', info.id); // 추가된 로그
-
-        if (confirm('이 일정을 삭제하시겠습니까?')) {
-            // 현재 선택된 이벤트 객체 가져오기
-            var selectedEvent = calendar.getEventById(info.id);
-
-            // 이벤트가 있다면 삭제
-            if (selectedEvent) {
-                selectedEvent.remove();
-            }
-
-            // 모달 닫기
-            eventModalDetail.style.display = 'none';
-        }
-    });
-
-
-    // 취소 버튼을 눌렀을때 (작성 , 상세)
-    //일정작성
-    closeModalButton.addEventListener('click', function () {
+    
+    //날짜클릭모달 닫기
+    closeModalButton.addEventListener('click' , function () {
         calendar.unselect();
         eventModal.style.display = 'none';
-
     });
 
-    //일정상세
+
+    //일정상세닫기버튼
     closeModalButtonDetail.addEventListener('click', function () {
         calendar.unselect();
         eventModalDetail.style.display = 'none';
-
     });
+
     calendar.render();
 });
 

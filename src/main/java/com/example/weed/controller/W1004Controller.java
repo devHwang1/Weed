@@ -3,8 +3,9 @@ package com.example.weed.controller;
 import com.example.weed.dto.W1001_CustomDetails;
 import com.example.weed.dto.W1004DTO;
 import com.example.weed.dto.W1004EventDTO;
+import com.example.weed.dto.W1004_detailDTO;
 import com.example.weed.entity.Member;
-import com.example.weed.entity.W1004Entity;
+import com.example.weed.entity.Schedule;
 import com.example.weed.repository.W1004Repository;
 import com.example.weed.service.W1001_MemberService;
 import com.example.weed.service.W1004service;
@@ -15,7 +16,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class W1004Controller {
@@ -36,11 +39,11 @@ public class W1004Controller {
         return "W1004";
     }
 
-
+    //이벤트 등록
     @PostMapping("/saveW1004")
     @ResponseBody
     public String saveEvent(@RequestBody W1004DTO w1004dto) {
-        W1004Entity entity = new W1004Entity();
+        Schedule entity = new Schedule();
         entity.setScheduleId(w1004dto.getEventId());
         entity.setScheduleTitle(w1004dto.getTitle());
         entity.setScheduleStart(w1004dto.getStartDate());
@@ -78,8 +81,6 @@ public class W1004Controller {
 
         return eventDTOs;
     }
-
-    //이벤트 정보 불러오기
 
 
     private Long getLoggedInMemberId() {

@@ -36,6 +36,8 @@ public class W1001_MemberService implements UserDetailsService {
     private final W1008_FileRepository w1008FileRepository;
 
 
+
+
     @Value("${com.example.upload.path}")
     private String uploadPath;
 
@@ -233,5 +235,7 @@ public class W1001_MemberService implements UserDetailsService {
         });
 
     }
+
+
 }
 

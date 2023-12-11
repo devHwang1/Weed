@@ -14,7 +14,6 @@ public interface W1001_MemberRepository extends JpaRepository<Member, Long> {
 
     boolean existsByEmail(String email);
 
-
     @Modifying
     @Query("UPDATE Member m SET m.password = :password WHERE m.email = :email")
     void updatePassword( @Param("password") String password,@Param("email") String email);
