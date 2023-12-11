@@ -4,8 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const signIn = async (email, password) => {
   try {
     const response = await axios.post(
-      // 'http://10.100.203.31:8099/api/app/member/login',
-      'http://3.35.59.205:8099/api/app/member/login',
+      'http://10.100.203.31:8099/api/app/member/login',
+      // 'http://3.35.59.205:8099/api/app/member/login',
       { email, password },
       {
         headers: { 'Content-Type': 'application/json' },
