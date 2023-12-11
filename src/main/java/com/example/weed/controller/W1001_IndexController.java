@@ -104,4 +104,9 @@ public class W1001_IndexController {
         }
         return "redirect:/login";
     }
+
+    @GetMapping("/todo")
+    public String todo(){
+        return "/todo";
+    }
 }
