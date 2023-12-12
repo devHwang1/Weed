@@ -7,7 +7,10 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.sql.Date;
+import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @Getter
@@ -47,6 +50,10 @@ public class Member {
 //    @ManyToOne
 //    @JoinColumn(name = "file_id")  // 외래 키 명칭 수정
 //    private File file;
+
+    @ManyToMany(mappedBy = "members")
+    private Set<ChatRoom> chatRooms = new HashSet<>();
+
 
     @Builder
     public Member(Long id, String name, String email, String password, W1001_MemberAuthority authority, Date registrationTime,File file, Dept dept) {

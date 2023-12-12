@@ -34,7 +34,7 @@ public class W1001_SecurityConfiguration {
                 .authorizeRequests()
 //                    .antMatchers("/api/app/member/login").permitAll()
 //                    .antMatchers("/api/app/member/protected/**").authenticated()
-                    .antMatchers("/login","/api/**","/register","/findPassword","/css/**","/js/**","/Img/**", "/api/app/member/**").permitAll()
+                    .antMatchers("/login","/api/**","/register","/findPassword","/css/**","/js/**","/Img/**", "/api/app/member/**", "/chat/**").permitAll()
                     .antMatchers("/admin").hasAuthority("ADMIN")
                     .antMatchers("/**", "/calendar").hasAnyAuthority("ADMIN","USER")
                     .anyRequest().authenticated();
