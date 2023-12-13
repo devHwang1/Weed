@@ -4,7 +4,7 @@ import com.example.weed.dto.W1001_CustomDetails;
 import com.example.weed.dto.W1004DTO;
 import com.example.weed.dto.W1004EventDTO;
 import com.example.weed.entity.Member;
-import com.example.weed.entity.W1004Entity;
+import com.example.weed.entity.Schedule;
 import com.example.weed.repository.W1004Repository;
 import com.example.weed.service.W1001_MemberService;
 import com.example.weed.service.W1004service;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @Controller
-public class W1004Controller {
+public class W1004_Controller {
 
     @Autowired
     private W1004Repository w1004Repository;
@@ -42,7 +42,7 @@ public class W1004Controller {
     @PostMapping("/saveW1004")
     @ResponseBody
     public String saveEvent(@RequestBody W1004DTO w1004dto) {
-        W1004Entity entity = new W1004Entity();
+        Schedule entity = new Schedule();
         entity.setScheduleId(w1004dto.getEventId());
         entity.setScheduleTitle(w1004dto.getTitle());
         entity.setScheduleStart(w1004dto.getStartDate());

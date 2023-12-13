@@ -1,19 +1,17 @@
 package com.example.weed.entity;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
-import java.util.UUID;
 
 
 @Getter
 @Setter
 @Entity
-public class W1004Entity {
+public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long ScheduleId;  //스케줄 ID

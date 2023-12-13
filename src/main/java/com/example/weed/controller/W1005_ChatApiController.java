@@ -5,12 +5,15 @@ import com.example.weed.entity.ChatMessage;
 import com.example.weed.entity.ChatRoom;
 import com.example.weed.service.W1005_ChatRoomService;
 import com.example.weed.service.W1005_ChatService;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Log4j2
 @RestController
 @RequestMapping("/api/chat/{roomId}/messages")
 public class W1005_ChatApiController {
@@ -24,10 +27,12 @@ public class W1005_ChatApiController {
     @GetMapping
     public List<W1005_ChatMessageDTO> getChatMessages(@PathVariable Long roomId) {
         ChatRoom chatRoom = chatRoomService.getChatRoomById(roomId);
-        return chatRoomService.getChatMessagesByChatRoom(chatRoom)
+        List<W1005_ChatMessageDTO> messages = chatRoomService.getChatMessagesByChatRoom(chatRoom)
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+        System.out.println(messages);
+        return messages;
     }
 
     @PostMapping

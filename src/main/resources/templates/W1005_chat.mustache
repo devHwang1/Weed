@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Messages</title>
+    <title>채팅 메시지</title>
     {{>layouts/W1003_header}}
+    <!-- SockJS 및 Stomp 라이브러리 추가 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 <body>
-<h1>Chat Messages</h1>
+<h1>채팅 메시지</h1>
 
 <div id="chatMessages">
     {{#chatMessages}}
@@ -16,22 +20,22 @@
 </div>
 
 <form id="messageForm">
-    <input type="text" id="messageInput" placeholder="Type your message..."/>
-    <button type="submit">Send</button>
+    <input type="text" id="messageInput" placeholder="메시지를 입력하세요..."/>
+    <button type="submit">전송</button>
 </form>
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script>
     $(document).ready(function () {
         var stompClient = null;
 
         function connectWebSocket() {
-            var socket = new SockJS('/ws'); // WebSocket endpoint
+            var socket = new SockJS('/ws'); // WebSocket 엔드포인트
             stompClient = Stomp.over(socket);
 
             stompClient.connect({}, function (frame) {
-                console.log('Connected: ' + frame);
+                console.log('연결됨: ' + frame);
+
+                // 채팅방에 연결되었으므로 채팅방에 있는 모든 메시지를 로드합니다.
                 stompClient.subscribe('/topic/chat/{{chatRoom.id}}/messages', function (response) {
                     var message = JSON.parse(response.body);
                     displayChatMessage(message);
@@ -44,12 +48,13 @@
                 url: "/api/chat/{{chatRoom.id}}/messages",
                 type: "GET",
                 success: function (messages) {
+                    console.log(messages);
                     messages.forEach(function (message) {
                         displayChatMessage(message);
                     });
                 },
                 error: function (error) {
-                    console.log("Error loading chat messages: " + error);
+                    console.log("채팅 메시지 로딩 오류: " + error);
                 }
             });
         }
@@ -61,8 +66,13 @@
         }
 
         function displayChatMessage(message) {
-            $("#chatMessages").append("<p>" + message.content + "</p>");
+            var messageObject = JSON.parse(JSON.stringify(message));
+            var messageElement = "<p>" + messageObject.content + "</p>";
+            $("#chatMessages").append(messageElement);
         }
+
+
+
 
         // WebSocket 연결
         connectWebSocket();

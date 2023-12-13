@@ -18,7 +18,7 @@ public class ChatMessage {
 
     private String content;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "m_id")
     private Member member;
 
@@ -40,4 +40,15 @@ public class ChatMessage {
     public static ChatMessageBuilder builder() {
         return hiddenBuilder();
     }
+
+    public void setRoomId(Long roomId) {
+        this.chatRoom = new ChatRoom(); // 예시로 ChatRoom 객체를 생성하거나
+        this.chatRoom.setId(roomId);    // 필요에 따라 적절한 설정을 수행합니다.
+    }
+
+    public void setMemberId(Long memberId) {
+        this.member = new Member();     // 예시로 Member 객체를 생성하거나
+        this.member.setId(memberId);    // 필요에 따라 적절한 설정을 수행합니다.
+    }
+
 }

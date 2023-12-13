@@ -1,5 +1,6 @@
 package com.example.weed.service;
 
+import com.example.weed.dto.W1005_ChatMessageDTO;
 import com.example.weed.entity.ChatMessage;
 import com.example.weed.entity.ChatRoom;
 import com.example.weed.entity.Member;
@@ -65,5 +66,18 @@ public class W1005_ChatService {
         });
     }
 
+    public void saveChatMessage(Long roomId, W1005_ChatMessageDTO chatMessageDTO) {
+        ChatMessage chatMessage = convertToEntity(roomId, chatMessageDTO);
+        chatMessageRepository.save(chatMessage);
+    }
+
+    private ChatMessage convertToEntity(Long roomId, W1005_ChatMessageDTO chatMessageDTO) {
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setRoomId(roomId);
+        chatMessage.setContent(chatMessageDTO.getContent());
+        chatMessage.setMemberId(chatMessageDTO.getMemberId());
+        // 다른 필요한 필드들을 설정하십시오.
+        return chatMessage;
+    }
 }
 
