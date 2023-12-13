@@ -25,6 +25,9 @@ public class AdminController {
     public String  memberList(Model model) {
         List<Member> members = w1001MemberRepository.findAll();
         model.addAttribute("members", members);
+
+        List<Dept> deptList = w1003DeptRepository.findAll();
+        model.addAttribute("deptList",deptList);
     return "W1009_admin";
     }
 }

@@ -26,4 +26,5 @@ public interface W1001_MemberRepository extends JpaRepository<Member, Long> {
     void updateId(@Param("fileId") Long fileId, @Param("id") Long id);
 
     Member findByName(String name);
+    boolean existsByDeptId(Long deptId);
 }
