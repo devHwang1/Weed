@@ -91,7 +91,7 @@ public class W1005_ChatController {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
         model.addAttribute("chatMessages", chatMessagesDTO);
-        return "W1005_chatMessages";
+        return "W1005_chat";
     }
 
     // 특정 채팅방에 새로운 채팅 메시지를 전송하는 엔드포인트

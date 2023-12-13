@@ -3,40 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Room: {{chatRoom.name}}</title>
+    <title>Chat Messages</title>
     {{>layouts/W1003_header}}
 </head>
 <body>
-<h1>Chat Room: {{chatRoom.name}}</h1>
+<h1>Chat Messages</h1>
 
-<div id="chatMessages"></div>
+<div id="chatMessages">
+    {{#chatMessages}}
+        <p>{{content}}</p>
+    {{/chatMessages}}
+</div>
 
 <form id="messageForm">
-    <input type="text" id="messageInput" placeholder="Type your message..." />
+    <input type="text" id="messageInput" placeholder="Type your message..."/>
     <button type="submit">Send</button>
 </form>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script>
-    $(document).ready(function() {
-        loadChatMessages();
-    });
+    $(document).ready(function () {
+        var stompClient = null;
 
-    function loadChatMessages() {
-        $.ajax({
-            url: "/api/chat/{{chatRoom.id}}/messages",
-            type: "GET",
-            success: function(messages) {
-                messages.forEach(function(message) {
+        function connectWebSocket() {
+            var socket = new SockJS('/ws'); // WebSocket endpoint
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, function (frame) {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/chat/{{chatRoom.id}}/messages', function (response) {
+                    var message = JSON.parse(response.body);
                     displayChatMessage(message);
                 });
-            },
-            error: function(error) {
-                console.log("Error loading chat messages: " + error);
-            }
+            });
+        }
+
+        function loadChatMessages() {
+            $.ajax({
+                url: "/api/chat/{{chatRoom.id}}/messages",
+                type: "GET",
+                success: function (messages) {
+                    messages.forEach(function (message) {
+                        displayChatMessage(message);
+                    });
+                },
+                error: function (error) {
+                    console.log("Error loading chat messages: " + error);
+                }
+            });
+        }
+
+        function sendMessage(messageContent) {
+            stompClient.send("/app/chat/{{chatRoom.id}}/sendMessage", {}, JSON.stringify({
+                'content': messageContent
+            }));
+        }
+
+        function displayChatMessage(message) {
+            $("#chatMessages").append("<p>" + message.content + "</p>");
+        }
+
+        // WebSocket 연결
+        connectWebSocket();
+
+        // 기존 메시지 로드
+        loadChatMessages();
+
+        // 메시지 전송 폼 처리
+        $("#messageForm").submit(function (event) {
+            event.preventDefault();
+            sendMessage($("#messageInput").val());
+            $("#messageInput").val('');
         });
-    }
+    });
 </script>
 </body>
 </html>

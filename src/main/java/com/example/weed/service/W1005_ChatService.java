@@ -4,6 +4,7 @@ import com.example.weed.entity.ChatMessage;
 import com.example.weed.entity.ChatRoom;
 import com.example.weed.entity.Member;
 import com.example.weed.repository.W1001_MemberRepository;
+import com.example.weed.repository.W1005_ChatMessageRepository;
 import com.example.weed.repository.W1005_ChatRoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -23,6 +24,9 @@ public class W1005_ChatService {
 
     @Autowired
     private W1001_MemberRepository memberRepository;
+
+    @Autowired
+    private W1005_ChatMessageRepository chatMessageRepository;
 
     public void sendChatMessageToUser(Long userId, String messageContent) {
         // 사용자 ID로 사용자를 찾아서 메시지를 생성
@@ -50,9 +54,16 @@ public class W1005_ChatService {
                     .content(messageContent)
                     .timestamp(LocalDateTime.now())
                     .chatRoom(chatRoom)
+                    .member(member) // Set the member for the message
                     .build();
+
+            // Save the message to the database
+            chatMessageRepository.save(newMessage);
+
+            // Send the message to the user through WebSocket
             messagingTemplate.convertAndSendToUser(member.getName(), "/queue/messages", newMessage);
         });
     }
+
 }
 
