@@ -9,21 +9,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    
 </head>
+
 <body>
-<h1>채팅 메시지</h1>
+<div id="container">
+    <h1>{{chatRoom.name}}</h1>
 
-<div id="chatMessages">
-    {{#chatMessages}}
-        <p>{{content}}</p>
-    {{/chatMessages}}
+    <div id="chatMessages">
+        {{#chatMessages}}
+            <p>{{content}}</p>
+        {{/chatMessages}}
+    </div>
+    <form id="messageForm">
+        <input type="text" id="messageInput" placeholder="메시지를 입력하세요..."/>
+        <button type="submit">전송</button>
+    </form>
 </div>
-
-<form id="messageForm">
-    <input type="text" id="messageInput" placeholder="메시지를 입력하세요..."/>
-    <button type="submit">전송</button>
-</form>
-
 <script>
     $(document).ready(function () {
         var stompClient = null;
@@ -70,9 +72,6 @@
             var messageElement = "<p>" + messageObject.content + "</p>";
             $("#chatMessages").append(messageElement);
         }
-
-
-
 
         // WebSocket 연결
         connectWebSocket();
