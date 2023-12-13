@@ -1,16 +1,17 @@
 {
   "expo": {
-    "name": "Weed",
-    "displayName": "Weed",
-    "slug": "Weed",
+    "name": "WEED",
+    "displayName": "WEED",
+    "slug": "WEED",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "release": true,
+    "icon": "./assets/WEED_Icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/WEED.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0B212D"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -23,7 +24,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/WEED_Icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.seungjaedanlee.Weed"
@@ -35,7 +36,11 @@
       "expo": {
         "allowCellularAccess": true
       }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0dc8d99f-233c-461f-b63e-709e9bcfccc0"
+      }
     }
-    
   }
 }

@@ -1,4 +1,12 @@
-import { Alert, Image, StyleSheet, View, Keyboard, TouchableOpacity, Text } from 'react-native';
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  View,
+  Keyboard,
+  TouchableOpacity,
+  Text,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Input, {
   IconNames,
@@ -24,9 +32,9 @@ const W2001_SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigation = useNavigation();
-  
+
   const onQRScannerPress = () => {
-    navigation.navigate('QRScanner')
+    navigation.navigate('QRScanner');
   };
 
   useEffect(() => {
@@ -58,39 +66,46 @@ const W2001_SignIn = () => {
           { paddingTop: insets.top, paddingBottom: insets.bottom },
         ]}
       >
-        <Image source={require('../../assets/main.png')} style={styles.image} />
-
-        <Input
-          title={'이메일'}
-          placeholder="your@email.com"
-          keyboardType={KeyboardTypes.EMAIL}
-          returnKeyType={ReturnKeyTypes.NEXT}
-          value={email}
-          onChangeText={(email) => setEmail(email.trim())}
-          iconName={IconNames.EMAIL}
-          onSubmitEditing={() => passwordRef.current.focus()}
+        <Image
+          source={require('../../assets/WEED_Main.png')}
+          style={styles.image}
         />
-        <Input
-          ref={passwordRef}
-          title={'비밀번호'}
-          returnKeyType={ReturnKeyTypes.DONE}
-          secureTextEntry
-          value={password}
-          onChangeText={(password) => setPassword(password.trim())}
-          iconName={IconNames.PASSWORD}
-          onSubmitEditing={onSubmit}
-        />
-        <TouchableOpacity style={styles.qrScannerButton} onPress={onQRScannerPress}>
-          <Text style={styles.qrScannerButtonText}>QRScanner</Text>
-        </TouchableOpacity>
-
-        <View style={styles.buttonContainer}>
-          <Button
-            title="로그인"
-            onPress={onSubmit}
-            disabled={disabled}
-            isLoading={isLoading}
+        <View style={[styles.content]}>
+          <Input
+            title={'이메일'}
+            placeholder="your@email.com"
+            keyboardType={KeyboardTypes.EMAIL}
+            returnKeyType={ReturnKeyTypes.NEXT}
+            value={email}
+            onChangeText={(email) => setEmail(email.trim())}
+            iconName={IconNames.EMAIL}
+            onSubmitEditing={() => passwordRef.current.focus()}
           />
+          <Input
+            ref={passwordRef}
+            title={'비밀번호'}
+            returnKeyType={ReturnKeyTypes.DONE}
+            secureTextEntry
+            value={password}
+            onChangeText={(password) => setPassword(password.trim())}
+            iconName={IconNames.PASSWORD}
+            onSubmitEditing={onSubmit}
+          />
+          <TouchableOpacity
+            style={styles.qrScannerButton}
+            onPress={onQRScannerPress}
+          >
+            <Text style={styles.qrScannerButtonText}>QRScanner</Text>
+          </TouchableOpacity>
+
+          <View style={styles.buttonContainer}>
+            <Button
+              title="로그인"
+              onPress={onSubmit}
+              disabled={disabled}
+              isLoading={isLoading}
+            />
+          </View>
         </View>
       </View>
     </SafeInputView>
@@ -102,10 +117,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#1EAB98',
+  },
+  content: {
+    flex: 1,
+    width: '100%',
+    // justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    marginTop: '20%',
+    paddingTop: '10%',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   image: {
-    width: 200,
-    height: 200,
+    width: '100%',
+    height: '30%',
   },
   buttonContainer: {
     width: '100%',
