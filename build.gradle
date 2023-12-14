@@ -53,6 +53,14 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
     implementation 'org.springframework.security:spring-security-jwt:1.1.0.RELEASE'
+
+    // Lee Jun Seo
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    implementation 'org.webjars:sockjs-client:1.5.1'
+    implementation 'org.webjars:stomp-websocket:2.3.4'
+    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'org.mapstruct:mapstruct:1.4.2.Final'
 }
 
 tasks.named('bootBuildImage') {

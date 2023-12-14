@@ -9,7 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    
+
 </head>
 
 <body>
@@ -25,8 +25,15 @@
         <input type="text" id="messageInput" placeholder="메시지를 입력하세요..."/>
         <button type="submit">전송</button>
     </form>
+    <form id="fileForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="file"/>
+        <input type="hidden" id="roomIdInput" name="roomId" value="{{chatRoom.id}}"/>
+        <button type="button" onclick="uploadFile()">파일 업로드</button>
+    </form>
 </div>
+
 <script>
+    // 채팅
     $(document).ready(function () {
         var stompClient = null;
 
@@ -40,10 +47,18 @@
                 // 채팅방에 연결되었으므로 채팅방에 있는 모든 메시지를 로드합니다.
                 stompClient.subscribe('/topic/chat/{{chatRoom.id}}/messages', function (response) {
                     var message = JSON.parse(response.body);
-                    displayChatMessage(message);
+                    displayChatStartMessage(message);
                 });
             });
         }
+        function displayChatStartMessage(message) {
+            console.log("message", message)
+            var messageObject = JSON.parse(JSON.stringify(message));
+            console.log("messageObject", messageObject)
+            var messageElement = "<p>" + messageObject.content + "</p>";
+            $("#chatMessages").append(messageElement);
+        }
+
 
         function loadChatMessages() {
             $.ajax({
@@ -52,7 +67,7 @@
                 success: function (messages) {
                     console.log(messages);
                     messages.forEach(function (message) {
-                        displayChatMessage(message);
+                        displayChatListMessage(message);
                     });
                 },
                 error: function (error) {
@@ -61,16 +76,20 @@
             });
         }
 
+        function displayChatListMessage(message) {
+            console.log("message", message)
+            var viewMessage = message["content"]
+            console.log("message1", viewMessage)
+            var messageObject = JSON.parse(viewMessage);
+            console.log("messageObject", messageObject)
+            var messageElement = "<p>" + messageObject.content + "</p>";
+            $("#chatMessages").append(messageElement);
+        }
+
         function sendMessage(messageContent) {
             stompClient.send("/app/chat/{{chatRoom.id}}/sendMessage", {}, JSON.stringify({
                 'content': messageContent
             }));
-        }
-
-        function displayChatMessage(message) {
-            var messageObject = JSON.parse(JSON.stringify(message));
-            var messageElement = "<p>" + messageObject.content + "</p>";
-            $("#chatMessages").append(messageElement);
         }
 
         // WebSocket 연결
@@ -85,7 +104,37 @@
             sendMessage($("#messageInput").val());
             $("#messageInput").val('');
         });
+
     });
+
+    function uploadFile() {
+        var formData = new FormData(document.getElementById('fileForm'));
+
+        $.ajax({
+            url: '/s3/upload',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (fileUploadDTO) {
+                console.log('File uploaded successfully:', fileUploadDTO);
+
+                // 업로드된 파일의 내용을 채팅창에 표시
+                displayChatFileMessage(fileUploadDTO);
+            },
+            error: function (error) {
+                console.error('File upload error:', error);
+            }
+        });
+    }
+
+    function displayChatFileMessage(fileUploadDTO) {
+        var messageElement = '<p><strong>' + fileUploadDTO.originFileName + '</strong>이(가) 업로드되었습니다. <a href="' + fileUploadDTO.s3DataUrl + '" target="_blank">다운로드</a></p>';
+        $("#chatMessages").append(messageElement);
+    }
+
 </script>
+
+
 </body>
 </html>
