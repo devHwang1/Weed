@@ -29,8 +29,7 @@ public class TodoService {
     }
 
     public void addTodoList(TodoDTO todoDTO) {
-        // 회원 ID로 회원 정보 조회
-        // (여기서는 가정으로 회원 ID를 1로 고정)
+
         Member member =w1001_memberService.getLoggedInMember();
 
         // Todo 엔티티 생성
