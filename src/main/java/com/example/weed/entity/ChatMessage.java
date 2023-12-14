@@ -1,4 +1,5 @@
 package com.example.weed.entity;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,13 +29,18 @@ public class ChatMessage {
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
 
-    @Builder(builderMethodName = "hiddenBuilder")  // builderMethodName으로 기존의 builder를 숨김
-    public ChatMessage(Long id, String content, Member member, LocalDateTime timestamp, ChatRoom chatRoom) {
+    @OneToOne
+    @JoinColumn(name = "chat_file_id")
+    private ChatFile chatFile;
+
+    @Builder(builderMethodName = "hiddenBuilder")
+    public ChatMessage(Long id, String content, Member member, LocalDateTime timestamp, ChatRoom chatRoom, ChatFile chatFile) {
         this.id = id;
         this.content = content;
         this.member = member;
         this.timestamp = timestamp;
         this.chatRoom = chatRoom;
+        this.chatFile = chatFile;
     }
 
     public static ChatMessageBuilder builder() {
@@ -42,13 +48,12 @@ public class ChatMessage {
     }
 
     public void setRoomId(Long roomId) {
-        this.chatRoom = new ChatRoom(); // 예시로 ChatRoom 객체를 생성하거나
-        this.chatRoom.setId(roomId);    // 필요에 따라 적절한 설정을 수행합니다.
+        this.chatRoom = new ChatRoom();
+        this.chatRoom.setId(roomId);
     }
 
     public void setMemberId(Long memberId) {
-        this.member = new Member();     // 예시로 Member 객체를 생성하거나
-        this.member.setId(memberId);    // 필요에 따라 적절한 설정을 수행합니다.
+        this.member = new Member();
+        this.member.setId(memberId);
     }
-
 }

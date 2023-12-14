@@ -1,6 +1,8 @@
 package com.example.weed.controller;
 
 import com.example.weed.dto.W1006_FileUploadDTO;
+import com.example.weed.entity.ChatFile;
+import com.example.weed.entity.ChatMessage;
 import com.example.weed.service.W1006_S3FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 
@@ -31,6 +34,7 @@ public class W1006_FileController {
         // fileReq 객체 리턴
         return fileReq;
     }
+
 
     // get 으로 요청이 오면 아래 download 메서드를 실행
     // fileName 과 파라미터로 넘어온 fileDir 을 getObject 메서드에 매개변수로 넣음

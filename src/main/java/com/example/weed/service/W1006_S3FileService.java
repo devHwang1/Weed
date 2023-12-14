@@ -11,6 +11,12 @@ import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
 import com.amazonaws.util.IOUtils;
 import com.example.weed.dto.W1006_FileUploadDTO;
+import com.example.weed.entity.ChatFile;
+import com.example.weed.entity.ChatMessage;
+import com.example.weed.entity.Member;
+import com.example.weed.repository.W1005_ChatMessageRepository;
+import com.example.weed.repository.W1005_ChatRoomRepository;
+import com.example.weed.repository.W1006_ChatFileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +30,27 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class W1006_S3FileService implements W1006_FileService {
+    @Autowired
+    private final W1005_ChatService chatService;
+
+    @Autowired
+    private W1001_MemberService memberService;
+
+    @Autowired
+    private W1005_ChatRoomRepository chatRoomRepository;
+
+    @Autowired
+    private W1005_ChatMessageRepository chatMessageRepository;
+
+    @Autowired
+    private W1006_ChatFileRepository chatFileRepository;
 
 
     @Autowired
@@ -49,6 +70,8 @@ public class W1006_S3FileService implements W1006_FileService {
     // 이때 transcation 는 파일 이름 중복 방지를 위한 UUID 를 의미한다.
     @Override
     public W1006_FileUploadDTO uploadFile(MultipartFile file, String transaction, String roomId) {
+        Member loggedInMember = memberService.getLoggedInMember();
+
         try{
 
             String filename = file.getOriginalFilename(); // 파일원본 이름
@@ -71,7 +94,7 @@ public class W1006_S3FileService implements W1006_FileService {
             removeFile(convertedFile);
 
             // uploadDTO 객체 빌드
-            W1006_FileUploadDTO uploadReq = W1006_FileUploadDTO.builder()
+            W1006_FileUploadDTO fileReq = W1006_FileUploadDTO.builder()
                     .transaction(transaction)
                     .chatRoom(roomId)
                     .originFileName(filename)
@@ -79,8 +102,30 @@ public class W1006_S3FileService implements W1006_FileService {
                     .s3DataUrl(baseUrl+"/"+key)
                     .build();
 
+            // ChatMessage에 ChatFile 연결
+            ChatFile chatFile = ChatFile.builder()
+                    .fileName(fileReq.getOriginFileName())
+                    .filePath(fileReq.getFileDir())
+                    .uploadTime(LocalDateTime.now())
+                    .build();
+
+            // ChatFile을 영속성 컨텍스트에 저장
+            chatFile = chatFileRepository.save(chatFile);
+
+            ChatMessage chatMessage = ChatMessage.builder()
+                    .content(fileReq.getOriginFileName())
+                    .member(loggedInMember)
+                    .timestamp(LocalDateTime.now())
+                    .chatRoom(chatRoomRepository.findById(Long.valueOf(roomId)).orElse(null))
+                    .chatFile(chatFile) // ChatFile 엔터티를 사용
+                    .build();
+
+            // ChatMessage와 ChatFile 저장
+            chatMessageRepository.save(chatMessage);
+
+
             // uploadDTO 객체 리턴
-            return uploadReq;
+            return fileReq;
 
         } catch (Exception e) {
             log.error("fileUploadException {}", e.getMessage());
