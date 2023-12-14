@@ -1,7 +1,10 @@
 package com.example.weed.controller;
 
+import com.example.weed.dto.TodoDTO;
 import com.example.weed.dto.W1001_MailDTO;
+import com.example.weed.entity.Todo;
 import com.example.weed.repository.W1003_DeptRepository;
+import com.example.weed.service.TodoService;
 import com.example.weed.service.W1001_MemberService;
 //import com.example.weed.service.SendEmailService;
 import lombok.AllArgsConstructor;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -28,6 +32,7 @@ import javax.transaction.Transactional;
 public class W1001_IndexController {
     private final W1001_MemberService w1001MemberService;
     private final W1003_DeptRepository w1003DeptRepository;
+    private final TodoService todoService;
 //    private final SendEmailService sendEmailService;
 
     @GetMapping("/main")
@@ -106,7 +111,19 @@ public class W1001_IndexController {
     }
 
     @GetMapping("/todo")
-    public String todo(){
+    public String todo(Model model) {
+        List<TodoDTO> todoList = todoService.getTodoList();
+        Long totalTodoCount = todoService.getTotalTodoCount();
+        Long getCheckedTodoCount = todoService.getCheckedTodoCount();
+
+        model.addAttribute("getCheckedTodoCount",getCheckedTodoCount);
+
+        // Model 객체에 할 일 목록을 추가
+        model.addAttribute("todoList", todoList);
+
+        // Model 객체에 Todo 게시물의 총 개수를 추가
+        model.addAttribute("totalTodoCount", totalTodoCount);
+
         return "/todo";
     }
 }

@@ -3,12 +3,12 @@
 }
 
 .todoContainer{
-    border-radius: 4px;
+    border-radius: 5px;
     background: white;
     padding: 20px;
     width: 80%;
-    height: 80%;
-    margin-left: 154px;
+    height: 830px;
+    margin-left: 230px;
     margin-right: 120px;
     margin-top: 50px;
 }
@@ -63,9 +63,12 @@ input.tdTitle:focus {outline: none;}
 }
 
 #todoNav .nav-link.active {
-    color: #00FF00; /* 초록색 */
+    color: #00c473; /* 초록색 */
 }
 
+.bb.active{
+    border-color: #00c473;
+}
 #todoNav .nav-link {
     position: relative;
     color: #000; /* 기본 텍스트 색상 */
@@ -74,4 +77,21 @@ input.tdTitle:focus {outline: none;}
 
 #todoNav .nav-link:hover {
     color: #00FF00; /* 마우스 오버시 텍스트 색상 */
+}
+
+#progressBarContainer {
+    width: 87%;
+    background-color: #99e0c3;
+    border-radius: 20px;
+    height: 30px;
+    margin-left: 91px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+
+#progressBar {
+    height: 100%;
+    border-radius: 20px;
+    background-color: #00c473; /* 채워지는 부분의 색상 */
 }
