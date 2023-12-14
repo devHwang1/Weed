@@ -1,11 +1,11 @@
 package com.example.weed.controller;
 
 import com.example.weed.dto.W1005_ChatMessageDTO;
+import com.example.weed.dto.W1006_ChatFileDTO;
 import com.example.weed.entity.ChatMessage;
 import com.example.weed.entity.ChatRoom;
 import com.example.weed.service.W1005_ChatRoomService;
 import com.example.weed.service.W1005_ChatService;
-import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -40,13 +40,19 @@ public class W1005_ChatApiController {
         chatService.sendChatMessageToChatRoom(roomId, messageContent);
     }
 
-    // ChatMessage를 DTO로 변환하는 메소드
     private W1005_ChatMessageDTO convertToDTO(ChatMessage chatMessage) {
-        return new W1005_ChatMessageDTO(
+        W1005_ChatMessageDTO dto = new W1005_ChatMessageDTO(
                 chatMessage.getId(),
                 chatMessage.getContent(),
                 chatMessage.getMember().getId(),
-                chatMessage.getTimestamp()
+                chatMessage.getTimestamp(),
+                chatMessage.getChatFile() != null ? new W1006_ChatFileDTO(
+                        chatMessage.getChatFile().getId(),
+                        chatMessage.getChatFile().getFileName(),
+                        chatMessage.getChatFile().getFilePath()
+                ) : null
         );
+
+        return dto;
     }
 }

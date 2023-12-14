@@ -1,6 +1,7 @@
 package com.example.weed.controller;
 
 import com.example.weed.dto.W1005_ChatMessageDTO;
+import com.example.weed.dto.W1006_ChatFileDTO;
 import com.example.weed.entity.ChatMessage;
 import com.example.weed.entity.ChatRoom;
 import com.example.weed.entity.Member;
@@ -104,12 +105,27 @@ public class W1005_ChatController {
 
     // ChatMessage를 DTO로 변환하는 메소드
     private W1005_ChatMessageDTO convertToDTO(ChatMessage chatMessage) {
-        return new W1005_ChatMessageDTO(
+        W1005_ChatMessageDTO dto = new W1005_ChatMessageDTO(
                 chatMessage.getId(),
                 chatMessage.getContent(),
                 chatMessage.getMember().getId(),
-                chatMessage.getTimestamp()
+                chatMessage.getTimestamp(),
+                null  // 초기화
+
         );
+
+        // chatMessage의 chatFile이 null이 아니면 ChatFileDTO를 생성하여 할당
+        if (chatMessage.getChatFile() != null) {
+            dto.setChatFile(new W1006_ChatFileDTO(
+                    chatMessage.getChatFile().getId(),
+                    chatMessage.getChatFile().getFileName(),
+                    chatMessage.getChatFile().getFilePath(),
+                    chatMessage.getChatFile().getUploadTime()
+            ));
+        }
+
+        return dto;
     }
+
 }
 

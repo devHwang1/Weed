@@ -1,6 +1,7 @@
 package com.example.weed.entity;
 
 import com.example.weed.authority.W1001_MemberAuthority;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
@@ -35,6 +36,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private W1001_MemberAuthority authority;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private Date registrationTime;
 
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)

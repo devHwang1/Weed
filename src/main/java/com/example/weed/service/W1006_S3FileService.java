@@ -112,8 +112,10 @@ public class W1006_S3FileService implements W1006_FileService {
             // ChatFile을 영속성 컨텍스트에 저장
             chatFile = chatFileRepository.save(chatFile);
 
+            String jsonContent = "{\"content\":\"" + fileReq.getOriginFileName() + "\"}";
+
             ChatMessage chatMessage = ChatMessage.builder()
-                    .content(fileReq.getOriginFileName())
+                    .content(jsonContent)
                     .member(loggedInMember)
                     .timestamp(LocalDateTime.now())
                     .chatRoom(chatRoomRepository.findById(Long.valueOf(roomId)).orElse(null))
@@ -122,6 +124,7 @@ public class W1006_S3FileService implements W1006_FileService {
 
             // ChatMessage와 ChatFile 저장
             chatMessageRepository.save(chatMessage);
+
 
 
             // uploadDTO 객체 리턴

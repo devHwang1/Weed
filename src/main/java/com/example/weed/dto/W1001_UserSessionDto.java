@@ -2,6 +2,7 @@ package com.example.weed.dto;
 
 import com.example.weed.authority.W1001_MemberAuthority;
 import com.example.weed.entity.Member;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.Getter;
 
@@ -16,6 +17,8 @@ public class W1001_UserSessionDto implements Serializable {
     private String password;
     private String deptName;
     private String fileName;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private Date registrationTime;
     private W1001_MemberAuthority authority;
 
