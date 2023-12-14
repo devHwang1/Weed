@@ -51,6 +51,7 @@
                 });
             });
         }
+
         function displayChatStartMessage(message) {
             console.log("message", message)
             var messageObject = JSON.parse(JSON.stringify(message));
@@ -129,8 +130,43 @@
     }
 
     function displayChatFileMessage(fileUploadDTO) {
-        var messageElement = '<p><strong>' + fileUploadDTO.originFileName + '</strong>이(가) 업로드되었습니다. <a href="' + fileUploadDTO.s3DataUrl + '" target="_blank">다운로드</a></p>';
+        var messageElement = '<p><strong>' + fileUploadDTO.originFileName + '</strong>이(가) 업로드되었습니다. <a href="javascript:void(0);" onclick="downloadFile(\'' + fileUploadDTO.fileDir + '\', \'' + fileUploadDTO.originFileName + '\')">다운로드</a></p>';
         $("#chatMessages").append(messageElement);
+    }
+
+    function downloadFile(fileDir, fileName) {
+        // AJAX를 사용하여 파일 다운로드 URL에 접근
+        $.ajax({
+            url: "/s3/download/" + fileName,
+            data: {
+                "fileDir": fileDir
+            },
+            dataType: 'binary',
+            xhrFields: {
+                'responseType': 'blob'
+            },
+            success: function (data) {
+                // Blob 데이터를 파일로 변환
+                var blob = new Blob([data], { type: 'application/octet-stream' });
+
+                // Blob을 URL로 생성
+                var url = window.URL.createObjectURL(blob);
+
+                // 새로운 링크 엘리먼트 생성
+                var downloadLink = document.createElement("a");
+
+                // 다운로드 링크 설정
+                downloadLink.href = url;
+                downloadLink.download = fileName;
+
+                // 링크를 DOM에 추가하고 클릭
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+
+                // DOM에서 링크 제거
+                document.body.removeChild(downloadLink);
+            }
+        });
     }
 
 </script>
