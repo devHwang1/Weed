@@ -121,6 +121,7 @@
 .modalbutton{
     margin: 10px;
     float: right;
+    display: flex;
 }
 
 
@@ -134,6 +135,7 @@
     font-size: 14px;
     width: 50px;
     height: 30px;
+    margin-left: inherit;
 }
 
 /* 취소버튼*/
@@ -154,7 +156,7 @@
     margin-right: 240px;
 }
 
-.deletecEvent{
+.deleteEvent{
     background-color: #d23636;
     color: #ffffff;
     border: 2px solid #d23636;
@@ -164,6 +166,7 @@
     width: 50px;
     height: 30px;
 }
+
 
 /*컬러스타일랑*/
 .colorstyle{

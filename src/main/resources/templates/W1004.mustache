@@ -24,7 +24,7 @@
 
     <div id='calendar'></div>
 
-    <!-- 이벤트 적는/ 수정 모달창 -->
+    <!-- 이벤트를 생성하는 모달창 -->
     <div id="eventModal" class="modal">
         <div class="modalTitle">일정추가</div>
 
@@ -53,14 +53,14 @@
     </div>
 
         <div class="modalbutton">
-            <button id="closeModal" class="closeEvent">취소</button>
+            <button id="closeModalsell" class="closeEvent">취소</button>
             <button id="saveEvent" class="saveEvent">저장</button>
         </div>
     </div>
 
     <!-- 이벤트 상세 모달창 -->
     <div id="eventModalDetail" class="modal-detail">
-        <div class="modalTitle" id="loginMember">이름</div>
+        <div class="modalTitle" id="EventMember">이름</div>
 
         <div class="contentBox">
             <div class="eventFormGroup">
@@ -81,12 +81,46 @@
             </div>
         </div>
 
-        <div class="modalbutton">
+        <div id="modalButtonContainer" class="modalbutton">
             <div class="deletediv">
-                <button id="deleteModalDetail" class="deletecEvent">삭제</button>
+                <button id="deleteModalDetail" class="deleteEvent">삭제</button>
             </div>
             <button id="closeModalDetail" class="closeEvent">취소</button>
-            <button id="saveEventDetail" class="saveEvent">수정</button>
+            <button id="ModifyButton" class="saveEvent">수정</button>
+        </div>
+    </div>
+
+    <!-- 이벤트를 수정하는 모달창 -->
+    <div id="modifyModal" class="modal">
+        <div class="modalTitle">일정추가</div>
+
+        <div class="contentBox">
+            <div class="eventFormGroup">
+                <label for="eventTitle" class="eventText">일정 제목:</label><br>
+                <input type="text" id="modifyTitle" class="inputTitle"><br>
+            </div>
+
+            <div class="eventFormGroup">
+                <label for="eventTitle" class="eventText">시작일:</label>
+                <input type="date" id="modifyStartDate">
+                <label for="eventTitle" class="eventText">종료일:</label>
+                <input type="date"  id="modifyEndDate">
+            </div>
+
+            <div>
+                <label for="eventTitle" class="eventText">색깔설정:</label>
+                <input type="color" id="modifycolor" class="colorstyle" value="#7A9DA8">
+            </div>
+
+            <div class="eventFormGroup">
+                <label for="eventContent" class="eventText">일정 내용:</label><br>
+                <textarea type="text" id="modifyContent" class="inputContent"></textarea><br>
+            </div>
+        </div>
+
+        <div class="modalbutton">
+            <button id="modifycloseModal" class="closeEvent">취소</button>
+            <button id="modifysaveButton" class="saveEvent">저장</button>
         </div>
     </div>
 

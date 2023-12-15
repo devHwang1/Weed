@@ -1,6 +1,7 @@
 package com.example.weed.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,31 +10,34 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class W1004DTO {
+public class W1004_detailDTO {
+    private Long scheduleId;
     private Long memberId;
-    private Long eventId;
+    private String memberName;
+
+
     private String title;
     private String content;
+    private String color;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
-    private String color;
 
-    //기본생성자
-    public W1004DTO(){
-
+    // 기본 생성자
+    public W1004_detailDTO() {
     }
 
-    public W1004DTO(Long memberId,Long eventId, String title, String content, Date startDate, Date endDate, String color){
+    public W1004_detailDTO(Long scheduleId, Long memberId, String memberName, String title, String content, String color, Date startDate, Date endDate) {
+        this.scheduleId = scheduleId;
         this.memberId = memberId;
-        this.eventId = eventId;
+        this.memberName = memberName;
         this.title = title;
         this.content = content;
+        this.color = color;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.color = color;
     }
-
 
 }

@@ -36,7 +36,7 @@ public class W1001_SecurityConfiguration {
 //                    .antMatchers("/api/app/member/protected/**").authenticated()
                     .antMatchers("/login","/api/**","/register","/findPassword","/css/**","/js/**","/Img/**", "/api/app/member/**", "/chat/**").permitAll()
                     .antMatchers("/admin").hasAuthority("ADMIN")
-                    .antMatchers("/**", "/calendar").hasAnyAuthority("ADMIN","USER")
+                    .antMatchers("/**", "/calendar","/working").hasAnyAuthority("ADMIN","USER")
                     .anyRequest().authenticated();
 
         httpSecurity

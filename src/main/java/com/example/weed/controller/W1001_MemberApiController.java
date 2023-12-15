@@ -31,19 +31,37 @@ public class W1001_MemberApiController {
     }
 
 
-    //로그인에 응답하는 api 추가
+    //현재로그인한 멤버정보 가져오기
     @GetMapping("/api/current")
     public ResponseEntity<W1001_UserSessionDto> getCurrentMember() {
+        // 현재 인증 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 인증 정보가 있는지 확인
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
+        // 인증 정보에서 사용자 정보 추출
         W1001_CustomDetails customDetails = (W1001_CustomDetails) authentication.getPrincipal();
         Member loggedInMember = customDetails.getLoggedInMember();
 
+        // 사용자 정보가 있는지 확인
+        if (loggedInMember == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // 사용자 정보가 정상적으로 추출되는지 확인
+        System.out.println("CustomDetails: " + customDetails);
+        System.out.println("LoggedInMember: " + loggedInMember);
+
+        // 사용자 정보를 DTO에 매핑하여 반환
         W1001_UserSessionDto userSessionDto = new W1001_UserSessionDto(loggedInMember);
+
+        // 멤버 아이디 추가
+        userSessionDto.setId(loggedInMember.getId());
         return ResponseEntity.ok(userSessionDto);
+
     }
 
 

@@ -1,5 +1,6 @@
 package com.example.weed.entity;
 
+import com.example.weed.dto.W1007_workingDTO;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,5 +30,8 @@ public class Working {
     @JoinColumn(name = "m_id")
     private Member member;
 
+    public W1007_workingDTO toDTO() {
+        return new W1007_workingDTO(id, checkInTime, checkOutTime, member.getName());
+    }
 }
 
