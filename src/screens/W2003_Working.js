@@ -73,44 +73,48 @@ const W2003_Working = () => {
   console.log('workingData:', workingData);
 
   return (
-    <View style={styles.container}>
-  {loading ? (
-    <Text>Loading...</Text>
-  ) : workingData ? (
-    <View>
-      <Text style={{ fontSize: 24, textAlign: 'center' }}>가장 최근 출근 기록</Text>
-      <View style={styles.dataContainer}>
-        <View style={styles.innerContainer}>
-          <Text style={{ fontSize: 20, fontWeight: '700' }}>{workingData.memberName}님</Text>
-          <View style={styles.horizontalLine}/>
-          <Text style={{ fontSize: 28, fontWeight: '700', textAlign: 'center' }}>{workingData.checkInTime}</Text>
-          <Text style={{ fontSize: 16, fontWeight: '700', textAlign: 'center' }}>({workingData.checkInDate})</Text>
-          <View style={styles.horizontalLine}/>
-          <Text style={isLate(workingData.checkInTime) ? styles.late : styles.onTime}>
-            {isLate(workingData.checkInTime) ? "지각하셨습니다." : "출근이 완료되었습니다."}
-          </Text>
-        </View>
-      </View>
-
-      <Text style={{ fontSize: 24, textAlign: 'center' }}>가장 최근 퇴근 기록</Text>
-      <View style={styles.dataContainer}>
-        {workingData.checkOutDate !== '날짜 정보 없음' && (
+  <View style={styles.container}>
+    {loading ? (
+      <Text>Loading...</Text>
+    ) : workingData ? (
+      <View>
+        <Text style={{ fontSize: 24, textAlign: 'center' }}>가장 최근 출근 기록</Text>
+        <View style={styles.dataContainer}>
           <View style={styles.innerContainer}>
             <Text style={{ fontSize: 20, fontWeight: '700' }}>{workingData.memberName}님</Text>
             <View style={styles.horizontalLine}/>
-            <Text style={{ fontSize: 28, fontWeight: '700', textAlign: 'center' }}>{workingData.checkOutTime}</Text>
-            <Text style={{ fontSize: 16, fontWeight: '700', textAlign: 'center' }}>({workingData.checkOutDate})</Text>
+            <Text style={{ fontSize: 28, fontWeight: '700', textAlign: 'center' }}>{workingData.checkInTime}</Text>
+            <Text style={{ fontSize: 16, fontWeight: '700', textAlign: 'center' }}>({workingData.checkInDate})</Text>
             <View style={styles.horizontalLine}/>
-            <Text style={{ fontSize: 16, fontWeight: '700', textAlign: 'center', color: 'blue' }}>퇴근하셨습니다.</Text>
+            <Text style={isLate(workingData.checkInTime) ? styles.late : styles.onTime}>
+              {isLate(workingData.checkInTime) ? "지각하셨습니다." : "출근이 완료되었습니다."}
+            </Text>
+          </View>
+        </View>
+
+        {/* 퇴근 기록이 있는 경우에만 표시 */}
+        {workingData.checkOutDate !== '날짜 정보 없음' && (
+          <View>
+            <Text style={{ fontSize: 24, textAlign: 'center' }}>가장 최근 퇴근 기록</Text>
+            <View style={styles.dataContainer}>
+              <View style={styles.innerContainer}>
+                <Text style={{ fontSize: 20, fontWeight: '700' }}>{workingData.memberName}님</Text>
+                <View style={styles.horizontalLine}/>
+                <Text style={{ fontSize: 28, fontWeight: '700', textAlign: 'center' }}>{workingData.checkOutTime}</Text>
+                <Text style={{ fontSize: 16, fontWeight: '700', textAlign: 'center' }}>({workingData.checkOutDate})</Text>
+                <View style={styles.horizontalLine}/>
+                <Text style={{ fontSize: 16, fontWeight: '700', textAlign: 'center', color: 'blue' }}>퇴근하셨습니다.</Text>
+              </View>
+            </View>
           </View>
         )}
       </View>
-    </View>
-  ) : (
-    <Text>출근 기록이 없습니다.</Text>
-  )}
-</View>
-  );
+    ) : (
+      <Text>출근 기록이 없습니다.</Text>
+    )}
+  </View>
+);
+
 };
 
 const styles = StyleSheet.create({

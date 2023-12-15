@@ -10,9 +10,9 @@ export const fetchWorkingData = async () => {
     if (storedAccessToken) {
       const response = await axios.get(
         'http://10.100.203.31:8099/api/app/member/working',{
-        // 'http://3.35.59.205:8099/api/app/member/working', {
+        // 'http://15.164.62.243:8099/api/app/member/working', {
           headers: {
-            Authorization: `Bearer ${storedAccessToken}`,
+            Authorization: `${storedAccessToken}`,
           },
         }
       );

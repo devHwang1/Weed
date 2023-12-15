@@ -1,6 +1,5 @@
 import {
   Alert,
-  Image,
   StyleSheet,
   View,
   Keyboard,
@@ -66,10 +65,14 @@ const W2001_SignIn = () => {
           { paddingTop: insets.top, paddingBottom: insets.bottom },
         ]}
       >
-        <Image
-          source={require('../../assets/WEED_Main.png')}
-          style={styles.image}
-        />
+      <View style={[styles.header]}>
+        <Text style={[styles.header_text1]}>
+          함께하는 업무
+        </Text >
+        <Text style={[styles.header_text2]}>
+          WEED
+        </Text>
+      </View>
         <View style={[styles.content]}>
           <Input
             title={'이메일'}
@@ -115,9 +118,25 @@ const W2001_SignIn = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#1EAB98',
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    backgroundColor: '#00c473',
+  },
+  header: {
+    height: '25%',
+  },
+  header_text1: {
+    marginTop: '20%',
+    marginLeft: '10%',
+    fontSize: 20,
+    fontWeight: 700,
+    color: '#FFFFFF'
+  },
+  header_text2: {
+    marginLeft: '10%',
+    fontSize: 60,
+    fontWeight: 700,
+    color: '#FFFFFF'
   },
   content: {
     flex: 1,
@@ -129,10 +148,6 @@ const styles = StyleSheet.create({
     paddingTop: '10%',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-  },
-  image: {
-    width: '100%',
-    height: '30%',
   },
   buttonContainer: {
     width: '100%',
