@@ -11,10 +11,6 @@ public class W1007_workingDTO {
     private LocalDateTime checkOutTime;
     private String memberName;
 
-    //생성자
-    public W1007_workingDTO() {
-    }
-
     public W1007_workingDTO(Long id, LocalDateTime checkInTime, LocalDateTime checkOutTime, String memberName) {
         this.id = id;
         this.checkInTime = checkInTime;

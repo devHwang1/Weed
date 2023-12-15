@@ -1,12 +1,15 @@
 package com.example.weed.controller;
 
 import com.example.weed.Util.W2001_JwtTokenUtil;
+import com.example.weed.adapter.W1005_LocalDateTimeTypeAdapter;
 import com.example.weed.dto.W2004_WorkingDto;
 import com.example.weed.entity.Member;
 import com.example.weed.entity.Working;
 import com.example.weed.repository.W1001_MemberRepository;
 import com.example.weed.repository.W2002_WorkingRepository;
 import com.example.weed.service.W2001_QrJwtService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,8 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-//@CrossOrigin(origins = "http://10.100.203.31:8099", allowCredentials = "true")
-@CrossOrigin(origins = "http://3.35.59.205:8099", allowCredentials = "true")
+@CrossOrigin(origins = "http://10.100.203.31:8099", allowCredentials = "true")
+//@CrossOrigin(origins = "http://15.164.62.243:8099", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/app/member")
 public class W2001_MemberAppApiController {
@@ -37,6 +40,11 @@ public class W2001_MemberAppApiController {
         this.jwtTokenUtil = jwtTokenUtil;
         this.jwtService = jwtService;
         this.w2002WorkingRepository = w2002WorkingRepository;
+
+        // GSON 객체 설정 시
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new W1005_LocalDateTimeTypeAdapter())
+                .create();
     }
 
     // 로그인

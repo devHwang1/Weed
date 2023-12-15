@@ -1,6 +1,7 @@
 package com.example.weed.entity;
 
 import com.example.weed.dto.W1007_workingDTO;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,8 +23,10 @@ public class Working {
 
     private LocalDate date;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssX")
     private LocalDateTime checkInTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssX")
     private LocalDateTime checkOutTime;
 
     @ManyToOne
