@@ -9,67 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-    <style>
-        .entire-chat {
-            width: 50%;
-            height: 70%;
-            background-color: #FFFFFF;
-            border-radius: 15px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
-            margin-top: 5%;
-        }
-
-        .chat-room-name {
-            width: 100%;
-            height: 50px;
-            text-align: center;
-            color: #04C85F;
-        }
-
-        .chat-container {
-            width: 100%;
-            height: 100%;
-            padding: 20px;
-            background-color: #BACEE0;
-        }
-
-
-        .speech_bubble {
-            position: relative;
-            margin: 50px;
-            padding: 20px;
-            width: auto;
-            height: auto;
-            color: #000000;
-            border-radius: 10px;
-            background-color: #FFFFFF;
-            max-width: 500px;
-            max-height: 200px;
-        }
-
-        .speech_bubble:after {
-            content: "";
-            position: absolute;
-            top: 21px;
-            right: -30px;
-            border-left: 30px solid #FFFFFF;
-            border-top: 10px solid transparent;
-            border-bottom: 10px solid transparent;
-        }
-
-
-        #messageInput {
-            height: 50px;
-            width: 100%;
-            padding: 10px 20px;
-            overflow-y: auto;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/W1005_chat.css" type="text/css">
 
 </head>
 
@@ -91,7 +31,11 @@
         <button type="submit">전송</button>
     </form>
     <form id="fileForm" enctype="multipart/form-data">
-        <input type="file" id="fileInput" name="file"/>
+        <label for="fileInput" class="custom-file-upload">
+            <img src="../img/clip.png" alt="Clip Icon">
+        </label>
+        <span id="fileNameDisplay">선택된 파일이 없습니다.</span>
+        <input type="file" id="fileInput" name="file" style="display: none;" onchange="displayFileName()"/>
         <input type="hidden" id="roomIdInput" name="roomId" value="{{chatRoom.id}}"/>
         <button type="button" onclick="uploadFile()">파일 업로드</button>
     </form>
@@ -203,6 +147,7 @@
     function uploadFile() {
         var fileInput = document.getElementById('fileInput');
         var formData = new FormData(document.getElementById('fileForm'));
+        var fileNameDisplay = document.getElementById('fileNameDisplay');
 
         // 파일을 선택하지 않은 경우
         if (!fileInput.value) {
@@ -224,10 +169,15 @@
 
                 // 파일 선택란 초기화
                 fileInput.value = null;
+
+                // 파일 이름 표시 초기화
+                fileNameDisplay.textContent = '선택된 파일이 없습니다.';
             },
             error: function (error) {
                 console.error('File upload error:', error);
             }
+
+
         });
     }
 
@@ -273,6 +223,19 @@
                 document.body.removeChild(downloadLink);
             }
         });
+    }
+
+    function displayFileName() {
+        var fileInput = document.getElementById('fileInput');
+        var fileNameDisplay = document.getElementById('fileNameDisplay');
+
+        if (fileInput.files.length > 0) {
+            // 파일이 선택되었을 때 파일 이름을 표시
+            fileNameDisplay.textContent = fileInput.files[0].name;
+        } else {
+            // 파일이 선택되지 않았을 때 기본 문구 표시
+            fileNameDisplay.textContent = '선택된 파일이 없습니다.';
+        }
     }
 
 </script>
