@@ -10,18 +10,65 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          integrity="sha384-rbs5u2iGRaI4VeAr5K8xEjgmfW2jUqoK1buSe8X/EmfYkDZjHe1tst6dd5zIpkF5"
+          crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-X4N3qVWzZSNAKzBlfU8Zml1t8gQ0ZzDr5BQT3qU2IHh01Pj+xCRAJzFXh8o2SIag"
+            crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            integrity="sha384-5KCr8dpa6AL6+d/5WH4M5JLqpgWGj3IMvmCO9dQ3ow9e8LZQ5flCZxyOFO9cZX+Q"
+            crossorigin="anonymous"></script>
+
+    <style>
+        .my-message {
+            float: right;
+            background-color: #dcf8c6; /* 메시지 배경색 */
+        }
+
+        /* 상대방이 보낸 메시지를 왼쪽 정렬하기 위한 스타일 */
+        .their-message {
+            float: left;
+            background-color: #fff; /* 메시지 배경색 */
+        }
+
+        /* 메시지 공통 스타일 */
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            clear: both; /* float 제거 */
+            max-width: 60%; /* 메시지 최대 너비 */
+            word-wrap: break-word; /* 긴 단어 줄바꿈 */
+        }
+        .chat-container {
+            width: 70%;
+            height: 60%;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #fff;
+            box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+            margin-top: 30px;
+            position: relative;
+        }
+
+
+    </style>
+
 </head>
 
 <body>
-<div id="container">
+<div>
     <h1>{{chatRoom.name}}</h1>
 
-    <div id="chatMessages">
+    <ul id="chatMessages" class="chat-container">
         {{#chatMessages}}
-            <p>{{content}}</p>
+            <li>{{content}}</li>
         {{/chatMessages}}
-    </div>
-    <form id="messageForm">
+    </ul>
+    <form id="messageForm" style="position: fixed; bottom: 0; right: 0;">
         <input type="text" id="messageInput" placeholder="메시지를 입력하세요..."/>
         <button type="submit">전송</button>
     </form>
@@ -70,6 +117,8 @@
                     messages.forEach(function (message) {
                         displayChatListMessage(message);
                     });
+                    // 새로운 메시지를 추가한 후 스크롤을 아래로 이동
+                    $("#chatMessages").scrollTop($("#chatMessages")[0].scrollHeight);
                 },
                 error: function (error) {
                     console.log("채팅 메시지 로딩 오류: " + error);
@@ -78,20 +127,22 @@
         }
 
         function displayChatListMessage(message) {
-            var viewMessage = message["content"];
-            var messageObject = JSON.parse(viewMessage);
+            var content = JSON.parse(message["content"]);
+            var messageId = message["id"];
 
-            if (messageObject.file_id) {
-                // 파일 메시지 표시
-                var downloadLink = '<a href="javascript:void(0);" onclick="downloadFile(\'' + messageObject.file_id + '\')">다운로드</a>';
-                var messageElement = '<p><strong>' + messageObject.fileName + '</strong>이(가) 업로드되었습니다. ' + downloadLink + '</p>';
+            if (message["chatFile"]) {
+                // 파일이 있는 메시지의 경우
+                var file = message["chatFile"];
+                var downloadLink = '<a href="javascript:void(0);" onclick="downloadFile(\'' + file.filePath + '\', \'' + file.fileName + '\')"></br>다운로드</a>';
+                var messageElement = '<p><strong>' + file.fileName + downloadLink + '</p>';
                 $("#chatMessages").append(messageElement);
             } else {
-                // 텍스트 메시지 표시
-                var messageElement = "<p>" + messageObject.content + "</p>";
+                // 파일이 없는 메시지의 경우
+                var messageElement = '<p>' + content.content + '</p>';
                 $("#chatMessages").append(messageElement);
             }
         }
+
 
 
         // function displayChatListMessage(message) {
@@ -158,8 +209,11 @@
 
 
     function displayChatFileMessage(fileUploadDTO) {
-        var messageElement = '<p><strong>' + fileUploadDTO.originFileName + '</strong>이(가) 업로드되었습니다. <a href="javascript:void(0);" onclick="downloadFile(\'' + fileUploadDTO.fileDir + '\', \'' + fileUploadDTO.originFileName + '\')">다운로드</a></p>';
+        var messageElement = '<p><strong>' + fileUploadDTO.originFileName + '</strong>이(가) 업로드되었습니다. <a href="javascript:void(0);" onclick="downloadFile(\'' + fileUploadDTO.fileDir + '\', \'' + fileUploadDTO.originFileName + '\')"></br>다운로드</a></p>';
         $("#chatMessages").append(messageElement);
+
+        // 새로운 메시지를 추가한 후 스크롤을 아래로 이동
+        $("#chatMessages").scrollTop($("#chatMessages")[0].scrollHeight);
     }
 
     function downloadFile(fileDir, fileName) {
@@ -198,7 +252,5 @@
     }
 
 </script>
-
-
 </body>
 </html>

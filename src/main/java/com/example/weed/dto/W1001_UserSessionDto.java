@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.Getter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -17,9 +18,7 @@ public class W1001_UserSessionDto implements Serializable {
     private String password;
     private String deptName;
     private String fileName;
-
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    private Date registrationTime;
+    private LocalDateTime registrationTime;
     private W1001_MemberAuthority authority;
 
 
