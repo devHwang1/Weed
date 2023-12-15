@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -19,10 +21,9 @@ public class Schedule {
     @NotBlank
     private String scheduleTitle; //스케줄 제목
 
-    @Temporal(TemporalType.DATE)
+
     private Date scheduleStart; //시작날짜
 
-    @Temporal(TemporalType.DATE)
     private Date scheduleEnd; //종료날짜
 
     private String scheduleColor; //스케줄 컬러
@@ -43,5 +44,6 @@ public class Schedule {
         }
         return null;
     }
+
 
 }

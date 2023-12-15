@@ -45,7 +45,7 @@ public class W1004_ScheduleDetailController {
 
     //스케줄 삭제
     @DeleteMapping("/{scheduleId}/delete")
-    public  ResponseEntity<String> deleteschedule(@PathVariable Long scheduleId){
+    public ResponseEntity<String> deleteSchedule(@PathVariable Long scheduleId) {
         try {
             W1004service.deleteSchedule(scheduleId);
             return ResponseEntity.ok("Schedule deleted successfully.");

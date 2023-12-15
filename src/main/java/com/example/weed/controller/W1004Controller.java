@@ -16,6 +16,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +51,17 @@ public class W1004Controller {
         entity.setScheduleId(w1004dto.getEventId());
         entity.setScheduleTitle(w1004dto.getTitle());
         entity.setScheduleStart(w1004dto.getStartDate());
-        entity.setScheduleEnd(w1004dto.getEndDate());
+
+        // Date를 LocalDateTime으로 변환
+        LocalDateTime endLocalDateTime = LocalDateTime.ofInstant(w1004dto.getEndDate().toInstant(), ZoneId.systemDefault());
+
+        // 엔드데이터의 시간을 23:59:59로 설정
+        LocalDateTime endDateTime = endLocalDateTime.with(LocalTime.of(23, 59, 59));
+
+        // LocalDateTime을 Timestamp로 변환
+        Timestamp endTimestamp = Timestamp.valueOf(endDateTime);
+        entity.setScheduleEnd(endTimestamp);
+
         entity.setScheduleColor(w1004dto.getColor());
         entity.setScheduleContent(w1004dto.getContent());
 

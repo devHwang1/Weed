@@ -12,9 +12,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +30,10 @@ public class W1004service {
 
     @Autowired
     private W1004Repository w1004Repository;
+
+    public static Date convertLocalDateTimeToDate(LocalDateTime localDateTime) {
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
 
 
     @Transactional
@@ -119,31 +125,22 @@ public class W1004service {
     public void updateScheduleInfo(Long scheduleId, W1004_detailDTO updatedInfo) {
         // 스케줄 정보 조회
         Schedule schedule = w1004Repository.findById(scheduleId).orElse(null);
+        System.out.println("ㄷㄷㄷㄷㄷㄷㄷ: " + scheduleId);
 
         if (schedule != null) {
             // 업데이트된 정보로 스케줄 엔터티 업데이트
             schedule.setScheduleTitle(updatedInfo.getTitle());
             schedule.setScheduleContent(updatedInfo.getContent());
+            schedule.setScheduleStart(updatedInfo.getStartDate());
 
+            // 종료일을 받아와서 LocalDateTime 및 Timestamp로 변환
+            LocalDateTime endLocalDateTime = LocalDateTime.ofInstant(updatedInfo.getEndDate().toInstant(), ZoneId.systemDefault());
+            LocalDateTime endDateTime = endLocalDateTime.with(LocalTime.of(23, 59, 59));
+            Timestamp endTimestamp = Timestamp.valueOf(endDateTime);
 
-            // Date를 String으로 변환
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            String startDateString = dateFormat.format(updatedInfo.getStartDate());
-            String endDateString = dateFormat.format(updatedInfo.getEndDate());
-
-            // String을 Date로 변환
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            LocalDateTime startDate = LocalDateTime.parse(startDateString, formatter);
-            LocalDateTime endDate = LocalDateTime.parse(endDateString, formatter);
-
-            Date startDateDate = Date.from(startDate.atZone(ZoneId.systemDefault()).toInstant());
-            Date endDateDate = Date.from(endDate.atZone(ZoneId.systemDefault()).toInstant());
-
-            schedule.setScheduleStart(startDateDate);
-            schedule.setScheduleEnd(endDateDate);
+            schedule.setScheduleEnd(endTimestamp);
 
             schedule.setScheduleColor(updatedInfo.getColor());
-
 
             // 데이터베이스에 업데이트된 스케줄 정보 저장
             w1004Repository.save(schedule);
@@ -152,8 +149,9 @@ public class W1004service {
             throw new IllegalStateException("해당 ID의 스케줄이 존재하지 않습니다.");
         }
     }
-    
-    //스케줄 삭제
+
+    //스케줄삭제
+    @Transactional
     public void deleteSchedule(Long scheduleId) {
         // 스케줄 정보 조회
         Schedule schedule = w1004Repository.findById(scheduleId).orElse(null);

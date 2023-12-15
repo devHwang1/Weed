@@ -5,6 +5,8 @@ import com.example.weed.entity.Member;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Date;
 
 @Getter
@@ -22,8 +24,5 @@ public class W1004EventDTO {
     public W1004EventDTO() {
         // 기본 생성자
     }
-
-
-
 
 }

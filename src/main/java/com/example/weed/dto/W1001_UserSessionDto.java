@@ -18,6 +18,7 @@ public class W1001_UserSessionDto implements Serializable {
     private String fileName;
     private Date registrationTime;
     private W1001_MemberAuthority authority;
+    private Long id;    // 멤버 아이디 추가
 
 
     public W1001_UserSessionDto(Member member){
@@ -26,6 +27,7 @@ public class W1001_UserSessionDto implements Serializable {
         this.email = member.getEmail();
         this.registrationTime = member.getRegistrationTime();
         this.deptName = member.getDept().getDeptName();
+        this.id = member.getId(); // 멤버 아이디 추가
 
         // null 체크를 추가하여 NPE 방지
         if (member.getFile() != null) {
