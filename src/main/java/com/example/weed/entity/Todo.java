@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
@@ -24,17 +25,17 @@ public class Todo {
 
     private boolean checked;
 
-    private Date registrationTime;
+    private LocalDate registrationDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public Todo(String title, String content, boolean checked, Date registrationTime, Member member) {
+    public Todo(String title, String content, boolean checked, LocalDate registrationDate, Member member) {
         this.title = title;
         this.content = content;
         this.checked = checked;
-        this.registrationTime = registrationTime;
+        this.registrationDate = registrationDate;
         this.member = member;
     }
 }

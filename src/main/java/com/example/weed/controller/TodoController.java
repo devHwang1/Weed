@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class TodoController {
             todo.setTitle(todoDTO.getTitle());
             todo.setContent(todoDTO.getContent());
             todo.setChecked(false);
-            todo.setRegistrationTime(new java.sql.Date(new Date().getTime()));
+            todo.setRegistrationDate(LocalDate.now());
             todo.setMember(member);
             todoRepository.save(todo);
         }

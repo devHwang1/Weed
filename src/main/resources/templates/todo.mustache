@@ -24,15 +24,15 @@
             </div>
         </div>
 
-        <div class="cont_area">
+        <div class="cont_area" style="overflow: auto;height: 729px;">
             <div class="cont active" id="tab1" style="display: none">
-                <div class="progressScore" style="width: 1250px;margin-left: 115px;display: flex;margin-top: 30px;justify-content: space-between;">
-                    <div class="tdCnt">{{getCheckedTodoCount}}/{{totalTodoCount}}</div>
-                    <div class="tdPercent">0%</div>
-                </div>
-                <div id="progressBarContainer">
-                    <div id="progressBar"></div>
-                </div>
+<!--                <div class="progressScore" style="width: 1250px;margin-left: 115px;display: flex;margin-top: 30px;justify-content: space-between;">-->
+<!--                    <div class="tdCnt">{{getCheckedTodoCount}}/{{totalTodoCount}}</div>-->
+<!--                    <div class="tdPercent">0%</div>-->
+<!--                </div>-->
+<!--                <div id="progressBarContainer">-->
+<!--                    <div id="progressBar"></div>-->
+<!--                </div>-->
                 {{#todoList}}
                     <div class="todoList" style="display: flex; padding: 10px" data-id="{{id}}" data-checked="{{checked}}">
                         {{#checked}}

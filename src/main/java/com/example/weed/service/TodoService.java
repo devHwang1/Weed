@@ -9,6 +9,7 @@ import com.example.weed.repository.W1001_MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -28,23 +29,15 @@ public class TodoService {
         this.w1001_memberService = w1001_memberService;
     }
 
-    public void addTodoList(TodoDTO todoDTO) {
-
-        Member member =w1001_memberService.getLoggedInMember();
-
-        // Todo 엔티티 생성
-        Todo todo = new Todo();
-        todo.setTitle(todoDTO.getTitle());
-        todo.setContent(todoDTO.getContent());
-        todo.setChecked(false); // 초기값은 false로 설정
-        todo.setRegistrationTime(new java.sql.Date(new Date().getTime())); // 현재 시간으로 설정
-        todo.setMember(member);
-
-        // Todo 엔티티 저장
-        todoRepository.save(todo);
-    }
+//    public List<TodoDTO> getTodoList() {
+//        List<Todo> todoEntities = todoRepository.findAll();
+//        return todoEntities.stream()
+//                .map(this::convertToDto)
+//                .collect(Collectors.toList());
+//    }
     public List<TodoDTO> getTodoList() {
-        List<Todo> todoEntities = todoRepository.findAll();
+        LocalDate registrationDate = LocalDate.now();
+        List<Todo> todoEntities = todoRepository.findByRegistrationDate(registrationDate);
         return todoEntities.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
