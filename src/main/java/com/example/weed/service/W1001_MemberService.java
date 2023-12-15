@@ -36,12 +36,10 @@ public class W1001_MemberService implements UserDetailsService {
     private final W1008_FileRepository w1008FileRepository;
 
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String uploadPath;
 
-    public Member W1001_getMemberInfo(String email) {
-        return w1001MemberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("email"));
-    }
+
+    @Value("${com.example.upload.path}")
+    private String uploadPath;
 
     public W1001_MemberService(HttpSession session, W1001_MemberRepository w1001MemberRepository, PasswordEncoder passwordEncoder, JavaMailSender mailSender, W1008_FileRepository w1008FileRepository) {
         this.session = session;
@@ -237,23 +235,7 @@ public class W1001_MemberService implements UserDetailsService {
         });
 
     }
-    public void updateMemberDept(Long memberId, Long deptId) {
-        Optional<Member> optionalMember = w1001MemberRepository.findById(memberId);
 
-        optionalMember.ifPresent(member -> {
-            // 부서 업데이트 로직을 구현
-            // 예를 들어, 부서 엔터티를 새로 만들거나, 기존 부서 엔터티를 가져와서 설정
-            Dept dept = new Dept();
-            dept.setId(deptId);
-            member.setDept(dept);
 
-            // 리파지토리를 사용하여 업데이트
-            w1001MemberRepository.save(member);
-        });
-    }
-
-    public boolean isMemberExistByDeptId(Long deptId) {
-        return w1001MemberRepository.existsByDeptId(deptId);
-    }
 }
 

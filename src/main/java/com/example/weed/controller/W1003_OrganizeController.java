@@ -5,7 +5,6 @@ import com.example.weed.repository.W1003_DeptRepository;
 import com.example.weed.repository.W1001_MemberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -14,7 +13,6 @@ import java.util.List;
 
 @ControllerAdvice(annotations = Controller.class)
 @AllArgsConstructor
-@Transactional
 public class W1003_OrganizeController {
 
     private final W1003_DeptRepository w1003DeptRepository;

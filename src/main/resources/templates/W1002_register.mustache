@@ -130,11 +130,7 @@
         document.getElementById('form-register').addEventListener('submit', (event) => {
             // Validate the form before submitting
             if (validateForm()) {
-                const currentTime = new Date();
-                const isoString = currentTime.toISOString().slice(0, -1); // Remove 'Z' at the end
-
-
-
+                const currentTime = new Date().toISOString();
 
                 fetch('/api/member', {
                     method: 'POST',
@@ -146,7 +142,7 @@
                         'email': document.getElementById('email').value,
                         'password': document.getElementById('password').value,
                         'authority': 'GUEST',
-                        'registrationTime' : isoString
+                        'registrationTime' : currentTime
                     })
                 })
                         .then((res) => {

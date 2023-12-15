@@ -1,12 +1,7 @@
 package com.example.weed.controller;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.S3Object;
-import com.example.weed.dto.W1001_UserSessionDto;
 import com.example.weed.entity.File;
 import com.example.weed.entity.Member;
-import com.example.weed.repository.W1008_FileRepository;
 import com.example.weed.service.W1008_FileService;
 import com.example.weed.service.W1001_MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.amazonaws.regions.Regions;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static com.amazonaws.services.ec2.model.LocationType.Region;
 
 
 @RestController
@@ -42,46 +28,23 @@ public class W1008_UploadController {
     private W1008_FileService w1008FileService;
 
     @Autowired
-    private W1008_FileRepository w1008FileRepository;
-
-    @Autowired
     private W1001_MemberService w1001MemberService;
 
-    @Value("${cloud.aws.s3.bucket}")
+    @Value("${com.example.upload.path}")
     private String uploadPath;
 
-
     @PostMapping("/uploadAjax")
-    public ResponseEntity<Map<String, String>> uploadFile(@RequestPart("uploadFiles") MultipartFile[] uploadFiles, HttpSession session) {
+    public ResponseEntity<String> uploadFile(@RequestPart("uploadFiles") MultipartFile[] uploadFiles) {
 
         try {
             Member loggedInMember = w1001MemberService.getLoggedInMember();
-            w1008FileService.uploadFile(uploadFiles, loggedInMember);
+            w1008FileService.uploadFile(uploadFiles,loggedInMember);
             w1001MemberService.updateMemberFiles(loggedInMember);
+            return new ResponseEntity<>("File uploaded successfully", HttpStatus.OK);
 
-            Member selectMember = w1001MemberService.W1001_getMemberInfo(loggedInMember.getEmail());
-            W1001_UserSessionDto w1001UserSessionDto = new W1001_UserSessionDto(selectMember);
-            session.setAttribute("userSession", w1001UserSessionDto);
-
-//            // 변경된 파일 정보를 사용하여 이미지 URL 업데이트
-//            String newFileName = uploadFiles[0].getOriginalFilename();
-//            String profileImageUrl = "http://weedbucket.s3.ap-northeast-2.amazonaws.com/img/" + newFileName;
-//
-//            Long currentMemberId = loggedInMember.getFile().getId();
-//            Optional<File> file = w1008FileRepository.findById(currentMemberId);
-//            file.get().setFileName(newFileName);
-//
-//            loggedInMember.getFile().setFileName(newFileName);
-
-            // 업로드 성공 메시지와 함께 이미지 URL 반환
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "File uploaded successfully");
-//            response.put("profileImageUrl", profileImageUrl);
-            return ResponseEntity.ok(response);
         } catch (Exception e) {
-
             e.printStackTrace();
-            return ResponseEntity.ok(new HashMap<>());
+            return new ResponseEntity<>("File upload failed", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -107,8 +70,6 @@ public class W1008_UploadController {
         }
         return result;
     }
-
-
 
     @GetMapping("/getProfileImageName")
     public ResponseEntity<String> getProfileImageName() {

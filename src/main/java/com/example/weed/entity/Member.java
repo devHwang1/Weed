@@ -1,24 +1,18 @@
 package com.example.weed.entity;
 
 import com.example.weed.authority.W1001_MemberAuthority;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.sql.Date;
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "member")
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,9 +31,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private W1001_MemberAuthority authority;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssX")
-    private LocalDateTime registrationTime;
-
+    private Date registrationTime;
 
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "file_id")
@@ -55,12 +47,8 @@ public class Member {
 //    @JoinColumn(name = "file_id")  // 외래 키 명칭 수정
 //    private File file;
 
-    @ManyToMany(mappedBy = "members")
-    private Set<ChatRoom> chatRooms = new HashSet<>();
-
-
     @Builder
-    public Member(Long id, String name, String email, String password, W1001_MemberAuthority authority, LocalDateTime registrationTime,File file, Dept dept) {
+    public Member(Long id, String name, String email, String password, W1001_MemberAuthority authority, Date registrationTime,File file, Dept dept) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -71,7 +59,6 @@ public class Member {
         this.dept = dept;
 //        this.file = file;
     }
-
 
     @Getter
     @Setter
@@ -88,13 +75,9 @@ public class Member {
         @NotBlank(message = "비밀번호는 필수 입력값입니다.")
         private String password;
 
-        @Enumerated(EnumType.STRING)
-        @Column(name = "authority")
         private W1001_MemberAuthority authority;
 
-        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssX")
-        private LocalDateTime registrationTime;
-
+        private Date registrationTime;
 
         private Long dept_id = 0L;
 

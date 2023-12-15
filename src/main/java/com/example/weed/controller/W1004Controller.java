@@ -5,7 +5,7 @@ import com.example.weed.dto.W1004DTO;
 import com.example.weed.dto.W1004EventDTO;
 import com.example.weed.entity.Member;
 import com.example.weed.entity.Schedule;
-import com.example.weed.repository.W1004_ScheduleRepository;
+import com.example.weed.repository.W1004Repository;
 import com.example.weed.service.W1001_MemberService;
 import com.example.weed.service.W1004service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +21,10 @@ import java.time.ZoneId;
 import java.util.List;
 
 @Controller
-public class W1004_Controller {
+public class W1004Controller {
 
     @Autowired
-    private W1004_ScheduleRepository w1004ScheduleRepository;
+    private W1004Repository w1004Repository;
 
 
     @Autowired
@@ -36,7 +36,7 @@ public class W1004_Controller {
 
     @GetMapping("/calendar")
     public String calendar() {
-        return "W1004";
+        return "W1004Schedule";
     }
 
     //이벤트 등록
@@ -65,7 +65,7 @@ public class W1004_Controller {
         Member loggedInMember = memberService.findById(loggedInMemberId);
         entity.setMember(loggedInMember);
 
-        w1004ScheduleRepository.save(entity);
+        w1004Repository.save(entity);
 
         return "success";
     }

@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-//@CrossOrigin(origins = "http://10.100.203.31:8099", allowCredentials = "true")
-@CrossOrigin(origins = "http://3.35.59.205:8099", allowCredentials = "true")
+@CrossOrigin(origins = "http://10.100.203.31:8099", allowCredentials = "true")
+//@CrossOrigin(origins = "http://3.35.59.205:8099", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/app/member")
 public class W2001_MemberAppApiController {
@@ -135,14 +135,8 @@ public class W2001_MemberAppApiController {
             if (recentCheckIn.isPresent() || recentCheckOut.isPresent()) {
                 // 출근 또는 퇴근 기록이 하나라도 존재하는 경우
                 response.put("success", true);
-                recentCheckIn.ifPresent(working -> {
-                    response.put("recentCheckIn", convertToLocalDateTime(working.getCheckInTime()));
-                    response.put("memberName", working.getMember().getName());
-                });
-                recentCheckOut.ifPresent(working -> {
-                    response.put("recentCheckOut", convertToLocalDateTime(working.getCheckOutTime()));
-                    response.put("memberName", working.getMember().getName());
-                });
+                recentCheckIn.ifPresent(working -> response.put("recentCheckIn", W2004_WorkingDto.mapWorkingToDto(working)));
+                recentCheckOut.ifPresent(working -> response.put("recentCheckOut", W2004_WorkingDto.mapWorkingToDto(working)));
                 return ResponseEntity.ok(response);
             } else {
                 // 출근 또는 퇴근 기록이 없는 경우
@@ -158,15 +152,4 @@ public class W2001_MemberAppApiController {
             return ResponseEntity.status(500).body(response);
         }
     }
-
-    private Map<String, Object> convertToLocalDateTime(LocalDateTime dateTime) {
-        Map<String, Object> convertedDateTime = new HashMap<>();
-        convertedDateTime.put("year", dateTime.getYear());
-        convertedDateTime.put("month", dateTime.getMonthValue());
-        convertedDateTime.put("day", dateTime.getDayOfMonth());
-        convertedDateTime.put("hour", dateTime.getHour());
-        convertedDateTime.put("minute", dateTime.getMinute());
-        return convertedDateTime;
-    }
 }
-

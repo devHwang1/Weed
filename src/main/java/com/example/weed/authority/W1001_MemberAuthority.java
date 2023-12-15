@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public enum W1001_MemberAuthority {
 
-    USER("USER"), ADMIN("ADMIN"), GUEST("GUEST");
+    USER("USER"), ADMIN("ADMIN"), GUEST("GUEST"), SCANNER("SCANNER");
 
     private String name;
 

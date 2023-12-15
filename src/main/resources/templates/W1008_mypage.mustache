@@ -50,14 +50,13 @@
     <form id="form-register" onsubmit="return false;">
         <div class="nameInput" style="margin: 0 !important;display: flex;justify-content: space-evenly;align-items: center;">
             <div>
-                <img src="https://weedbucket.s3.ap-northeast-2.amazonaws.com/img/logo2.png">
+                <img src="/Img/logo2.png">
             </div>
             <div style="height: 754px;width: 500px;margin-top: 50px; ">
                 <div class="rname" style="right: 157px">사진</div>
                 <div>
                     <div style="text-align: left; display: flex; align-items: center;">
-<!--                        <img id="profileImage" src="/display?fileName={{userSession.fileName}}" style="border-radius: 50%; width: 100px; margin-left: 100px; margin-bottom: 15px; margin-right: 35px;">-->
-                        <img id="profileImage" src="https://weedbucket.s3.ap-northeast-2.amazonaws.com/img/{{userSession.fileName}}" style="border-radius: 50%; width: 100px; margin-left: 100px; margin-bottom: 15px; margin-right: 35px;">
+                        <img id="profileImage" src="/display?fileName={{userSession.fileName}}" style="border-radius: 50%; width: 100px; margin-left: 100px; margin-bottom: 15px; margin-right: 35px;">
 <!--                        <button onclick="deleteImage()" style="margin-bottom: 57px; background: white; width: 80px; height: 30px; border-radius: 5px; color: #9f9f9f; border: 1px solid #9f9f9f; margin-right: 15px">삭제</button>-->
                         <label for="file">
                             <div class="btn-upload" style="background: white;width: 124px;height: 30px;border-radius: 5px;color: #00c473;border: 1px solid #00c473;margin-bottom: 58px;padding-left: 48px;font-size: 13px;padding-top: 4px;">수정</div>
@@ -173,26 +172,26 @@
         // 파일 업로드 성공
         // document.getElementById('profileImage').src = '/display?fileName=' + files[0].name;
             document.getElementById('profileImage').src = '/display?fileName=' + files[0].name;
-
-
-        } else {
-            // 파일 업로드 실패 또는 다른 예외 처리
-        }
+    } else {
+        // 파일 업로드 실패 또는 다른 예외 처리
+    }
     },
         error: function (jqXHR, textStatus, errorThrown) {
         console.log(textStatus);
     }
     }); // ajax 끝
-            // alert("프로필 사진이 변경되었습니다.");
-            setTimeout(() => {
-                alert("프로필 사진이 변경되었습니다.");
-                location.href = "/mypage";
-            }, 3000);
+            alert("프로필 사진이 변경되었습니다.");
 
-            // 3초 후 리로드
-            // setTimeout(() => location.href = "/mypage", 3000);
-            //location.reload();
+
+            // location.replace("/mypage");
+
+
+
     });
+
+        ////////////////////////////////////////////////
+
+
 
         $('.registerButton').click(function () {
             var name = $("#name").val();

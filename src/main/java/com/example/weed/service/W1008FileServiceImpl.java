@@ -1,13 +1,9 @@
 package com.example.weed.service;
 
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.weed.entity.File;
 import com.example.weed.entity.Member;
 import com.example.weed.repository.W1008_FileRepository;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,21 +17,16 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@NoArgsConstructor
 public class W1008FileServiceImpl implements W1008_FileService {
 
     @Autowired
     private W1008_FileRepository w1008FileRepository;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String s3BucketName;
-
-    @Autowired
-    private AmazonS3 amazonS3;
+    @Value("${com.example.upload.path}")
+    private String uploadPath;
 
     @Override
     public File findByFileName(String fileName) {
@@ -58,33 +49,27 @@ public class W1008FileServiceImpl implements W1008_FileService {
             String originalName = uploadFile.getOriginalFilename();
             String uuid = UUID.randomUUID().toString();
             String fileName = uuid + "_" + Paths.get(originalName).getFileName().toString();
+//            String folderPath = makeFolder();
+            String saveName = uploadPath + java.io.File.separator  + java.io.File.separator + fileName;
+            Path savePath = Paths.get(saveName);
 
             try {
-                ObjectMetadata metadata = new ObjectMetadata();
-                metadata.setContentType(uploadFile.getContentType());
-
-                // 파일을 S3에 업로드
-                PutObjectRequest putObjectRequest = new PutObjectRequest(s3BucketName, fileName, uploadFile.getInputStream(), metadata);
-                amazonS3.putObject(putObjectRequest);
-
-                // 업로드된 파일의 URL을 생성하고 파일 엔터티에 저장
-                String fileUrl = amazonS3.getUrl(s3BucketName, fileName).toString();
+                uploadFile.transferTo(savePath);
 
                 File existingFile = findByFileName(fileName);
                 File memberId = w1008FileRepository.findByMemberId(loggedInMember.getId());
-
                 if (loggedInMember.getFile() == null || memberId == null) {
                     File newFile = new File();
                     newFile.setFileName(fileName);
-                    newFile.setFilePath(fileUrl);
+                    newFile.setFilePath(saveName);
                     newFile.setMember(loggedInMember);
-                    if (loggedInMember.getId() != null) {
+                    if(loggedInMember.getId() != null){
                         newFile.setId(loggedInMember.getId());
                     }
 
                     save(newFile);
                 } else {
-                    memberId.setFilePath(fileUrl);
+                    memberId.setFilePath(saveName);
                     memberId.setFileName(fileName);
                     save(memberId);
                 }
@@ -96,5 +81,19 @@ public class W1008FileServiceImpl implements W1008_FileService {
         return null;
     }
 
+    private String makeFolder() {
+        String str = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        String folderPath = str.replace("/", java.io.File.separator);
 
+        Path uploadPathFolder = Paths.get(uploadPath, folderPath);
+
+        if (!Files.exists(uploadPathFolder)) {
+            try {
+                Files.createDirectories(uploadPathFolder);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return folderPath;
+    }
 }

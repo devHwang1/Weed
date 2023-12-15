@@ -1,10 +1,9 @@
 package com.example.weed.controller;
 
 import com.example.weed.dto.W1001_CustomDetails;
+import com.example.weed.dto.W1001_MemberDTO;
 import com.example.weed.dto.W1001_UserSessionDto;
-import com.example.weed.entity.Dept;
 import com.example.weed.entity.Member;
-import com.example.weed.repository.W1003_DeptRepository;
 import com.example.weed.service.W1001_MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,19 +14,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URLDecoder;
-import java.util.Optional;
 
 @RestController
 public class W1001_MemberApiController {
 
 
     private final W1001_MemberService w1001MemberService;
-    private final W1003_DeptRepository w1003DeptRepository;
 
-    public W1001_MemberApiController(W1001_MemberService w1001MemberService, W1003_DeptRepository w1003DeptRepository) {
+    public W1001_MemberApiController(W1001_MemberService w1001MemberService) {
         this.w1001MemberService = w1001MemberService;
-        this.w1003DeptRepository = w1003DeptRepository;
     }
 
 
@@ -103,68 +98,13 @@ public class W1001_MemberApiController {
     @PutMapping("/api/updateMemberDept/{memberId}")
     public ResponseEntity<String> updateDept(@PathVariable Long memberId, @RequestParam Long deptId){
         try {
-            w1001MemberService.updateMemberDept(memberId, deptId);
-            return ResponseEntity.ok("부서 변경 완료!");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("부서 변경 에러");
+            w1001MemberService.updateDept(memberId,deptId);
+            return (ResponseEntity<String>) ResponseEntity.ok("부서 변경 완료!");
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("부서변경 에러");
         }
     }
 
-    @PostMapping("/api/addDept")
-    public ResponseEntity<String> addDept(@RequestBody String deptName) {
-        try {
-            Dept dept = new Dept(URLDecoder.decode(deptName, "UTF-8").split("=")[1]);
-            w1003DeptRepository.save(dept);
-            return ResponseEntity.ok("부서 추가 성공!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("부서 추가 실패: " + e.getMessage());
-        }
-    }
-    @GetMapping("/api/checkMemberExist/{deptId}")
-    public ResponseEntity<Boolean> checkMemberExist(@PathVariable Long deptId) {
-        // 여기서 멤버의 존재 여부를 체크하고 true 또는 false를 반환
-        boolean memberExists = w1001MemberService.isMemberExistByDeptId(deptId);
-        return ResponseEntity.ok(memberExists);
-    }
-    @DeleteMapping("/api/deleteDept/{deptId}")
-    public ResponseEntity<String> deleteDept(@PathVariable Long deptId) {
-        try {
-            // 부서 삭제 전 멤버 존재 여부 확인
-            if (w1001MemberService.isMemberExistByDeptId(deptId)) {
-                return ResponseEntity.badRequest().body("해당 부서에는 멤버가 존재해서 삭제가 불가능합니다.");
-            }
-
-            // 멤버가 없으면 부서 삭제
-            w1003DeptRepository.deleteById(deptId);
-            return ResponseEntity.ok("부서 삭제 완료!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("부서 삭제 중 오류 발생: " + e.getMessage());
-        }
-    }
-
-    @PutMapping("/api/updateDept/{deptId}")
-    public ResponseEntity<String> updateDept(@PathVariable Long deptId, @RequestParam String newDeptName) {
-        try {
-            // 요청으로 받은 내용을 사용하여 업데이트 로직을 구현
-            Optional<Dept> existingDept = w1003DeptRepository.findById(deptId);
-
-            if (existingDept.isPresent()) {
-                Dept dept = existingDept.get();
-
-                // 업데이트 로직: 부서의 이름 변경
-                dept.setDeptName(newDeptName);
-
-                // 저장
-                w1003DeptRepository.save(dept);
-
-                return ResponseEntity.ok("부서 업데이트 완료!");
-            } else {
-                return ResponseEntity.badRequest().body("해당 ID의 부서를 찾을 수 없습니다.");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("부서 업데이트 중 오류 발생: " + e.getMessage());
-        }
-    }
 
 }
 

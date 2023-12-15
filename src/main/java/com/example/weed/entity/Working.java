@@ -26,12 +26,14 @@ public class Working {
 
     private LocalDateTime checkOutTime;
 
+    private double workingHours;
+
     @ManyToOne
     @JoinColumn(name = "m_id")
     private Member member;
 
     public W1007_workingDTO toDTO() {
-        return new W1007_workingDTO(id, checkInTime, checkOutTime, member.getName());
+        return new W1007_workingDTO(id, checkInTime, checkOutTime, workingHours, member.getName());
     }
 }
 
