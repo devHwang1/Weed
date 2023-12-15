@@ -110,7 +110,7 @@ public class W1001_IndexController {
         return "redirect:/login";
     }
 
-    @GetMapping("/todo")
+    @GetMapping("/todoList")
     public String todo(Model model) {
         List<TodoDTO> todoList = todoService.getTodoList();
         Long totalTodoCount = todoService.getTotalTodoCount();
@@ -124,6 +124,6 @@ public class W1001_IndexController {
         // Model 객체에 Todo 게시물의 총 개수를 추가
         model.addAttribute("totalTodoCount", totalTodoCount);
 
-        return "/todo";
+        return "todo";
     }
 }
