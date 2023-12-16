@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>채팅 메시지</title>
+    {{>layouts/W1003_header}}
+    <!-- SockJS 및 Stomp 라이브러리 추가 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          integrity="sha384-rbs5u2iGRaI4VeAr5K8xEjgmfW2jUqoK1buSe8X/EmfYkDZjHe1tst6dd5zIpkF5"
+          crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-X4N3qVWzZSNAKzBlfU8Zml1t8gQ0ZzDr5BQT3qU2IHh01Pj+xCRAJzFXh8o2SIag"
+            crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            integrity="sha384-5KCr8dpa6AL6+d/5WH4M5JLqpgWGj3IMvmCO9dQ3ow9e8LZQ5flCZxyOFO9cZX+Q"
+            crossorigin="anonymous"></script>
+
+    <style>
+        /* 채팅창 */
+        .chat-container {
+            width: 70%;
+            height: 60%;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #fff;
+            box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+            margin-top: 30px;
+            position: relative;
+        }
+
+        /* 메시지 */
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            clear: both; /* float 제거 */
+            max-width: 60%; /* 메시지 최대 너비 */
+            word-wrap: break-word; /* 긴 단어 줄바꿈 */
+        }
+
+        /* 내 메시지 */
+        .my-message {
+            float: right;
+            background-color: #dcf8c6; /* 메시지 배경색 */
+        }
+
+        /* 상대방 메시지 */
+        .their-message {
+            float: left;
+            background-color: #fff; /* 메시지 배경색 */
+        }
+
+        /* 메시지 시간 */
+        .chat-message .time {
+            font-size: 12px;
+            color: #999;
+            float: right;
+            margin-top: 5px;
+        }
+        /* 메시지 입력창 */
+        .message-form {
+            width: 100%;
+            height: 40px;
+            background-color: #fff;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .message-form input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+
+        .message-form button {
+            width: 40px;
+            height: 40px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+        }
+
+        .chat-container {
+            width: 70%;
+            height: 60%;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #fff;
+            box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+            margin-top: 30px;
+            position: relative;
+        }
+
+
+    </style>
+
+</head>
+
+<body>
+<div class="entire-chat">
+    <h1>{{chatRoom.name}}</h1>
+
+    <ul id="chatMessages" class="chat-container">
+        {{#chatMessages}}
+            <li>{{content}}</li>
+        {{/chatMessages}}
+    </ul>
+    <form id="messageForm" style="position: fixed; bottom: 0; right: 0;">
+        <input type="text" id="messageInput" placeholder="메시지를 입력하세요..."/>
+        <button type="submit">전송</button>
+    </form>
+    <form id="fileForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="file"/>
+        <input type="hidden" id="roomIdInput" name="roomId" value="{{chatRoom.id}}"/>
+        <button type="button" onclick="uploadFile()">파일 업로드</button>
+    </form>
+</div>
+
+<script>
+    // 채팅
+    $(document).ready(function () {
+        var stompClient = null;
+
+        function connectWebSocket() {
+            var socket = new SockJS('/ws'); // WebSocket 엔드포인트
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, function (frame) {
+                console.log('연결됨: ' + frame);
+
+                // 채팅방에 연결되었으므로 채팅방에 있는 모든 메시지를 로드합니다.
+                stompClient.subscribe('/topic/chat/{{chatRoom.id}}/messages', function (response) {
+                    var message = JSON.parse(response.body);
+                    displayChatStartMessage(message);
+                });
+            });
+        }
+
+        function displayChatStartMessage(message) {
+            console.log("message", message)
+            var messageObject = JSON.parse(JSON.stringify(message));
+            console.log("messageObject", messageObject)
+            var messageElement = "<p>" + messageObject.content + "</p>";
+            $("#chatMessages").append(messageElement);
+        }
+
+
+        function loadChatMessages() {
+            $.ajax({
+                url: "/api/chat/{{chatRoom.id}}/messages",
+                type: "GET",
+                success: function (messages) {
+                    console.log(messages);
+                    messages.forEach(function (message) {
+                        displayChatListMessage(message);
+                    });
+                    // 새로운 메시지를 추가한 후 스크롤을 아래로 이동
+                    $("#chatMessages").scrollTop($("#chatMessages")[0].scrollHeight);
+                },
+                error: function (error) {
+                    console.log("채팅 메시지 로딩 오류: " + error);
+                }
+            });
+        }
+
+        function displayChatListMessage(message) {
+            var content = JSON.parse(message["content"]);
+            var messageId = message["id"];
+
+            if (message["chatFile"]) {
+                // 파일이 있는 메시지의 경우
+                var file = message["chatFile"];
+                var downloadLink = '<a href="javascript:void(0);" onclick="downloadFile(\'' + file.filePath + '\', \'' + file.fileName + '\')"></br>다운로드</a>';
+                var messageElement = '<p><strong>' + file.fileName + downloadLink + '</p>';
+                $("#chatMessages").append(messageElement);
+            } else {
+                // 파일이 없는 메시지의 경우
+                var messageElement = '<p>' + content.content + '</p>';
+                $("#chatMessages").append(messageElement);
+            }
+        }
+
+
+
+        // function displayChatListMessage(message) {
+        //     console.log("message", message)
+        //     var viewMessage = message["content"]
+        //     console.log("message1", viewMessage)
+        //     var messageObject = JSON.parse(viewMessage);
+        //     console.log("messageObject", messageObject)
+        //     var messageElement = "<p>" + messageObject.content + "</p>";
+        //     $("#chatMessages").append(messageElement);
+        // }
+
+        function sendMessage(messageContent) {
+            stompClient.send("/app/chat/{{chatRoom.id}}/sendMessage", {}, JSON.stringify({
+                'content': messageContent
+            }));
+        }
+
+        // WebSocket 연결
+        connectWebSocket();
+
+        // 기존 메시지 로드
+        loadChatMessages();
+
+        // 메시지 전송 폼 처리
+        $("#messageForm").submit(function (event) {
+            event.preventDefault();
+            sendMessage($("#messageInput").val());
+            $("#messageInput").val('');
+        });
+
+    });
+
+    function uploadFile() {
+        var fileInput = document.getElementById('fileInput');
+        var formData = new FormData(document.getElementById('fileForm'));
+
+        // 파일을 선택하지 않은 경우
+        if (!fileInput.value) {
+            alert('파일을 선택하세요.');
+            return;
+        }
+
+        $.ajax({
+            url: '/s3/upload',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (fileUploadDTO) {
+                console.log('File uploaded successfully:', fileUploadDTO);
+
+                // 업로드된 파일의 내용을 채팅창에 표시
+                displayChatFileMessage(fileUploadDTO);
+
+                // 파일 선택란 초기화
+                fileInput.value = null;
+            },
+            error: function (error) {
+                console.error('File upload error:', error);
+            }
+        });
+    }
+
+
+    function displayChatFileMessage(fileUploadDTO) {
+        var messageElement = '<p><strong>' + fileUploadDTO.originFileName + '</strong>이(가) 업로드되었습니다. <a href="javascript:void(0);" onclick="downloadFile(\'' + fileUploadDTO.fileDir + '\', \'' + fileUploadDTO.originFileName + '\')"></br>다운로드</a></p>';
+        $("#chatMessages").append(messageElement);
+
+        // 새로운 메시지를 추가한 후 스크롤을 아래로 이동
+        $("#chatMessages").scrollTop($("#chatMessages")[0].scrollHeight);
+    }
+
+    function downloadFile(fileDir, fileName) {
+        // AJAX를 사용하여 파일 다운로드 URL에 접근
+        $.ajax({
+            url: "/s3/download/" + fileName,
+            data: {
+                "fileDir": fileDir
+            },
+            dataType: 'binary',
+            xhrFields: {
+                'responseType': 'blob'
+            },
+            success: function (data) {
+                // Blob 데이터를 파일로 변환
+                var blob = new Blob([data], { type: 'application/octet-stream' });
+
+                // Blob을 URL로 생성
+                var url = window.URL.createObjectURL(blob);
+
+                // 새로운 링크 엘리먼트 생성
+                var downloadLink = document.createElement("a");
+
+                // 다운로드 링크 설정
+                downloadLink.href = url;
+                downloadLink.download = fileName;
+
+                // 링크를 DOM에 추가하고 클릭
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+
+                // DOM에서 링크 제거
+                document.body.removeChild(downloadLink);
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
