@@ -11,11 +11,7 @@ public interface W2002_WorkingRepository extends JpaRepository<Working, Long> {
 
     Optional<Working> findTopByMemberOrderByDateDescCheckInTimeDesc(Member foundMember);
 
-//    Optional<Working> findFirstByDateAndCheckInTimeIsNotNullOrderByCheckInTimeDesc(LocalDate currentDate);
-//
-//    Optional<Working> findFirstByDateAndCheckOutTimeIsNotNullOrderByCheckOutTimeDesc(LocalDate currentDate);
+    Optional<Working> findFirstByDateAndCheckInTimeIsNotNullOrderByCheckInTimeDesc(LocalDate currentDate);
 
-    Optional<Working> findFirstByMemberAndCheckInTimeIsNotNullOrderByCheckInTimeDesc(Member foundMember);
-
-    Optional<Working> findFirstByMemberAndCheckOutTimeIsNotNullOrderByCheckOutTimeDesc(Member foundMember);
+    Optional<Working> findFirstByDateAndCheckOutTimeIsNotNullOrderByCheckOutTimeDesc(LocalDate currentDate);
 }

@@ -9,33 +9,119 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <link rel="stylesheet" href="../css/W1005_chat.css" type="text/css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          integrity="sha384-rbs5u2iGRaI4VeAr5K8xEjgmfW2jUqoK1buSe8X/EmfYkDZjHe1tst6dd5zIpkF5"
+          crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-X4N3qVWzZSNAKzBlfU8Zml1t8gQ0ZzDr5BQT3qU2IHh01Pj+xCRAJzFXh8o2SIag"
+            crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            integrity="sha384-5KCr8dpa6AL6+d/5WH4M5JLqpgWGj3IMvmCO9dQ3ow9e8LZQ5flCZxyOFO9cZX+Q"
+            crossorigin="anonymous"></script>
+
+    <style>
+        /* 채팅창 */
+        .chat-container {
+            width: 70%;
+            height: 60%;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #fff;
+            box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+            margin-top: 30px;
+            position: relative;
+        }
+
+        /* 메시지 */
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            clear: both; /* float 제거 */
+            max-width: 60%; /* 메시지 최대 너비 */
+            word-wrap: break-word; /* 긴 단어 줄바꿈 */
+        }
+
+        /* 내 메시지 */
+        .my-message {
+            float: right;
+            background-color: #dcf8c6; /* 메시지 배경색 */
+        }
+
+        /* 상대방 메시지 */
+        .their-message {
+            float: left;
+            background-color: #fff; /* 메시지 배경색 */
+        }
+
+        /* 메시지 시간 */
+        .chat-message .time {
+            font-size: 12px;
+            color: #999;
+            float: right;
+            margin-top: 5px;
+        }
+        /* 메시지 입력창 */
+        .message-form {
+            width: 100%;
+            height: 40px;
+            background-color: #fff;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .message-form input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+
+        .message-form button {
+            width: 40px;
+            height: 40px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+        }
+
+        .chat-container {
+            width: 70%;
+            height: 60%;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #fff;
+            box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+            margin-top: 30px;
+            position: relative;
+        }
+
+
+    </style>
 
 </head>
 
 <body>
 <div class="entire-chat">
-    <h1 class="chat-room-name">{{chatRoom.name}}</h1>
+    <h1>{{chatRoom.name}}</h1>
 
-    <ul id="chatMessages" class="chat-container" style="overflow-y: auto;">
+    <ul id="chatMessages" class="chat-container">
         {{#chatMessages}}
-            <li class="chat-message">
-                <div class="message-container">
-                    {{content}}
-                </div>
-            </li>
+            <li>{{content}}</li>
         {{/chatMessages}}
     </ul>
-    <form id="messageForm">
+    <form id="messageForm" style="position: fixed; bottom: 0; right: 0;">
         <input type="text" id="messageInput" placeholder="메시지를 입력하세요..."/>
         <button type="submit">전송</button>
     </form>
     <form id="fileForm" enctype="multipart/form-data">
-        <label for="fileInput" class="custom-file-upload">
-            <img src="../img/clip.png" alt="Clip Icon">
-        </label>
-        <span id="fileNameDisplay">선택된 파일이 없습니다.</span>
-        <input type="file" id="fileInput" name="file" style="display: none;" onchange="displayFileName()"/>
+        <input type="file" id="fileInput" name="file"/>
         <input type="hidden" id="roomIdInput" name="roomId" value="{{chatRoom.id}}"/>
         <button type="button" onclick="uploadFile()">파일 업로드</button>
     </form>
@@ -65,7 +151,7 @@
             console.log("message", message)
             var messageObject = JSON.parse(JSON.stringify(message));
             console.log("messageObject", messageObject)
-            var messageElement = "<p class='speech_bubble'>" + messageObject.content + "</p>";
+            var messageElement = "<p>" + messageObject.content + "</p>";
             $("#chatMessages").append(messageElement);
         }
 
@@ -96,14 +182,15 @@
                 // 파일이 있는 메시지의 경우
                 var file = message["chatFile"];
                 var downloadLink = '<a href="javascript:void(0);" onclick="downloadFile(\'' + file.filePath + '\', \'' + file.fileName + '\')"></br>다운로드</a>';
-                var messageElement = '<p class="speech_bubble"><strong>' + file.fileName + downloadLink + '</p>';
+                var messageElement = '<p><strong>' + file.fileName + downloadLink + '</p>';
                 $("#chatMessages").append(messageElement);
             } else {
                 // 파일이 없는 메시지의 경우
-                var messageElement = '<p class="speech_bubble">' + content.content + '</p>';
+                var messageElement = '<p>' + content.content + '</p>';
                 $("#chatMessages").append(messageElement);
             }
         }
+
 
 
         // function displayChatListMessage(message) {
@@ -131,14 +218,7 @@
         // 메시지 전송 폼 처리
         $("#messageForm").submit(function (event) {
             event.preventDefault();
-            var message = $("#messageInput").val();
-            var username = $("#usernameInput").val();
-            if (message === "") {
-                alert("메시지를 입력하세요.");
-                return;
-            }
-            sendMessage(message, username);
-            // 메시지 전송 후 입력 필드를 비움
+            sendMessage($("#messageInput").val());
             $("#messageInput").val('');
         });
 
@@ -147,7 +227,6 @@
     function uploadFile() {
         var fileInput = document.getElementById('fileInput');
         var formData = new FormData(document.getElementById('fileForm'));
-        var fileNameDisplay = document.getElementById('fileNameDisplay');
 
         // 파일을 선택하지 않은 경우
         if (!fileInput.value) {
@@ -169,21 +248,16 @@
 
                 // 파일 선택란 초기화
                 fileInput.value = null;
-
-                // 파일 이름 표시 초기화
-                fileNameDisplay.textContent = '선택된 파일이 없습니다.';
             },
             error: function (error) {
                 console.error('File upload error:', error);
             }
-
-
         });
     }
 
 
     function displayChatFileMessage(fileUploadDTO) {
-        var messageElement = '<p class="speech_bubble"><strong>' + fileUploadDTO.originFileName + '</strong>이(가) 업로드되었습니다. <a href="javascript:void(0);" onclick="downloadFile(\'' + fileUploadDTO.fileDir + '\', \'' + fileUploadDTO.originFileName + '\')"></br>다운로드</a></p>';
+        var messageElement = '<p><strong>' + fileUploadDTO.originFileName + '</strong>이(가) 업로드되었습니다. <a href="javascript:void(0);" onclick="downloadFile(\'' + fileUploadDTO.fileDir + '\', \'' + fileUploadDTO.originFileName + '\')"></br>다운로드</a></p>';
         $("#chatMessages").append(messageElement);
 
         // 새로운 메시지를 추가한 후 스크롤을 아래로 이동
@@ -203,7 +277,7 @@
             },
             success: function (data) {
                 // Blob 데이터를 파일로 변환
-                var blob = new Blob([data], {type: 'application/octet-stream'});
+                var blob = new Blob([data], { type: 'application/octet-stream' });
 
                 // Blob을 URL로 생성
                 var url = window.URL.createObjectURL(blob);
@@ -223,19 +297,6 @@
                 document.body.removeChild(downloadLink);
             }
         });
-    }
-
-    function displayFileName() {
-        var fileInput = document.getElementById('fileInput');
-        var fileNameDisplay = document.getElementById('fileNameDisplay');
-
-        if (fileInput.files.length > 0) {
-            // 파일이 선택되었을 때 파일 이름을 표시
-            fileNameDisplay.textContent = fileInput.files[0].name;
-        } else {
-            // 파일이 선택되지 않았을 때 기본 문구 표시
-            fileNameDisplay.textContent = '선택된 파일이 없습니다.';
-        }
     }
 
 </script>

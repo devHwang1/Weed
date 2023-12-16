@@ -1,15 +1,12 @@
 package com.example.weed.controller;
 
 import com.example.weed.Util.W2001_JwtTokenUtil;
-import com.example.weed.adapter.W1005_LocalDateTimeTypeAdapter;
 import com.example.weed.dto.W2004_WorkingDto;
 import com.example.weed.entity.Member;
 import com.example.weed.entity.Working;
 import com.example.weed.repository.W1001_MemberRepository;
 import com.example.weed.repository.W2002_WorkingRepository;
 import com.example.weed.service.W2001_QrJwtService;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,8 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://10.100.203.31:8099", allowCredentials = "true")
-//@CrossOrigin(origins = "http://15.164.62.243:8099", allowCredentials = "true")
+//@CrossOrigin(origins = "http://10.100.203.31:8099", allowCredentials = "true")
+@CrossOrigin(origins = "http://3.35.59.205:8099", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/app/member")
 public class W2001_MemberAppApiController {
@@ -40,11 +37,6 @@ public class W2001_MemberAppApiController {
         this.jwtTokenUtil = jwtTokenUtil;
         this.jwtService = jwtService;
         this.w2002WorkingRepository = w2002WorkingRepository;
-
-        // GSON 객체 설정 시
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDateTime.class, new W1005_LocalDateTimeTypeAdapter())
-                .create();
     }
 
     // 로그인
@@ -132,48 +124,31 @@ public class W2001_MemberAppApiController {
 
     // 앱의 출퇴근 기록
     @GetMapping("/working")
-    public ResponseEntity<Map<String, Object>> getRecentWorkingInfo(@RequestHeader("Authorization") String token) {
-        // 로그로 확인
-        System.out.println("Received token: " + token);
-
+    public ResponseEntity<Map<String, Object>> getRecentWorkingInfo() {
         try {
-            // 토큰 해석
-            String email = jwtTokenUtil.getEmailFromToken(token);
-            Integer userId = jwtTokenUtil.getUserIdFromToken(token);
+            LocalDate currentDate = LocalDate.now();
 
-            // 해당하는 id와 email을 가진 유저 찾기
-            Member foundMember = memberRepository.findById(userId.longValue()).orElse(null);
+            Optional<Working> recentCheckIn = w2002WorkingRepository.findFirstByDateAndCheckInTimeIsNotNullOrderByCheckInTimeDesc(currentDate);
+            Optional<Working> recentCheckOut = w2002WorkingRepository.findFirstByDateAndCheckOutTimeIsNotNullOrderByCheckOutTimeDesc(currentDate);
 
-            if (foundMember != null && foundMember.getEmail().equals(email)) {
-                // 최근의 출퇴근 기록을 찾기
-                Optional<Working> recentCheckIn = w2002WorkingRepository.findFirstByMemberAndCheckInTimeIsNotNullOrderByCheckInTimeDesc(foundMember);
-                Optional<Working> recentCheckOut = w2002WorkingRepository.findFirstByMemberAndCheckOutTimeIsNotNullOrderByCheckOutTimeDesc(foundMember);
-
-                Map<String, Object> response = new HashMap<>();
-                if (recentCheckIn.isPresent() || recentCheckOut.isPresent()) {
-                    // 출근 또는 퇴근 기록이 하나라도 존재하는 경우
-                    response.put("success", true);
-                    recentCheckIn.ifPresent(working -> {
-                        response.put("recentCheckIn", convertToLocalDateTime(working.getCheckInTime()));
-                        response.put("memberName", working.getMember().getName());
-                    });
-                    recentCheckOut.ifPresent(working -> {
-                        response.put("recentCheckOut", convertToLocalDateTime(working.getCheckOutTime()));
-                        response.put("memberName", working.getMember().getName());
-                    });
-                    return ResponseEntity.ok(response);
-                } else {
-                    // 출근 또는 퇴근 기록이 없는 경우
-                    response.put("success", false);
-                    response.put("error", "출근 또는 퇴근 기록이 없습니다.");
-                    return ResponseEntity.status(404).body(response);
-                }
+            Map<String, Object> response = new HashMap<>();
+            if (recentCheckIn.isPresent() || recentCheckOut.isPresent()) {
+                // 출근 또는 퇴근 기록이 하나라도 존재하는 경우
+                response.put("success", true);
+                recentCheckIn.ifPresent(working -> {
+                    response.put("recentCheckIn", convertToLocalDateTime(working.getCheckInTime()));
+                    response.put("memberName", working.getMember().getName());
+                });
+                recentCheckOut.ifPresent(working -> {
+                    response.put("recentCheckOut", convertToLocalDateTime(working.getCheckOutTime()));
+                    response.put("memberName", working.getMember().getName());
+                });
+                return ResponseEntity.ok(response);
             } else {
-                // 해당하는 유저를 찾지 못하면 실패 응답
-                Map<String, Object> response = new HashMap<>();
+                // 출근 또는 퇴근 기록이 없는 경우
                 response.put("success", false);
-                response.put("error", "해당 유저를 찾을 수 없습니다.");
-                return ResponseEntity.status(401).body(response);
+                response.put("error", "출근 또는 퇴근 기록이 없습니다.");
+                return ResponseEntity.status(404).body(response);
             }
         } catch (Exception e) {
             // 예외 처리
@@ -183,7 +158,6 @@ public class W2001_MemberAppApiController {
             return ResponseEntity.status(500).body(response);
         }
     }
-
 
     private Map<String, Object> convertToLocalDateTime(LocalDateTime dateTime) {
         Map<String, Object> convertedDateTime = new HashMap<>();
