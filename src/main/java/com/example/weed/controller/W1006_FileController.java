@@ -40,6 +40,7 @@ public class W1006_FileController {
     // fileName 과 파라미터로 넘어온 fileDir 을 getObject 메서드에 매개변수로 넣음
     @GetMapping("/download/{fileName}")
     public ResponseEntity<byte[]> download(@PathVariable String fileName, @RequestParam("fileDir") String fileDir) {
+
         log.info("fileDir : fileName [{} : {}]", fileDir, fileName);
         try {
             // 변환된 byte, httpHeader 와 HttpStatus 가 포함된 ResponseEntity 객체를 return

@@ -16,6 +16,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="js/scripts.js" type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+
 <script src="js/datatables-simple-demo.js" type="text/javascript"></script>
 <style>
     .datatable-dropdown {
@@ -46,57 +47,63 @@
         transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     }
 </style>
-<div id="layoutSidenav">
+<div id="layoutSidenav" style="
+    height: 100%;
+    overflow: scroll;
+">
 
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid px-4">
-                <h1 class="mt-4">관리자 근태내역</h1>
+                <h1 class="mt-4">근태관리 페이지</h1>
                 <ol class="breadcrumb mb-4">
                     <li class="breadcrumb-item"><a href="index.html">권한</a></li>
                     <li class="breadcrumb-item active">ADMIN</li>
                 </ol>
                 <div class="card mb-4">
                     <div class="card-body">
-                       관리자에게만 권한이 부여된 페이지입니다. 관리자가 아닐 시 로그아웃 해주시길 바랍니다.
+                        관리자에게만 권한이 부여된 페이지입니다. 관리자가 아닐 시 로그아웃 해주시길 바랍니다.
                     </div>
 
                 </div>
                 <div class="card mb-4">
                     <div class="card-header" style="font-weight: bold;color: white; background-color: #00c473;">
                         <i class="fas fa-table me-1"></i>
-                        직원근태내역 관리
+                        직원 근태내역
                     </div>
                     <div class="card-body">
-                        <input type="text" id="searchInput" placeholder="검색...">
+                        <div style="display: flex">
+                            <input type="text" id="searchInput" placeholder="검색...">
+                            <button type="button" id="openBtn" class="btn btn-primary" style="width: 95px;border: 1px solid white;height: 38px;padding-top: 7px;background-color: #00c473;border-color: #00c473;color: white;border-radius: 5px;margin-left: 10px;">부서 관리</button>
+                        </div>
                         <table id="datatablesSimple">
                             <thead>
                             <tr>
+                                <th>날짜</th>
                                 <th>이름</th>
                                 <th>부서</th>
-                                <th>이메일</th>
-                                <th>날짜</th>
                                 <th>출근 시간</th>
                                 <th>퇴근 시간</th>
                                 <th>상태</th>
-                                <th>총 근무시간</th>
                             </tr>
                             </thead>
-                            <tfoot>
-                            <tr>
-                            <!-- DB에 불러와서 표시-->
-                                <th>이름</th>
-                                <th>부서</th>
-                                <th>이메일</th>
-                                <th>날짜</th>
-                                <th>출근 시간</th>
-                                <th>퇴근 시간</th>
-                                <th>상태</th>
-                                <th>총 근무시간</th>
-                            </tr>
-                            </tfoot>
+                            <!--                            <tfoot>-->
+                            <!--                            <tr>-->
+                            <!--                                <th>날짜</th>-->
+                            <!--                                <th>이름</th>-->
+                            <!--                                <th>출근 시간</th>-->
+                            <!--                                <th>퇴근 시간</th>-->
+                            <!--                            </tr>-->
+                            <!--                            </tfoot>-->
                             <tbody>
-
+                            <tr>
+                                <td id="date"></td>
+                                <td id="memberName"></td>
+                                <td id="deptName"></td>
+                                <td id="check-in-time"></td>
+                                <td id="check-out-time"></td>
+                                <td id="state">상태</td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -111,38 +118,68 @@
 <script src="js/scripts.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
 <script src="js/datatables-simple-demo.js"></script>
+
 <script>
     $(document).ready(function () {
-        // 화면 로딩 시 초기 데이터 표시
-        loadData();
-    });
-
-    function loadData() {
+        // AJAX 호출
         $.ajax({
-            type: "GET",
-            url: "/workingData",  // 서버에서 데이터를 가져올 엔드포인트 URL
-            dataType: "json",
+            type: 'GET',
+            url: '/api/working/list',
+            dataType: 'json',
             success: function (data) {
-                displayData(data);
+                console.log('Received data:', data);
+
+                // 데이터를 받아와서 테이블에 추가
+                var workList = $("#datatablesSimple");
+
+
+                // 이전에 있던 빈 행 제거
+                workList.find("td").remove();
+
+                // 데이터가 배열 형태로 불러오기
+                for (var i = 0; i < data.length; i++) {
+                    var rowData = data[i];
+
+                    // 날짜와 시간 데이터 포맷 변환
+                    var formattedDate = formatDate(rowData.date);
+                    var formattedCheckInTime = formatTime(rowData.checkInTime);
+                    var formattedCheckOutTime = formatTime(rowData.checkOutTime);
+
+                    // 새로운 행 추가
+                    var newRow = $("<tr>");
+                    newRow.append("<td>" + formattedDate + "</td>");
+                    newRow.append("<td>" + rowData.memberName + "</td>");
+                    newRow.append("<td>" + rowData.deptName + "</td>");
+                    newRow.append("<td>" + formattedCheckInTime + "</td>");
+                    newRow.append("<td>" + formattedCheckOutTime + "</td>");
+
+                    workList.append(newRow);
+                }
             },
-            error: function (error) {
-                console.log("Error fetching data:", error);
+            error: function () {
+                // 오류 발생 시 처리
+                console.error('Failed to fetch data');
             }
         });
+    });
+
+    // 날짜와 시간 형식 변환 함수
+    function formatDate(dateString) {
+        var date = new Date(dateString);
+        if (isNaN(date.getTime())) {
+            // 날짜가 올바르게 파싱되지 않은 경우
+            return '3333';
+        }
+        return date.toLocaleDateString();
     }
 
-    function displayData(data) {
-        var tableBody = $("#workingTableBody");
-        tableBody.empty();  // 기존 데이터 비우기
-
-        for (var i = 0; i < data.length; i++) {
-            var row = "<tr>";
-            row += "<td>" + data[i].memberName + "</td>";
-            row += "</tr>" + data[i].checkInTime + "</td>";
-            row += "</tr>" + data[i].checkOutTime + "</td>";
-
-            tableBody.append(row);
+    function formatTime(dateTimeString) {
+        var dateTime = new Date(dateTimeString);
+        if (isNaN(dateTime.getTime())) {
+            // 날짜가 올바르게 파싱되지 않은 경우
+            return '';
         }
+        return dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 </script>
 </body>

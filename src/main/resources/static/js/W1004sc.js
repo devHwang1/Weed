@@ -1,6 +1,8 @@
 $(document).ready(function(){
     var info = {}; // info 변수를 빈 객체로 초기화
 
+
+
 //모달작성
     var calendarEl = document.getElementById('calendar');
     var eventModal = document.getElementById('eventModal'); //모달 창 띄우기
@@ -76,7 +78,7 @@ $(document).ready(function(){
             right: 'next today'
         },
 
-        allDay: true, // 기본값을 하루 종일로 설정
+        // allDay: true, // 기본값을 하루 종일로 설정
 
         //이벤트스타일 설정
         eventContent: function (info) {
@@ -128,7 +130,7 @@ $(document).ready(function(){
             // select 이벤트에서 info.id 설정
             info.id = generateEventId();
             info.date = info.start;
-            info.allDay = info.allDay;
+            // info.allDay = info.allDay;
 
         },
 
@@ -290,7 +292,7 @@ $(document).ready(function(){
 
 
         // 페이지 로드 시 서버에서 저장된 이벤트 불러오기
-        getAllEvents();
+        // getAllEvents();
         // $(document).ready(function () {
         //     $.ajax({
         //         type: 'GET',
@@ -369,6 +371,9 @@ $(document).ready(function(){
             success: function (response) {
                 calendar.removeAllEvents(); // 기존 이벤트 제거
                 calendar.addEventSource(response); // 새로운 이벤트 소스 추가
+                console.log("ㅇㅇㅇㅇㅇㅇ");
+                console.log(response);
+                console.log("ㅇㅇㅇㅇㅇㅇ");
             },
             error: function (error) {
                 console.error('Failed to fetch updated events:', error);

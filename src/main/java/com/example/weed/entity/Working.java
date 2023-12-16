@@ -1,6 +1,5 @@
 package com.example.weed.entity;
 
-import com.example.weed.dto.W1007_workingDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.Getter;
@@ -8,8 +7,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -33,8 +30,9 @@ public class Working {
     @JoinColumn(name = "m_id")
     private Member member;
 
-    public W1007_workingDTO toDTO() {
-        return new W1007_workingDTO(id, checkInTime, checkOutTime, member.getName());
+    // Member를 통해 dept_name를 가져오기
+    @Transient
+    public String getDeptName() {
+        return member != null && member.getDept() != null ? member.getDept().getDeptName() : null;
     }
 }
-
