@@ -4,11 +4,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class MainController {
+public class W1007_WorkingController {
 
-    @GetMapping("/main")
-    public String main() {
-        return "/layouts/main";
+    @GetMapping("/working")
+    public String calendar() {
+        return "W1007_working";
     }
 
 }

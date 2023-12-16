@@ -26,7 +26,7 @@
 }
 
 
-    /* 일요일 날짜 빨간색 */
+/* 일요일 날짜 빨간색 */
 .fc-day-sun a {
     color: red;
     text-decoration: none;

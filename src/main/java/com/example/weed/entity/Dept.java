@@ -66,3 +66,4 @@ public class Dept {
         this.deptName = deptName;
     }
 }
+
