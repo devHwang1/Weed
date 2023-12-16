@@ -1,11 +1,9 @@
 {
   "expo": {
     "name": "WEED",
-    "displayName": "WEED",
     "slug": "WEED",
     "version": "1.0.0",
     "orientation": "portrait",
-    "release": true,
     "icon": "./assets/WEED_Icon.png",
     "userInterfaceStyle": "light",
     "splash": {
@@ -31,11 +29,6 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "extras": {
-      "expo": {
-        "allowCellularAccess": true
-      }
     },
     "extra": {
       "eas": {

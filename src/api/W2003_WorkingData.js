@@ -12,7 +12,7 @@ export const fetchWorkingData = async () => {
         'http://10.100.203.31:8099/api/app/member/working',{
         // 'http://15.164.62.243:8099/api/app/member/working', {
           headers: {
-            Authorization: `Bearer ${storedAccessToken}`,
+            Authorization: `${storedAccessToken}`,
           },
         }
       );
