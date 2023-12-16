@@ -9,9 +9,9 @@
 
 :root{
     /* ===== Colors ===== */
-    --body-color: #E4E9F7;
+    --body-color: #f8f8f8;
     --sidebar-color: #FFF;
-    --primary-color: #695CFE;
+    --primary-color: #00c473;
     --primary-color-light: #F6F5FF;
     --toggle-color: #DDD;
     --text-color: #707070;
@@ -308,3 +308,65 @@ body.dark .switch::before{
 body.dark .home .text{
     color: var(--text-color);
 }
+
+/* 모달 스타일 */
+/* 모달 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    /* 수정: 클릭한 위치 기준으로 모달 위치 지정 */
+    left: 0;
+    top: 0;
+    /* 기존 코드 유지 */
+    width: 20%;
+    height: 100%;
+    overflow: auto;
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    /*margin: 5% auto;*/
+    border: 1px solid #888;
+    width: 80%;
+    height: 500px;
+    /*background-color: transparent;*/
+    color: #fff;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 8px 0 rgba(0,0,0,.25);
+    box-shadow: 0 1px 8px 0 rgba(0,0,0,.25);
+}
+
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 구체성 향상 */
+input.nameEdit::-webkit-input-placeholder {
+    color: white;
+}
+
+input.nameEdit:-moz-placeholder {
+    color: white;
+}
+
+input.nameEdit::-moz-placeholder {
+    color: white;
+}
+
+input.nameEdit:-ms-input-placeholder {
+    color: white;
+}
+
+
