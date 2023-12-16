@@ -2,7 +2,6 @@ package com.example.weed.controller;
 
 import com.example.weed.Util.W2001_JwtTokenUtil;
 import com.example.weed.adapter.W1005_LocalDateTimeTypeAdapter;
-import com.example.weed.dto.W2004_WorkingDto;
 import com.example.weed.entity.Member;
 import com.example.weed.entity.Working;
 import com.example.weed.repository.W1001_MemberRepository;
@@ -195,4 +194,3 @@ public class W2001_MemberAppApiController {
         return convertedDateTime;
     }
 }
-
