@@ -81,9 +81,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace 'com.seungjaedanlee.app'
+    namespace 'com.seungjaedanlee.WEED'
     defaultConfig {
-        applicationId 'com.seungjaedanlee.app'
+        applicationId 'com.seungjaedanlee.WEED'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

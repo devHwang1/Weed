@@ -11,9 +11,6 @@
       "resizeMode": "contain",
       "backgroundColor": "#0B212D"
     },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -25,14 +22,14 @@
         "foregroundImage": "./assets/WEED_Icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.seungjaedanlee.Weed"
+      "package": "com.seungjaedanlee.WEED"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "0dc8d99f-233c-461f-b63e-709e9bcfccc0"
+        "projectId": "f892f7d5-c933-4c04-b50e-849425f4f106"
       }
     }
   }
