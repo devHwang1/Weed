@@ -6,6 +6,7 @@ import com.example.weed.entity.ChatMessage;
 import com.example.weed.entity.ChatRoom;
 import com.example.weed.entity.Member;
 import com.example.weed.repository.W1001_MemberRepository;
+import com.example.weed.repository.W1005_ChatMessageRepository;
 import com.example.weed.service.W1001_MemberService;
 import com.example.weed.service.W1005_ChatRoomService;
 import com.example.weed.service.W1005_ChatService;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,6 +38,9 @@ public class W1005_ChatController {
     @Autowired
     private W1001_MemberService w1001_memberService;
 
+    @Autowired
+    private W1005_ChatMessageRepository chatMessageRepository;
+
     // 채팅 시작포인트(채팅방 목록과 새 채팅방을 만들 수 있다.)
     @GetMapping
     public String showChatRooms(Model model) {
@@ -49,8 +54,6 @@ public class W1005_ChatController {
     public String enterChatRoom(@PathVariable Long roomId, Model model) {
         ChatRoom chatRoom = chatRoomService.getChatRoomById(roomId);
         model.addAttribute("chatRoom", chatRoom);
-        Member member = w1001_memberService.getLoggedInMember();
-            model.addAttribute("member", member);
         return "W1005_chat";
     }
 
@@ -99,6 +102,13 @@ public class W1005_ChatController {
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+        // 사용자 이름 가져오기
+        for (W1005_ChatMessageDTO w1005_ChatMessageDTO: chatMessagesDTO) {
+            Member member = chatRoomService.getMember(w1005_ChatMessageDTO.getMemberId());
+
+            w1005_ChatMessageDTO.setMemberName(member.getName());
+            chatMessagesDTO.add(w1005_ChatMessageDTO);
+        }
         model.addAttribute("chatMessages", chatMessagesDTO);
         return "W1005_chat";
     }
@@ -117,6 +127,7 @@ public class W1005_ChatController {
                 chatMessage.getId(),
                 chatMessage.getContent(),
                 chatMessage.getMember().getId(),
+                chatMessage.getMember().getName(),
                 chatMessage.getTimestamp(),
                 null  // 초기화
 

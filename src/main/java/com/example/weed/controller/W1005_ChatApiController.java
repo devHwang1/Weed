@@ -45,6 +45,7 @@ public class W1005_ChatApiController {
                 chatMessage.getId(),
                 chatMessage.getContent(),
                 chatMessage.getMember().getId(),
+                chatMessage.getMember().getName(),
                 chatMessage.getTimestamp(),
                 chatMessage.getChatFile() != null ? new W1006_ChatFileDTO(
                         chatMessage.getChatFile().getId(),

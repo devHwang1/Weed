@@ -61,5 +61,10 @@ public class W1005_ChatRoomService {
     private boolean isMemberInChatRoom(ChatRoom chatRoom, Member member) {
         return chatRoom.getMembers().contains(member);
     }
+
+    public Member getMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("user doesn't exist"));
+    }
 }
 

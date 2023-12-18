@@ -35,4 +35,5 @@ public class ChatRoom {
         this.members = members;
         this.messages = messages;
     }
+
 }

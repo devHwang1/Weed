@@ -39,6 +39,7 @@ public class W1001_MemberService implements UserDetailsService {
     @Value("${cloud.aws.s3.bucket}")
     private String uploadPath;
 
+
     public Member W1001_getMemberInfo(String email) {
         return w1001MemberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("email"));
     }

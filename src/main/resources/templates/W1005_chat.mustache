@@ -47,7 +47,7 @@
         var stompClient = null;
 
         function connectWebSocket() {
-            var socket = new SockJS('/ws'); // WebSocket 엔드포인트
+            var socket = new SockJS('/ws');
             stompClient = Stomp.over(socket);
 
             stompClient.connect({}, function (frame) {
@@ -64,7 +64,7 @@
         function displayChatStartMessage(message) {
             console.log("message", message)
             var messageObject = JSON.parse(JSON.stringify(message));
-            var memberName = "{{member.name}}";
+            var memberName = message.memberName;
             console.log("messageObject", messageObject)
             var messageElement = "<div>"+"<p>"+memberName+"</p>"+"<p class='speech_bubble'>" + messageObject.content + "</p>"+"<div>"+"</div>"+"</div>";
             $("#chatMessages").append(messageElement);
@@ -92,7 +92,7 @@
         function displayChatListMessage(message) {
             var content = JSON.parse(message["content"]);
             var messageId = message["id"];
-            var memberName = "{{member.name}}";
+            var memberName = message.memberName;
 
             if (message["chatFile"]) {
                 // 파일이 있는 메시지의 경우
