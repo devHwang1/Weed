@@ -1,8 +1,6 @@
 $(document).ready(function(){
     var info = {}; // info 변수를 빈 객체로 초기화
 
-
-
 //모달작성
     var calendarEl = document.getElementById('calendar');
     var eventModal = document.getElementById('eventModal'); //모달 창 띄우기
@@ -67,9 +65,7 @@ $(document).ready(function(){
     var clickedDefId = -1;
     var clickedEventId = -1;
 
-
-
-
+    var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
         // 달력 설정
         headerToolbar: {
@@ -78,7 +74,7 @@ $(document).ready(function(){
             right: 'next today'
         },
 
-        // allDay: true, // 기본값을 하루 종일로 설정
+        allDay: true, // 기본값을 하루 종일로 설정
 
         //이벤트스타일 설정
         eventContent: function (info) {
@@ -130,7 +126,7 @@ $(document).ready(function(){
             // select 이벤트에서 info.id 설정
             info.id = generateEventId();
             info.date = info.start;
-            // info.allDay = info.allDay;
+            info.allDay = info.allDay;
 
         },
 
@@ -239,9 +235,13 @@ $(document).ready(function(){
             var newEndDate = resizedEvent.end;
 
             console.log('이벤트가 리사이즈되었습니다.');
-            console.log('새로운 종료 날짜:', newEndDate);},
+            console.log('새로운 종료 날짜:', newEndDate);
+        },
 
     });
+
+    // 달력 그리기
+    calendar.render();
 
     // 서버로부터 업데이트된 전체 일정을 가져와 FullCalendar에 반영
     getAllEvents();
@@ -290,40 +290,8 @@ $(document).ready(function(){
         saveToServer();
         // ===================================이벤트 등록 및 저장기능 ===================================
 
-
-        // 페이지 로드 시 서버에서 저장된 이벤트 불러오기
-        // getAllEvents();
-        // $(document).ready(function () {
-        //     $.ajax({
-        //         type: 'GET',
-        //         url: '/api/events', // 실제 백엔드 서버의 URL에 맞게 조정
-        //         success: function (response) {
-        //             console.log('Events loaded successfully:', response);
-        //
-        //             // 불러온 이벤트를 FullCalendar에 추가
-        //             response.forEach(function (eventData) {
-        //                 var event = {
-        //                     id: eventData.id,
-        //                     title: eventData.title,
-        //                     content: eventData.content,
-        //                     start: new Date(eventData.start),
-        //                     end: new Date(eventData.end),
-        //                     color: eventData.color
-        //                 };
-        //
-        //                 calendar.addEvent(event);
-        //             });
-        //         },
-        //         error: function (error) {
-        //             console.error('Error loading events:', error.responseText);
-        //         }
-        //     });
-        // });
-
-
         calendar.unselect();
         eventModal.style.display = 'none';
-
     });
 
 
@@ -339,8 +307,6 @@ $(document).ready(function(){
         calendar.unselect();
         eventModalDetail.style.display = 'none';
     });
-
-    calendar.render();
 
     function generateEventId() {
         // 이벤트를 위한 고유한 ID를 생성하는 로직을 구현
@@ -364,6 +330,25 @@ $(document).ready(function(){
     }
 
 // 서버로부터 업데이트된 전체 일정을 가져와 FullCalendar에 반영
+    // 기존방식
+    /*
+    function getAllEvents() {
+        $.ajax({
+            type: 'GET',
+            url: '/api/events',
+            success: function (response) {
+                //calendar.removeAllEvents(); // 기존 이벤트 제거
+                calendar.addEventSource(response); // 새로운 이벤트 소스 추가
+            },
+            error: function (error) {
+                console.error('Failed to fetch updated events:', error);
+                // 오류 처리
+            }
+        });
+    }
+    */
+
+    // 수정된 방식
     function getAllEvents() {
         $.ajax({
             type: 'GET',
@@ -371,9 +356,18 @@ $(document).ready(function(){
             success: function (response) {
                 calendar.removeAllEvents(); // 기존 이벤트 제거
                 calendar.addEventSource(response); // 새로운 이벤트 소스 추가
-                console.log("ㅇㅇㅇㅇㅇㅇ");
-                console.log(response);
-                console.log("ㅇㅇㅇㅇㅇㅇ");
+                response.forEach(function (eventData) {
+                    var event = {
+                        id: eventData.id,
+                        title: eventData.title,
+                        content: eventData.content,
+                        start: new Date(eventData.start),
+                        end: new Date(eventData.end),
+                        color: eventData.color
+                    };
+                    calendar.addEvent(event);
+                });
+
             },
             error: function (error) {
                 console.error('Failed to fetch updated events:', error);
@@ -456,8 +450,16 @@ $(document).ready(function(){
                 eventTitleDetail.innerHTML = response.title;    //제목
                 eventContentDetail.innerHTML = response.content;    //내용
 
-                startDateDetail.innerHTML = response.startDate;
-                endDateDetail.innerHTML = response.endDate;
+                // 날짜 문자열을 Date 객체로 변환
+                var inputStartDate = new Date(response.startDate);
+                var inputEndDate = new Date(response.endDate);
+
+                // yyyy-MM-dd 형식으로 변환
+                var formattedStartDate = inputStartDate.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '').replace(/\s/g, '-');
+                var formattedEndDate = inputEndDate.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '').replace(/\s/g, '-');
+
+                startDateDetail.innerHTML = formattedStartDate;
+                endDateDetail.innerHTML = formattedEndDate;
 
 
                 // 클라이언트에서 현재 로그인된 멤버의 아이디 가져와서 버튼표시여부설정
@@ -538,12 +540,12 @@ $(document).ready(function(){
         var updatedInfo = {
             title: ModifyTitle.value.trim(),
             content: ModifyContent.value.trim(),
-            startDate: ModifyStartDate.value,
-            endDate: ModifyEndDate.value,
+            startDate: ModifyStartDate.valueAsDate,
+            endDate: ModifyEndDate.valueAsDate,
             color: ModifyColor.value
         };
 
-        // // 콘솔 로그 출력 - 수정 전 데이터 확인
+        // 콘솔 로그 출력 - 수정 전 데이터 확인
         // console.log('Before Update:', arg.event);
 
         // 수정된 내용을 서버로 보내는 Ajax 요청
@@ -612,8 +614,8 @@ $(document).ready(function(){
         if (!title) return; // 타이틀이 비어있으면 아무 동작도 하지 않음
 
         // 클라이언트(날짜클릭을 기준으로 받은 데이터값)
-        var startDateInputValue = startDateInput.value;
-        var endDateInputValue = endDateInput.value;
+        var startDateInputValue = startDateInput.valueAsDate;
+        var endDateInputValue = endDateInput.valueAsDate;
 
         // 사용자가 선택한 색상 가져오기
         selectedColor = eventColorInput.value;
