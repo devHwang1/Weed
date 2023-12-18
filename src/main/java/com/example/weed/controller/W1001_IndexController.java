@@ -35,6 +35,10 @@ public class W1001_IndexController {
     private final TodoService todoService;
 //    private final SendEmailService sendEmailService;
 
+    @GetMapping("/")
+    public String mainPage(){
+        return "mainPage";
+    }
     @GetMapping("/main")
     public String main(@AuthenticationPrincipal User user,Model model) {
 
