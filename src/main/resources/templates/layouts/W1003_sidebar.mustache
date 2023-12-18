@@ -22,6 +22,12 @@
     <div class="menu-bar">
         <div class="menu">
 
+            <li class="search-box" style="display: none">
+                <i class='bx bx-search icon'></i>
+                <label>
+                    <input type="text" placeholder="준비중입니다...">
+                </label>
+            </li>
 
             <ul class="menu-links">
                 <li class="nav-link">
@@ -38,13 +44,12 @@
                     </a>
                 </li>
 
-                <li class="nav-link">
-                    <a href="/calendar">
-                        <i class='bx bx-calendar icon'></i>
-                        <span class="text nav-text">일정</span>
-                    </a>
-                </li>
-
+<!--                <li class="nav-link">-->
+<!--                    <a href="#">-->
+<!--                        <i class='bx bx-bell icon'></i>-->
+<!--                        <span class="text nav-text">알림</span>-->
+<!--                    </a>-->
+<!--                </li>-->
 
                 <li class="nav-link" id="working" style="display: none;">
                     <a href="/working">
@@ -52,8 +57,6 @@
                         <span class="text nav-text">근태관리</span>
                     </a>
                 </li>
-
-
 
                 <li class="nav-link">
                     <a href="/admin" id="admin">
@@ -170,6 +173,7 @@
 
     // 페이지가 로드될 때 사용자 권한에 따라 "working" 아이콘을 숨기거나 보이게 설정
     var userAuthority = "{{userSession.authority}}";
+    console.log(userAuthority);
     if (userAuthority === "ADMIN" && working) {
         working.style.display = 'block';
     }else {
