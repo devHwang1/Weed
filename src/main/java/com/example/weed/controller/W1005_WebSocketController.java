@@ -15,6 +15,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -70,10 +71,11 @@ public class W1005_WebSocketController {
     }
 
     @MessageMapping("/chat/{roomId}/getMessages")
-    public void getChatMessages(@DestinationVariable Long roomId) {
+    public void getChatMessages(@DestinationVariable Long roomId, Model model) {
         // 채팅방에서 데이터베이스에서 저장된 메시지를 검색
         List<ChatMessage> chatMessages = chatMessageRepository.findByChatRoomId(roomId);
-
+        Member member = memberService.getLoggedInMember();
+        model.addAttribute("member",member);
         // 채팅방으로 메시지 전달
         for (ChatMessage chatMessage : chatMessages) {
             // ChatMessage 객체를 Gson을 사용하여 JSON 형태로 변환

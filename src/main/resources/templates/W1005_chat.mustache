@@ -64,8 +64,9 @@
         function displayChatStartMessage(message) {
             console.log("message", message)
             var messageObject = JSON.parse(JSON.stringify(message));
+            var memberName = "{{member.name}}";
             console.log("messageObject", messageObject)
-            var messageElement = "<div>"+"<p class='speech_bubble'>" + messageObject.content + "</p>"+"<div>"+"</div>"+"</div>";
+            var messageElement = "<div>"+"<p>"+memberName+"</p>"+"<p class='speech_bubble'>" + messageObject.content + "</p>"+"<div>"+"</div>"+"</div>";
             $("#chatMessages").append(messageElement);
         }
 
@@ -91,16 +92,18 @@
         function displayChatListMessage(message) {
             var content = JSON.parse(message["content"]);
             var messageId = message["id"];
+            var memberName = "{{member.name}}";
 
             if (message["chatFile"]) {
                 // 파일이 있는 메시지의 경우
                 var file = message["chatFile"];
+
                 var downloadLink = '<a href="javascript:void(0);" onclick="downloadFile(\'' + file.filePath + '\', \'' + file.fileName + '\')"></br>다운로드</a>';
                 var messageElement = '<p class="speech_bubble"><strong>' + file.fileName + downloadLink + '</p>';
                 $("#chatMessages").append(messageElement);
             } else {
                 // 파일이 없는 메시지의 경우
-                var messageElement = '<p class="speech_bubble">' + content.content + '</p>';
+                var messageElement = '<p>'+memberName+'</p>'+'<p class="speech_bubble">' + content.content + '</p>';
                 $("#chatMessages").append(messageElement);
             }
         }

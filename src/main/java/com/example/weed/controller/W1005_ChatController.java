@@ -49,6 +49,8 @@ public class W1005_ChatController {
     public String enterChatRoom(@PathVariable Long roomId, Model model) {
         ChatRoom chatRoom = chatRoomService.getChatRoomById(roomId);
         model.addAttribute("chatRoom", chatRoom);
+        Member member = w1001_memberService.getLoggedInMember();
+            model.addAttribute("member", member);
         return "W1005_chat";
     }
 
