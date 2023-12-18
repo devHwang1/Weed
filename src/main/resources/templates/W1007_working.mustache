@@ -258,20 +258,14 @@
 
         if (!isNaN(checkInDateTime.getTime()) && !isNaN(checkOutDateTime.getTime())) {
             // 출근 및 퇴근 시간이 모두 있는 경우
-            var status = '퇴근';
-            if (checkInDateTime.getHours() >= 9) {
-                status = '지각';
-            } else {
-                status = '정상출근';
-            }
-            return '<span style="color: #000000;">' + status + '</span>';
+            return '<span style="color: #000000;">퇴근</span>';
         } else if (!isNaN(checkInDateTime.getTime())) {
             // 출근 시간만 있는 경우
-            return '';
+            return checkInDateTime.getHours() >= 9 ? '<span style="color: #f63232;">지각</span>' //지각일경우
+                    : '<span style="color: #3b63de;">정상출근</span>';    //정상출근일 경우
         } else {
             // 퇴근 시간만 있는 경우
-            var status = '출근';
-            return '<span style="color: #f63232;">' + status + '</span>';
+            return '출근';
         }
     }
 </script>
