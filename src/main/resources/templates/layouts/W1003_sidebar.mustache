@@ -46,10 +46,10 @@
                     </a>
                 </li>
 
-                <li class="nav-link">
-                    <a href="/calendar">
-                        <i class='bx bx-calendar icon'></i>
-                        <span class="text nav-text">일정</span>
+                 <li class="nav-link" id="working" style="display: none;">
+                    <a href="/working">
+                        <i class='bx bx-pie-chart-alt icon' ></i>
+                        <span class="text nav-text">근태관리</span>
                     </a>
                 </li>
 
@@ -165,6 +165,14 @@
             alert("관리자만 입장 가능합니다.");
         }
     });
+
+    // 페이지가 로드될 때 사용자 권한에 따라 "working" 아이콘을 숨기거나 보이게 설정
+    var userAuthority = "{{userSession.authority}}";
+    if (userAuthority === "ADMIN" && working) {
+        working.style.display = 'block';
+    }else {
+        working.style.display = 'none';
+    }
 
 
 </script>

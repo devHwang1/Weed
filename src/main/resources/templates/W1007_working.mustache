@@ -46,6 +46,26 @@
         border-radius: 0.375rem;
         transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     }
+
+    .dateInput{
+        display: block;
+        width: 13%;
+        margin-left: 30px;
+        margin-bottom: 13px;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border-radius: 0.375rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
 </style>
 <div id="layoutSidenav" style="
     height: 100%;
@@ -73,8 +93,9 @@
                     </div>
                     <div class="card-body">
                         <div style="display: flex">
-                            <input type="text" id="searchInput" placeholder="검색...">
-                            <button type="button" id="openBtn" class="btn btn-primary" style="width: 95px;border: 1px solid white;height: 38px;padding-top: 7px;background-color: #00c473;border-color: #00c473;color: white;border-radius: 5px;margin-left: 10px;">부서 관리</button>
+                            <!--   이름검색기능   -->
+                            <input type="text" id="searchInput" placeholder="이름or부서입력...">
+                            <button type="button" id="searchBtn" class="btn btn-primary" style="width: 95px;border: 1px solid white;height: 38px;padding-top: 7px;background-color: #00c473;border-color: #00c473;color: white;border-radius: 5px;margin-left: 10px;">검색</button>
                         </div>
                         <table id="datatablesSimple">
                             <thead>
@@ -153,7 +174,13 @@
                     newRow.append("<td>" + formattedCheckInTime + "</td>");
                     newRow.append("<td>" + formattedCheckOutTime + "</td>");
 
+                    // 상태 동적으로 표시
+                    var statusCell = "<td>" + getStatus(rowData.checkInTime, rowData.checkOutTime) + "</td>";
+                    newRow.append(statusCell);
+
                     workList.append(newRow);
+
+
                 }
             },
             error: function () {
@@ -163,14 +190,51 @@
         });
     });
 
+    //검색기능추가
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('searchBtn').addEventListener('click', function () {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#datatablesSimple tbody tr');
+
+            rows.forEach(row => {
+                // 기존 코드에서 변경: 각 열이 존재하는지 확인
+                const name = row.querySelector('td:nth-child(2)');
+                const dept = row.querySelector('td:nth-child(3)');
+                const checkInTime = row.querySelector('td:nth-child(4)');
+                const checkOutTime = row.querySelector('td:nth-child(5)');
+
+                // 수정: 각 열이 존재하지 않더라도 계속 검색 수행
+                const nameText = name ? name.textContent.toLowerCase() : '';
+                const deptText = dept ? dept.textContent.toLowerCase() : '';
+                const checkInTimeText = checkInTime ? checkInTime.textContent.toLowerCase() : '';
+                const checkOutTimeText = checkOutTime ? checkOutTime.textContent.toLowerCase() : '';
+
+                // 수정: 각 열이 존재하지 않더라도 계속 검색 수행
+                if (nameText.includes(searchTerm) || deptText.includes(searchTerm) || checkInTimeText.includes(searchTerm) || checkOutTimeText.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
+
+
     // 날짜와 시간 형식 변환 함수
     function formatDate(dateString) {
         var date = new Date(dateString);
+
         if (isNaN(date.getTime())) {
             // 날짜가 올바르게 파싱되지 않은 경우
             return '3333';
         }
-        return date.toLocaleDateString();
+
+        // "YYYY-MM-DD" 형식으로 반환
+        var year = date.getFullYear();
+        var month = (date.getMonth() + 1).toString().padStart(2, '0');
+        var day = date.getDate().toString().padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
     }
 
     function formatTime(dateTimeString) {
@@ -180,6 +244,29 @@
             return '';
         }
         return dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // 출근 및 퇴근 상태 동적으로 결정
+    function getStatus(checkInTime, checkOutTime) {
+        var checkInDateTime = new Date(checkInTime);
+        var checkOutDateTime = new Date(checkOutTime);
+
+        if (isNaN(checkInDateTime.getTime()) && isNaN(checkOutDateTime.getTime())) {
+            // 날짜가 올바르게 파싱되지 않은 경우
+            return '';
+        }
+
+        if (!isNaN(checkInDateTime.getTime()) && !isNaN(checkOutDateTime.getTime())) {
+            // 출근 및 퇴근 시간이 모두 있는 경우
+            return '<span style="color: #000000;">퇴근</span>';
+        } else if (!isNaN(checkInDateTime.getTime())) {
+            // 출근 시간만 있는 경우
+            return checkInDateTime.getHours() >= 9 ? '<span style="color: #f63232;">지각</span>' //지각일경우
+                    : '<span style="color: #3b63de;">정상출근</span>';    //정상출근일 경우
+        } else {
+            // 퇴근 시간만 있는 경우
+            return '출근';
+        }
     }
 </script>
 </body>
