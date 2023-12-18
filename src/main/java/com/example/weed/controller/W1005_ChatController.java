@@ -6,6 +6,7 @@ import com.example.weed.entity.ChatMessage;
 import com.example.weed.entity.ChatRoom;
 import com.example.weed.entity.Member;
 import com.example.weed.repository.W1001_MemberRepository;
+import com.example.weed.service.W1001_MemberService;
 import com.example.weed.service.W1005_ChatRoomService;
 import com.example.weed.service.W1005_ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class W1005_ChatController {
 
     @Autowired
     private W1001_MemberRepository memberRepository;
+
+    @Autowired
+    private W1001_MemberService w1001_memberService;
 
     // 채팅 시작포인트(채팅방 목록과 새 채팅방을 만들 수 있다.)
     @GetMapping
@@ -73,12 +77,14 @@ public class W1005_ChatController {
     @GetMapping("/chat")
     public String showUserChatRooms(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = w1001_memberService.getLoggedInMember();
         String username = authentication.getName();
 
         Member user = memberRepository.findByName(username);
         Set<ChatRoom> userChatRooms = user.getChatRooms();
 
         model.addAttribute("chatRooms", userChatRooms);
+        model.addAttribute("member", member);
 
         return "W1005_chatRooms";
     }
@@ -128,4 +134,3 @@ public class W1005_ChatController {
     }
 
 }
-

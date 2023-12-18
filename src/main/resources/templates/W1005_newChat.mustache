@@ -6,25 +6,23 @@
     <title>Create New Chat Room</title>
 </head>
 <body>
-<h1>새 채팅방 만들기</h1>
-<form action="/chat/create" method="post">
-    <!-- 예시: 채팅방 이름 입력 -->
-    <label for="chatRoomName">이름:</label>
-    <input type="text" id="chatRoomName" name="chatRoomName" required>
-    <br>
-    <br>
+<div style="width: 80%;background-color: white;margin-left: 230px;margin-top: 50px;padding: 30px;overflow: auto;border-radius: 10px;height: 80%;box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);">
+    <h1>새 채팅방 만들기</h1>
+    <form action="/chat/create" method="post">
+        <!-- 예시: 채팅방 이름 입력 -->
+        <label for="chatRoomName">이름:</label>
+        <input type="text" id="chatRoomName" name="chatRoomName" required>
+        <br>
+        <br>
 
-    <!-- 초대할 사용자 선택 -->
-    <label for="inviteUser">초대할 사용자:</label>
-    <select id="inviteUser" name="inviteUser" multiple>
-        {{#allMembers}}
-            <option value="{{id}}">{{name}}</option>
-        {{/allMembers}}
-    </select>
-    <br>
+        <!-- 초대할 사용자 선택 -->
 
-    <button type="submit">확인</button>
-</form>
+        <button type="submit">확인</button>
+    </form>
+
+
+</div>
+
 
 <script>
     // 최대 50명까지 선택 가능하도록 제한

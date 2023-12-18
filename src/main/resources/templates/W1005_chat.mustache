@@ -30,11 +30,11 @@
         <input type="text" id="messageInput" placeholder="메시지를 입력하세요..."/>
         <button type="submit">전송</button>
     </form>
-    <form id="fileForm" enctype="multipart/form-data">
+    <form id="fileForm" enctype="multipart/form-data" style="margin-left: 10px;">
         <label for="fileInput" class="custom-file-upload">
-            <img src="../img/clip.png" alt="Clip Icon">
+            <img src="../img/clip.png" alt="Clip Icon" style="position: relative; top: 4px;">
         </label>
-        <span id="fileNameDisplay">선택된 파일이 없습니다.</span>
+        <span id="fileNameDisplay" style="margin-right: 10px;margin-bottom: 14px;">선택된 파일이 없습니다.</span>
         <input type="file" id="fileInput" name="file" style="display: none;" onchange="displayFileName()"/>
         <input type="hidden" id="roomIdInput" name="roomId" value="{{chatRoom.id}}"/>
         <button type="button" onclick="uploadFile()">파일 업로드</button>
@@ -65,7 +65,7 @@
             console.log("message", message)
             var messageObject = JSON.parse(JSON.stringify(message));
             console.log("messageObject", messageObject)
-            var messageElement = "<p class='speech_bubble'>" + messageObject.content + "</p>";
+            var messageElement = "<div>"+"<p class='speech_bubble'>" + messageObject.content + "</p>"+"<div>"+"</div>"+"</div>";
             $("#chatMessages").append(messageElement);
         }
 
